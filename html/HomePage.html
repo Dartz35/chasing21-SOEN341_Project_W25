@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ChatHaven</title>
+    <link rel="stylesheet" href="../css/homePageStyle.css" />
+  </head>
+  <body>
+    <div class="container">
+      <header class="header">
+        <div class="logo">
+          <h1>ChatHaven</h1>
+        </div>
+      </header>
+
+      <div id="main" class="main">
+        <button class="profileBtn sidebarToggle">
+          <img
+            class="profilePic"
+            src="../images/defaultUserLogo.png"
+            alt="Profile Picture"
+          />
+        </button>
+      </div>
+    </div>
+
+    <div id="sidebar" class="sidebar">
+      <button class="closeBtn sidebarToggle">&#10005;</button>
+      <h2>Profile</h2>
+      <div class="profile">
+        <img
+          class="profilePic"
+          src="../images/defaultUserLogo.png"
+          alt="Profile Picture"
+        />
+        <h3 class="userName name"></h3>
+        <p class="profileRole role">Member</p>
+      </div>
+      <p>
+        <strong>Email:</strong>
+        <span class="email">johndoe@example.com</span>
+      </p>
+      <button id="editBtn" class="editBtn">Edit Profile✏️</button>
+      <button id="settingBtn" class="settingBtn">Settings⚙️</button>
+      <button id="logoutBtn" class="logoutBtn">Logout🚪</button>
+    </div>
+
+    <div id="editProfile" class="editProfile">
+      <button class="backBtn">&#8592;</button>
+      <h2>Edit Profile</h2>
+      <button class="changePic changePicBtn">
+        <img
+          class="profilePic"
+          src="../images/defaultUserLogo.png"
+          alt="Profile Picture"
+        />
+      </button>
+      <button class="changePicText changePic">Edit Picture</button>
+
+      <div class="input">
+        <label for="name">Name: </label>
+        <input type="text" id="editName" name="name" />
+        <button class="confirmChange">✔️</button>
+      </div>
+    </div>
+
+    <div id="settings" class="settings">
+      <button class="backBtn">&#8592;</button>
+      <h2>Settings</h2>
+      <div class="input">
+        <label for="email">Change email: </label>
+        <input type="email" class="name" name="email" />
+        <button class="confirmChange">✔️</button>
+      </div>
+
+      <div class="password">
+        <label for="password">Change Password: </label>
+        <div class="input">
+          <input
+            type="password"
+            name="password"
+            placeholder="Enter your current password..."
+          />
+        </div>
+        <div class="input newPassword">
+          <input
+            type="password"
+            name="newPassword"
+            placeholder="Enter your new password..."
+          />
+        </div>
+        <div class="input newPassword">
+          <input
+            type="password"
+            name="confirmPassword"
+            placeholder="Confirm your new password..."
+          />
+          <button type="submit" class="submitBtn">Submit</button>
+        </div>
+      </div>
+
+      <button class="deleteBtn">Delete Account</button>
+    </div>
+    <script src="../js/profile.js" type="module" defer></script>
+  </body>
+</html>

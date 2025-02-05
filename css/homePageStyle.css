@@ -1,0 +1,316 @@
+/* Body and Layout Styles */
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  height: 100vh;
+  background-color: #f4f4f4;
+}
+
+h1 {
+  color: #333;
+}
+
+p {
+  font-size: 16px;
+  text-align: center;
+}
+/* Profile Button */
+.profileBtn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 99;
+}
+
+.profileBtn img {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  border: 2px solid #fff;
+  object-fit: cover;
+}
+
+.profileBtn:hover img {
+  border-color: #7289da;
+}
+
+/* Sidebar */
+.sidebar {
+  position: fixed;
+  top: 0;
+  right: -400px; /* Hidden by default */
+  width: 250px;
+  height: 390px;
+  background: #2c2f33;
+  color: white;
+  padding: 20px;
+  box-shadow: -2px 0 5px rgba(0, 0, 0, 0.5);
+  transition: right 0.3s ease-in-out;
+  z-index: 1000; /* Ensure it's on top */
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border-radius: 10px;
+}
+
+.sidebar.active {
+  right: 0;
+}
+
+/*Sidebar Content*/
+.userName {
+  text-align: center;
+  margin-bottom: 0px;
+}
+
+.profile img {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  display: flex;
+  margin: 10px auto;
+  border: 3px solid white;
+}
+
+.profileRole {
+  margin-top: 3px;
+  margin-bottom: 0px;
+  font-size: 14px;
+}
+
+/* Sidebar buttons */
+.closeBtn {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  background: none;
+  color: white;
+  font-size: 20px;
+  border: none;
+  cursor: pointer;
+}
+
+.editBtn,
+.settingBtn,
+.logoutBtn {
+  display: flex;
+  width: 60%;
+  padding: 5px;
+  margin-bottom: 15px;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+  justify-content: center;
+  color: white;
+}
+
+.editBtn,
+.settingBtn {
+  background: #7289da;
+}
+
+.editBtn:hover,
+.settingBtn:hover {
+  background: #5f73a1;
+}
+
+.logoutBtn {
+  background: #ff4d4d;
+}
+
+.logoutBtn:hover {
+  background: #af3d3d;
+}
+
+/* Transition effect for content */
+.content {
+  transition: margin-left 0.3s;
+  padding: 20px;
+}
+
+/* Edit Profile */
+.editProfile {
+  position: fixed;
+  top: 0;
+  right: -400px; /* Align over sidebar */
+  width: 250px;
+  background: #2c2f33;
+  color: white;
+  padding: 20px;
+  box-shadow: -2px 0 5px rgba(0, 0, 0, 0.5);
+  z-index: 2000; /* Higher than sidebar */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border-radius: 10px;
+}
+
+/*Settings*/
+.settings {
+  position: fixed;
+  top: 0;
+  right: -400px; /* Align over sidebar */
+  width: 250px;
+  background: #2c2f33;
+  color: white;
+  padding: 20px;
+  box-shadow: -2px 0 5px rgba(0, 0, 0, 0.5);
+  z-index: 2000; /* Higher than sidebar */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border-radius: 10px;
+}
+
+/* Back Button */
+.backBtn {
+  position: absolute;
+  top: 10px;
+  left: 15px;
+  background: none;
+  color: white;
+  font-size: 24px;
+  border: none;
+  cursor: pointer;
+}
+
+/* Profile Picture */
+.changePic {
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.changePic img {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  border: 3px solid white;
+}
+
+.changePicText {
+  color: #7289da;
+  font-size: 14px;
+  margin-top: 5px;
+  cursor: pointer;
+}
+
+.changePicText:hover {
+  text-decoration: underline;
+}
+
+/* Input Fields */
+.input {
+  display: flex;
+  align-items: center;
+  margin: 10px auto;
+  width: 100%;
+}
+
+.input label {
+  white-space: nowrap;
+  flex: 0 0 auto;
+  font-size: 14px;
+  margin-right: 10px;
+}
+
+.input input {
+  padding: 5px;
+  border-radius: 5px;
+  width: 100%;
+  border: none;
+  background: #666; /* Gray by default */
+  color: rgba(255, 255, 255, 0.363);
+  outline: none;
+  transition: background 0.2s;
+}
+
+/* Make input white when clicked */
+.input input:focus {
+  background: white;
+  color: black;
+}
+
+/* Confirmation Button */
+.confirmChange {
+  background: #7289da;
+  color: white;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+  margin-left: 5px;
+}
+
+.confirmChange:hover {
+  background: #5f73a1;
+}
+
+/* Password Fields */
+.password {
+  width: 100%;
+}
+
+.password label {
+  font-size: 14px;
+}
+
+.password .input {
+  flex-direction: column;
+  align-items: flex-start;
+  margin: auto;
+}
+
+.password input {
+  width: 242px;
+  margin-top: 5px;
+}
+
+.password input::placeholder {
+  color: rgba(255, 255, 255, 0.295);
+}
+
+.newPassword,
+.submitBtn {
+  display: none;
+}
+
+/* Submit Button */
+.submitBtn {
+  width: 100%;
+  padding: 10px;
+  margin-top: 10px;
+  background: #7289da;
+  color: white;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.submitBtn:hover {
+  background: #5f73a1;
+}
+
+/* Delete Account Button */
+.deleteBtn {
+  width: 100%;
+  padding: 10px;
+  margin-top: 15px;
+  background: #ff4d4d;
+  color: white;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.deleteBtn:hover {
+  background: #af3d3d;
+}
