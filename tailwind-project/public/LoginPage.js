@@ -94,7 +94,7 @@ document.getElementById("submit_login").addEventListener("click", function (e) {
           // Check if password matches
           if (userData.password === password_login) {
             console.log("Login successful:", userData);
-            alert("Welcome, " + userData.email + "!");
+            window.location.href = 'HomePage.html';
           } else {
             alert("Error: Incorrect password.");
           }
