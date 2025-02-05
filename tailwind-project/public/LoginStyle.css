@@ -1,0 +1,420 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap');
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+}
+body{
+    min-height: 100vh;
+    display:flex;
+    align-items: center; 
+    justify-content: center;
+   
+    background-image: url("https://images.pexels.com/photos/7135028/pexels-photo-7135028.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-attachment: fixed;
+    background-size: cover;
+    backdrop-filter: blur(10px); /* Apply the blur effect */
+
+   /* background:linear-gradient(to right,#e5c4f5,#c4aaf5);
+   */ padding: 30px;
+}
+.container{
+   position: relative;
+   max-width: 850px;
+   width:100%;
+   background:transparent;
+   padding: 40px 30px;
+   box-shadow:0 20px 35px rgba(0,0,1,0.9);
+   border: 2px solid rgba(255,255,255,.4);
+   perspective: 2700px;
+}
+.container .cover {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    height: 100%;
+    width: 50%;
+    z-index: 98;
+    transition: all 1s ease;
+    transform: rotateY(0deg);
+    transform-origin: left;
+    transform-style: preserve-3d; /* Enable 3D space for children */
+    background-image: url("https://images.pexels.com/photos/7135028/pexels-photo-7135028.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-attachment: fixed;
+    background-size: cover;
+   
+    border: 2px solid rgba(255,255,255,.2);
+}
+  
+  /* Card is flipped */
+  .container #flip:checked ~ .cover {
+    transform: rotateY(-180deg);
+  }
+  
+  .container .cover::before {
+    content: '';
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    
+    opacity: 0.5;
+    z-index: 100;
+  }
+  
+  .container .cover .front-panel, .container .cover .back-panel {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    backface-visibility: hidden; /* Ensure both front and back are hidden when flipped */
+  }
+  
+  .container .cover  img {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+    z-index: 12;
+    backface-visibility: hidden; 
+  }
+  
+  .container .cover .text {
+    position: absolute;
+    z-index: 111;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .cover .text .text-1,
+  .cover .text .text-2 {
+    font-size: 26px;
+    font-weight: 600;
+    color: #fff;
+    text-align: center;
+    backface-visibility: hidden; /* Hide text on the back when flipped */
+  }
+  
+  .cover .text .text-2 {
+    font-size: 15px;
+    font-weight: 500;
+    color: #fff;
+  }
+  
+  /* Back panel: rotate it 180 degrees to show it only when flipped */
+  .container .cover .back-panel {
+    opacity: 2.5;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transform: rotateY(180deg); /* Ensure the back panel is flipped */
+  }
+  
+  .role-container {
+    position: relative;
+  }
+  
+  select {
+    width: 100%;
+    height: 100%;
+    appearance: none;
+    padding: 0 12px;
+    line-height: 25px;
+    border-radius: 2px;
+    border: 1px solid #666;
+    outline: none;
+  }
+  
+
+
+
+
+
+
+
+.role-container{
+  
+   
+   position: relative;
+   background-color: transparent;
+
+}
+select{
+    width:100%;
+    height: 100%;
+    appearance: none;
+    padding: 0 12px;
+    border-radius: 4px;
+    border: 1px solid #666;
+    outline:none;
+
+}
+.role-container::after{
+      content:'\25BC';
+      position: absolute;
+      top:0;
+      left:0;
+      padding: 0 157px;
+      color: #fff;
+      cursor:pointer;
+      pointer-events: none;
+      transition: .25s all ease;
+     
+}
+
+.role-select {
+
+    outline: none;
+    appearance: none;
+    padding: 0 30px 0 15px;
+    width: 50%;
+    color: #fff;
+    background-color: transparent;
+    font-size: 20 px;
+border-radius: 50px;
+}
+.role-container .role-select:focus {
+    border-color: #d0cfd3; /* Border color on focus */
+    outline: none; /* Remove the default outline */
+  }
+ .role-select option {
+    background-color: #fff; /* Background of the options */
+    color: #333; /* Text color for the options */
+  }
+
+.container form{
+    height:100%;
+    width: 100%;
+    background:transparent;
+}
+
+.container .form-content{
+  display:flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.form-content .login-form,
+.form-content .signup-form{
+    width: calc(100% / 2 -25px);
+   /* background: red;*/
+
+}
+form .form-content .title-name{
+    position: relative;
+    font-size: 24px;
+    font-weight: 500;
+    color: #fff;
+}
+form .form-content .title-name:before{
+    content: '';
+    position:absolute;
+    left: 0;
+    bottom: 0;
+    height:3px;
+    width:25px;
+    background-image: url("https://images.pexels.com/photos/7135028/pexels-photo-7135028.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1");
+
+}
+form .signup-form .title-name:before{
+    width:20px;
+}
+form .form-content .input-fields{
+    margin-top:30px;
+}
+form .form-content .input-fields .text a{
+    color: #fff;
+}
+
+form .form-content .input-field {
+    display: flex;
+    align-items:center;
+    height: 50px;
+    width:100%;
+    margin: 10px 0;
+    position: relative;
+}
+form .signup-form{
+
+    padding-left: 50px;
+}
+form .login-form{
+    height: 100%;
+    width:90%;
+}
+.form-content .input-field input{
+    height: 100%;
+    width:100%;
+    outline: none;
+    border: none;
+    padding: 0 30px;
+    font-size: 16px;
+    font-weight: 500;
+    border-bottom: 2px solid rgba(255,255,255,0.9);
+    background: transparent;
+    
+    transition: all 0.3s ease;
+}
+#submit_forgot{
+  
+    border-bottom: 2px solid rgba(255,255,255,0.9);
+   
+    
+    transition: all 0.3s ease;
+}
+
+
+
+#email_login::placeholder ,
+#password_login::placeholder{
+    color: white; /* Change this to any color you want */
+    opacity: 1; /* Ensures full visibility */
+}
+#email::placeholder ,
+#password::placeholder,
+#email_forgot::placeholder,
+#email_forgot{
+    color: white; /* Change this to any color you want */
+    opacity: 1; /* Ensures full visibility */
+}
+
+
+.form-content .input-field input:focus,
+.form-content .input-field input:valid{
+    border-color: #251f30;
+
+}
+
+
+#submit_login{
+    border: 2px solid rgba(255,255,255,0.1);    
+    border-color: #eae6f0;
+
+
+}
+#submit_register{
+    border: 2px solid rgba(255,255,255,1);
+    border-color: #eae6f0;
+}
+
+
+.form-content .input-field i {
+    position: absolute;
+    color: #f5f1fa;
+    font-size: 17px;
+    transition: color 0.3s ease; /* Smooth transition */
+  }
+  
+
+form .form-content .text{
+    font-size:14px;
+    font-weight:500;
+    color: #fff;
+}
+form .form-content .text a{
+    text-decoration: none;
+}
+form .form-content .text a:hover{
+    text-decoration: underline;
+    font-weight:bold;
+}
+
+
+form .form-content .button{
+    color:#fff;
+    margin-top: 40px;
+}
+
+.back_arr{
+   background: white;
+   height: 40px;
+   width: 40px;
+   border-radius: 50%;
+   margin-bottom:15px;
+
+}
+.back_arr:hover{
+  box-shadow: 0px 0px 20px 20px rgba(0,0,0,0.2);
+}
+.back_arr div{
+  position:absolute;
+  height:20px;
+  width: 20px;
+  border-top: 6px solid #6F459F;
+  border-left: 6px solid #6F459F;
+  
+  left:42.5px;
+  top:49px;
+  transform:rotate(-45deg);
+
+}
+
+
+form .form-content .button input{
+    color:#f4f3f7;
+   
+    border-radius: 50px;
+    padding: 0;
+    cursor: pointer;
+    transition: all 0.4s ease;
+}
+form .form-content .button input:hover{
+background: #18141f;
+
+}
+
+form .form-content .login-text,
+form .form-content .sign-up-text{
+    text-align: center;
+    margin-top: 25px;
+   
+}
+form .form-content .sign-up-text label{
+    font-weight: bold;
+}
+
+form .form-content label{
+    color:#f1edf7;
+    cursor: pointer;
+}
+form .form-content label:hover{
+    text-decoration: underline;
+}
+.container #flip{
+
+    display: none;
+}
+
+@media (max-width:730){
+  .container .cover{
+    display: none;
+  }
+
+  .form-content .login-form,
+  .form-content .signup-form{
+
+    width: 100%;
+  }
+
+  .form-content .signup-form{
+
+    display:none;
+  }
+
+.container #flip:checked ~ form .signup-form{
+    display:block;
+}
+.container #flip:checked ~ form .login-form{
+    display:block;
+}
+
+}
