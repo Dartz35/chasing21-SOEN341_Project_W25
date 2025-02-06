@@ -1,9 +1,11 @@
-// Import the functions you need from the SDKs you need
+// This file is used to initialize the Firebase app and export the app, database,
+// and auth objects to be used in other files.
+
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-app.js";
 import { getDatabase } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-database.js";
 import { getAuth } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-auth.js";
 
-// Your web app's Firebase configuration
+// Web app's Firebase configuration
 const firebaseConfig = {
   apiKey: "AIzaSyDebF1-QZrTf6Ad3fycFQrjTq2W9MEpWRQ",
   authDomain: "chathaven-d181a.firebaseapp.com",
