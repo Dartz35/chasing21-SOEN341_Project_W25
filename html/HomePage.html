@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ChatHaven</title>
+    <link rel="stylesheet" href="../css/homePageStyle.css" />
+  </head>
+  <body>
+    <div class="container">
+      <header class="header">
+        <div class="logo">
+          <h1>ChatHaven</h1>
+        </div>
+      </header>
+
+      <div id="main" class="main">
+        <button class="profileBtn sidebarToggle">
+          <img class="profilePic" />
+        </button>
+      </div>
+    </div>
+
+    <!-- Sidebar Profile -->
+    <div id="sidebar" class="sidebar">
+      <button class="closeBtn sidebarToggle">&#10005;</button>
+      <h2>Profile</h2>
+      <div class="profile">
+        <img class="profilePic" alt="Profile Picture" />
+        <h3 class="userName name"></h3>
+        <p class="profileRole role"></p>
+      </div>
+      <p>
+        <strong>Email:</strong>
+        <span class="email"></span>
+      </p>
+      <button class="profBtns toggleEditProfile">Edit Profile✏️</button>
+      <!--<button id="settingBtn" class="profBtns toggleSettings">
+        Settings⚙️
+      </button>-->
+      <button id="logoutBtn" class="logoutBtn">Logout🚪</button>
+    </div>
+
+    <!-- Edit Profile Display-->
+    <div id="editProfile" class="editProfile" hidden>
+      <button class="backBtn toggleEditProfile">&#8592;</button>
+      <h2>Edit Profile</h2>
+      <label for="newProfilePic" class="changePicBtn">
+        <img class="profilePic" />
+      </label>
+      <label for="newProfilePic" class="changePicText">Edit Picture</label>
+      <input type="file" id="newProfilePic" accept="image/*" hidden />
+      <button id="deletePic" class="changePicText">Delete Picture</button>
+
+      <div class="input">
+        <label for="editName">Name: </label>
+        <input type="text" id="editName" name="name" autocomplete="name" />
+        <button id="confirmName" class="confirmChange">✔️</button>
+      </div>
+    </div>
+
+    <!--
+    <div id="settings" class="settings" hidden>
+      <button class="backBtn toggleSettings">&#8592;</button>
+      <h2>Settings</h2>
+      <div class="emailInput">
+        <button class="settingsBtns">Change email📤</button>
+        <div class="input">
+          <input
+            type="email"
+            id="editEmail"
+            name="email"
+            autocomplete="email"
+          />
+          <div class="input">
+            <input
+              id="passwordConfirm"
+              type="password"
+              name="passwordConfirm"
+              placeholder="Enter password to confirm."
+            />
+          </div>
+          <button id="confirmEmail" class="confirmChange submit">✔️</button>
+        </div>
+      </div>
+
+      <div class="passwordInput">
+        <button class="settingsBtns">Change password🔐</button>
+        <div class="input">
+          <input
+            id="currentPassword"
+            type="password"
+            name="currentPassword"
+            placeholder="Enter your current password..."
+          />
+        </div>
+        <div class="input">
+          <input
+            id="newPassword"
+            type="password"
+            name="newPassword"
+            placeholder="Enter your new password..."
+          />
+        </div>
+        <div class="input">
+          <input
+            id="confirmPassword"
+            type="password"
+            name="confirmPassword"
+            placeholder="Confirm your new password..."
+          />
+          <button id="confirmPassword" class="confirmChange submit">✔️</button>
+        </div>
+      </div>
+
+      <button class="deleteBtn">Delete Account</button>
+    </div>
+  -->
+    <script src="../js/profile.js" type="module" defer></script>
+  </body>
+</html>
