@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Groups</title>
+    <link rel="stylesheet" href="group.css" />
+    <script type="module" src="group.js" defer></script>
+</head>
+<body>
+<header class="top-header">
+    <h1>Groups</h1>
+    <span id="userStatus" class="user-status">Loading...</span>
+</header>
+<div class="container">
+    <div id="adminSection" class="hidden admin-section">
+        <h2>Create a New Group</h2>
+        <form id="createGroupForm">
+            <input type="text" id="groupName" placeholder="Group Name" required />
+            <button id="createGroupBtn">Create Group</button>
+        </form>
+        <hr />
+    </div>
+    <div id="groupsList">
+        <h2>Available Groups</h2>
+        <ul id="groupItems"></ul>
+    </div>
+</div>
+</body>
+</html>

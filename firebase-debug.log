@@ -1,0 +1,217 @@
+[debug] [2025-02-05T20:03:59.524Z] ----------------------------------------------------------------------
+[debug] [2025-02-05T20:03:59.526Z] Command:       /Users/abou/.nvm/versions/node/v18.20.4/bin/node /Users/abou/.nvm/versions/node/v18.20.4/bin/firebase serve
+[debug] [2025-02-05T20:03:59.526Z] CLI Version:   13.30.0
+[debug] [2025-02-05T20:03:59.526Z] Platform:      darwin
+[debug] [2025-02-05T20:03:59.527Z] Node Version:  v18.20.4
+[debug] [2025-02-05T20:03:59.536Z] Time:          Wed Feb 05 2025 15:03:59 GMT-0500 (Eastern Standard Time)
+[debug] [2025-02-05T20:03:59.537Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2025-02-05T20:03:59.942Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2025-02-05T20:03:59.943Z] > authorizing via signed-in user (abou9710@gmail.com)
+[debug] [2025-02-05T20:03:59.943Z] [iam] checking project chathaven-d181a for permissions ["firebase.projects.get"]
+[debug] [2025-02-05T20:03:59.944Z] Checked if tokens are valid: false, expires at: 1738786363014
+[debug] [2025-02-05T20:03:59.944Z] Checked if tokens are valid: false, expires at: 1738786363014
+[debug] [2025-02-05T20:03:59.944Z] > refreshing access token with scopes: []
+[debug] [2025-02-05T20:03:59.946Z] >>> [apiv2][query] POST https://www.googleapis.com/oauth2/v3/token [none]
+[debug] [2025-02-05T20:03:59.946Z] >>> [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2025-02-05T20:04:00.145Z] <<< [apiv2][status] POST https://www.googleapis.com/oauth2/v3/token 200
+[debug] [2025-02-05T20:04:00.145Z] <<< [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2025-02-05T20:04:00.186Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects/chathaven-d181a:testIamPermissions [none]
+[debug] [2025-02-05T20:04:00.187Z] >>> [apiv2][(partial)header] POST https://cloudresourcemanager.googleapis.com/v1/projects/chathaven-d181a:testIamPermissions x-goog-quota-user=projects/chathaven-d181a
+[debug] [2025-02-05T20:04:00.187Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/chathaven-d181a:testIamPermissions {"permissions":["firebase.projects.get"]}
+[debug] [2025-02-05T20:04:00.360Z] <<< [apiv2][status] POST https://cloudresourcemanager.googleapis.com/v1/projects/chathaven-d181a:testIamPermissions 200
+[debug] [2025-02-05T20:04:00.361Z] <<< [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/chathaven-d181a:testIamPermissions {"permissions":["firebase.projects.get"]}
+[debug] [2025-02-05T20:04:00.361Z] Checked if tokens are valid: true, expires at: 1738789439145
+[debug] [2025-02-05T20:04:00.362Z] Checked if tokens are valid: true, expires at: 1738789439145
+[debug] [2025-02-05T20:04:00.362Z] >>> [apiv2][query] GET https://cloudresourcemanager.googleapis.com/v1/projects/chathaven-d181a [none]
+[debug] [2025-02-05T20:04:00.535Z] <<< [apiv2][status] GET https://cloudresourcemanager.googleapis.com/v1/projects/chathaven-d181a 200
+[debug] [2025-02-05T20:04:00.536Z] <<< [apiv2][body] GET https://cloudresourcemanager.googleapis.com/v1/projects/chathaven-d181a {"projectNumber":"885486697811","projectId":"chathaven-d181a","lifecycleState":"ACTIVE","name":"ChatHaven","labels":{"firebase":"enabled","firebase-core":"disabled"},"createTime":"2025-01-29T22:19:14.543355Z"}
+[info] 
+[info] === Serving from '/Users/abou'...
+[info] 
+[debug] [2025-02-05T20:04:00.548Z] Checked if tokens are valid: true, expires at: 1738789439145
+[debug] [2025-02-05T20:04:00.548Z] Checked if tokens are valid: true, expires at: 1738789439145
+[debug] [2025-02-05T20:04:00.552Z] defaultcredentials: writing to file /Users/abou/.config/firebase/abou9710_gmail_com_application_default_credentials.json
+[debug] [2025-02-05T20:04:00.554Z] >>> [apiv2][query] GET https://firebasehosting.googleapis.com/v1beta1/projects/chathaven-d181a/sites 
+[debug] [2025-02-05T20:04:00.559Z] Setting GAC to /Users/abou/.config/firebase/abou9710_gmail_com_application_default_credentials.json {"metadata":{"emulator":{"name":"functions"},"message":"Setting GAC to /Users/abou/.config/firebase/abou9710_gmail_com_application_default_credentials.json"}}
+[debug] [2025-02-05T20:04:00.560Z] Checked if tokens are valid: true, expires at: 1738789439145
+[debug] [2025-02-05T20:04:00.560Z] Checked if tokens are valid: true, expires at: 1738789439145
+[debug] [2025-02-05T20:04:00.560Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/chathaven-d181a/adminSdkConfig [none]
+[debug] [2025-02-05T20:04:00.998Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/chathaven-d181a/adminSdkConfig 200
+[debug] [2025-02-05T20:04:00.998Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/chathaven-d181a/adminSdkConfig {"projectId":"chathaven-d181a","databaseURL":"https://chathaven-d181a-default-rtdb.firebaseio.com","storageBucket":"chathaven-d181a.firebasestorage.app"}
+[debug] [2025-02-05T20:04:01.494Z] <<< [apiv2][status] GET https://firebasehosting.googleapis.com/v1beta1/projects/chathaven-d181a/sites 200
+[debug] [2025-02-05T20:04:01.494Z] <<< [apiv2][body] GET https://firebasehosting.googleapis.com/v1beta1/projects/chathaven-d181a/sites {"sites":[{"name":"projects/chathaven-d181a/sites/chathaven-d181a","defaultUrl":"https://chathaven-d181a.web.app","type":"DEFAULT_SITE"}]}
+[debug] [2025-02-05T20:04:01.495Z] Checked if tokens are valid: true, expires at: 1738789439145
+[debug] [2025-02-05T20:04:01.496Z] Checked if tokens are valid: true, expires at: 1738789439145
+[debug] [2025-02-05T20:04:01.496Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/chathaven-d181a/webApps/-/config [none]
+[debug] [2025-02-05T20:04:02.109Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/chathaven-d181a/webApps/-/config 200
+[debug] [2025-02-05T20:04:02.109Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/chathaven-d181a/webApps/-/config {"projectId":"chathaven-d181a","appId":"1:885486697811:web:b75ebfd796ed23a83675a6","databaseURL":"https://chathaven-d181a-default-rtdb.firebaseio.com","storageBucket":"chathaven-d181a.firebasestorage.app","apiKey":"AIzaSyDebF1-QZrTf6Ad3fycFQrjTq2W9MEpWRQ","authDomain":"chathaven-d181a.firebaseapp.com","messagingSenderId":"885486697811","measurementId":"G-D1W5TPK13Q"}
+[debug] [2025-02-05T20:04:02.137Z] Checked if tokens are valid: true, expires at: 1738789439145
+[debug] [2025-02-05T20:04:02.138Z] Checked if tokens are valid: true, expires at: 1738789439145
+[debug] [2025-02-05T20:04:02.138Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/chathaven-d181a [none]
+[debug] [2025-02-05T20:04:02.619Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/chathaven-d181a 200
+[debug] [2025-02-05T20:04:02.619Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/chathaven-d181a {"projectId":"chathaven-d181a","projectNumber":"885486697811","displayName":"ChatHaven","name":"projects/chathaven-d181a","resources":{"hostingSite":"chathaven-d181a","realtimeDatabaseInstance":"chathaven-d181a-default-rtdb"},"state":"ACTIVE","etag":"1_691285b2-3c54-4e8e-9d24-f7e4c244d15b"}
+[info] i  functions: Watching "/Users/abou/functions" for Cloud Functions... {"metadata":{"emulator":{"name":"functions"},"message":"Watching \"/Users/abou/functions\" for Cloud Functions..."}}
+[info] i  hosting[chathaven-d181a]: Serving hosting files from: public {"metadata":{"emulator":{"name":"hosting"},"message":"Serving hosting files from: \u001b[1mpublic\u001b[22m"}}
+[info] ✔  hosting[chathaven-d181a]: Local server: http://localhost:5000 {"metadata":{"emulator":{"name":"hosting"},"message":"Local server: \u001b[4m\u001b[1mhttp://localhost:5000\u001b[22m\u001b[24m"}}
+[debug] [2025-02-05T20:04:02.811Z] Validating nodejs source
+[debug] [2025-02-05T20:04:04.191Z] > [functions] package.json contents: {
+  "name": "functions",
+  "description": "Cloud Functions for Firebase",
+  "scripts": {
+    "lint": "eslint .",
+    "serve": "firebase emulators:start --only functions",
+    "shell": "firebase functions:shell",
+    "start": "npm run shell",
+    "deploy": "firebase deploy --only functions",
+    "logs": "firebase functions:log"
+  },
+  "engines": {
+    "node": "22"
+  },
+  "main": "index.js",
+  "dependencies": {
+    "firebase-admin": "^12.6.0",
+    "firebase-functions": "^6.0.1"
+  },
+  "devDependencies": {
+    "eslint": "^8.15.0",
+    "eslint-config-google": "^0.14.0",
+    "firebase-functions-test": "^3.1.0"
+  },
+  "private": true
+}
+[debug] [2025-02-05T20:04:04.192Z] Building nodejs source
+[debug] [2025-02-05T20:04:04.192Z] Failed to find version of module node: reached end of search path /Users/abou/functions/node_modules
+[warn] ⚠  functions: Your requested "node" version "22" doesn't match your global version "18". Using node@18 from host. 
+[debug] [2025-02-05T20:04:04.204Z] Could not find functions.yaml. Must use http discovery
+[debug] [2025-02-05T20:04:04.212Z] Found firebase-functions binary at '/Users/abou/functions/node_modules/.bin/firebase-functions'
+[info] Serving at port 8129
+
+[debug] [2025-02-05T20:04:05.489Z] Got response from /__/functions.yaml {"endpoints":{},"specVersion":"v1alpha1","requiredAPIs":[],"extensions":{}}
+[info] ✔  functions: Loaded functions definitions from source: . {"metadata":{"emulator":{"name":"functions"},"message":"Loaded functions definitions from source: ."}}
+[info] i  hosting: ::1 - - [05/Feb/2025:20:04:21 +0000] "GET / HTTP/1.1" 200 - "-" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.6 Safari/605.1.15" {"metadata":{"emulator":{"name":"hosting"},"message":"::1 - - [05/Feb/2025:20:04:21 +0000] \"GET / HTTP/1.1\" 200 - \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.6 Safari/605.1.15\""}}
+[debug] [2025-02-05T20:04:21.088Z] >>> [apiv2][query] GET https://www.gstatic.com/firebasejs/11.2.0/firebase-app-compat.js [none]
+[debug] [2025-02-05T20:04:21.106Z] >>> [apiv2][query] GET https://www.gstatic.com/firebasejs/11.2.0/firebase-auth-compat.js [none]
+[debug] [2025-02-05T20:04:21.110Z] >>> [apiv2][query] GET https://www.gstatic.com/firebasejs/11.2.0/firebase-database-compat.js [none]
+[debug] [2025-02-05T20:04:21.113Z] >>> [apiv2][query] GET https://www.gstatic.com/firebasejs/11.2.0/firebase-firestore-compat.js [none]
+[debug] [2025-02-05T20:04:21.115Z] >>> [apiv2][query] GET https://www.gstatic.com/firebasejs/11.2.0/firebase-functions-compat.js [none]
+[debug] [2025-02-05T20:04:21.119Z] >>> [apiv2][query] GET https://www.gstatic.com/firebasejs/11.2.0/firebase-messaging-compat.js [none]
+[debug] [2025-02-05T20:04:21.248Z] <<< [apiv2][status] GET https://www.gstatic.com/firebasejs/11.2.0/firebase-auth-compat.js 200
+[debug] [2025-02-05T20:04:21.248Z] <<< [apiv2][body] GET https://www.gstatic.com/firebasejs/11.2.0/firebase-auth-compat.js [stream]
+[debug] [2025-02-05T20:04:21.253Z] <<< [apiv2][status] GET https://www.gstatic.com/firebasejs/11.2.0/firebase-firestore-compat.js 200
+[debug] [2025-02-05T20:04:21.253Z] <<< [apiv2][body] GET https://www.gstatic.com/firebasejs/11.2.0/firebase-firestore-compat.js [stream]
+[debug] [2025-02-05T20:04:21.259Z] <<< [apiv2][status] GET https://www.gstatic.com/firebasejs/11.2.0/firebase-database-compat.js 200
+[debug] [2025-02-05T20:04:21.259Z] <<< [apiv2][body] GET https://www.gstatic.com/firebasejs/11.2.0/firebase-database-compat.js [stream]
+[debug] [2025-02-05T20:04:21.264Z] <<< [apiv2][status] GET https://www.gstatic.com/firebasejs/11.2.0/firebase-app-compat.js 200
+[debug] [2025-02-05T20:04:21.264Z] <<< [apiv2][body] GET https://www.gstatic.com/firebasejs/11.2.0/firebase-app-compat.js [stream]
+[info] i  hosting: ::1 - - [05/Feb/2025:20:04:21 +0000] "GET /__/firebase/11.2.0/firebase-app-compat.js HTTP/1.1" 200 10060 "http://localhost:5000/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.6 Safari/605.1.15" {"metadata":{"emulator":{"name":"hosting"},"message":"::1 - - [05/Feb/2025:20:04:21 +0000] \"GET /__/firebase/11.2.0/firebase-app-compat.js HTTP/1.1\" 200 10060 \"http://localhost:5000/\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.6 Safari/605.1.15\""}}
+[debug] [2025-02-05T20:04:21.272Z] >>> [apiv2][query] GET https://www.gstatic.com/firebasejs/11.2.0/firebase-storage-compat.js [none]
+[info] i  hosting: ::1 - - [05/Feb/2025:20:04:21 +0000] "GET /__/firebase/11.2.0/firebase-auth-compat.js HTTP/1.1" 200 40587 "http://localhost:5000/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.6 Safari/605.1.15" {"metadata":{"emulator":{"name":"hosting"},"message":"::1 - - [05/Feb/2025:20:04:21 +0000] \"GET /__/firebase/11.2.0/firebase-auth-compat.js HTTP/1.1\" 200 40587 \"http://localhost:5000/\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.6 Safari/605.1.15\""}}
+[info] i  hosting: ::1 - - [05/Feb/2025:20:04:21 +0000] "GET /__/firebase/11.2.0/firebase-database-compat.js HTTP/1.1" 200 48030 "http://localhost:5000/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.6 Safari/605.1.15" {"metadata":{"emulator":{"name":"hosting"},"message":"::1 - - [05/Feb/2025:20:04:21 +0000] \"GET /__/firebase/11.2.0/firebase-database-compat.js HTTP/1.1\" 200 48030 \"http://localhost:5000/\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.6 Safari/605.1.15\""}}
+[debug] [2025-02-05T20:04:21.298Z] >>> [apiv2][query] GET https://www.gstatic.com/firebasejs/11.2.0/firebase-analytics-compat.js [none]
+[debug] [2025-02-05T20:04:21.305Z] >>> [apiv2][query] GET https://www.gstatic.com/firebasejs/11.2.0/firebase-remote-config-compat.js [none]
+[debug] [2025-02-05T20:04:21.315Z] <<< [apiv2][status] GET https://www.gstatic.com/firebasejs/11.2.0/firebase-functions-compat.js 200
+[debug] [2025-02-05T20:04:21.315Z] <<< [apiv2][body] GET https://www.gstatic.com/firebasejs/11.2.0/firebase-functions-compat.js [stream]
+[info] i  hosting: ::1 - - [05/Feb/2025:20:04:21 +0000] "GET /__/firebase/11.2.0/firebase-functions-compat.js HTTP/1.1" 200 3966 "http://localhost:5000/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.6 Safari/605.1.15" {"metadata":{"emulator":{"name":"hosting"},"message":"::1 - - [05/Feb/2025:20:04:21 +0000] \"GET /__/firebase/11.2.0/firebase-functions-compat.js HTTP/1.1\" 200 3966 \"http://localhost:5000/\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.6 Safari/605.1.15\""}}
+[info] i  hosting: ::1 - - [05/Feb/2025:20:04:21 +0000] "GET /__/firebase/11.2.0/firebase-firestore-compat.js HTTP/1.1" 200 102571 "http://localhost:5000/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.6 Safari/605.1.15" {"metadata":{"emulator":{"name":"hosting"},"message":"::1 - - [05/Feb/2025:20:04:21 +0000] \"GET /__/firebase/11.2.0/firebase-firestore-compat.js HTTP/1.1\" 200 102571 \"http://localhost:5000/\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.6 Safari/605.1.15\""}}
+[debug] [2025-02-05T20:04:21.329Z] <<< [apiv2][status] GET https://www.gstatic.com/firebasejs/11.2.0/firebase-messaging-compat.js 200
+[debug] [2025-02-05T20:04:21.330Z] <<< [apiv2][body] GET https://www.gstatic.com/firebasejs/11.2.0/firebase-messaging-compat.js [stream]
+[info] i  hosting: ::1 - - [05/Feb/2025:20:04:21 +0000] "GET /__/firebase/11.2.0/firebase-messaging-compat.js HTTP/1.1" 200 10078 "http://localhost:5000/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.6 Safari/605.1.15" {"metadata":{"emulator":{"name":"hosting"},"message":"::1 - - [05/Feb/2025:20:04:21 +0000] \"GET /__/firebase/11.2.0/firebase-messaging-compat.js HTTP/1.1\" 200 10078 \"http://localhost:5000/\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.6 Safari/605.1.15\""}}
+[debug] [2025-02-05T20:04:21.339Z] >>> [apiv2][query] GET https://www.gstatic.com/firebasejs/11.2.0/firebase-performance-compat.js [none]
+[info] i  hosting: ::1 - - [05/Feb/2025:20:04:21 +0000] "GET /__/firebase/init.js?useEmulator=true HTTP/1.1" 200 - "http://localhost:5000/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.6 Safari/605.1.15" {"metadata":{"emulator":{"name":"hosting"},"message":"::1 - - [05/Feb/2025:20:04:21 +0000] \"GET /__/firebase/init.js?useEmulator=true HTTP/1.1\" 200 - \"http://localhost:5000/\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.6 Safari/605.1.15\""}}
+[debug] [2025-02-05T20:04:21.453Z] <<< [apiv2][status] GET https://www.gstatic.com/firebasejs/11.2.0/firebase-analytics-compat.js 200
+[debug] [2025-02-05T20:04:21.454Z] <<< [apiv2][body] GET https://www.gstatic.com/firebasejs/11.2.0/firebase-analytics-compat.js [stream]
+[info] i  hosting: ::1 - - [05/Feb/2025:20:04:21 +0000] "GET /__/firebase/11.2.0/firebase-analytics-compat.js HTTP/1.1" 200 9220 "http://localhost:5000/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.6 Safari/605.1.15" {"metadata":{"emulator":{"name":"hosting"},"message":"::1 - - [05/Feb/2025:20:04:21 +0000] \"GET /__/firebase/11.2.0/firebase-analytics-compat.js HTTP/1.1\" 200 9220 \"http://localhost:5000/\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.6 Safari/605.1.15\""}}
+[debug] [2025-02-05T20:04:21.461Z] <<< [apiv2][status] GET https://www.gstatic.com/firebasejs/11.2.0/firebase-remote-config-compat.js 200
+[debug] [2025-02-05T20:04:21.461Z] <<< [apiv2][body] GET https://www.gstatic.com/firebasejs/11.2.0/firebase-remote-config-compat.js [stream]
+[info] i  hosting: ::1 - - [05/Feb/2025:20:04:21 +0000] "GET /__/firebase/11.2.0/firebase-remote-config-compat.js HTTP/1.1" 200 9141 "http://localhost:5000/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.6 Safari/605.1.15" {"metadata":{"emulator":{"name":"hosting"},"message":"::1 - - [05/Feb/2025:20:04:21 +0000] \"GET /__/firebase/11.2.0/firebase-remote-config-compat.js HTTP/1.1\" 200 9141 \"http://localhost:5000/\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.6 Safari/605.1.15\""}}
+[debug] [2025-02-05T20:04:21.508Z] <<< [apiv2][status] GET https://www.gstatic.com/firebasejs/11.2.0/firebase-storage-compat.js 200
+[debug] [2025-02-05T20:04:21.508Z] <<< [apiv2][body] GET https://www.gstatic.com/firebasejs/11.2.0/firebase-storage-compat.js [stream]
+[debug] [2025-02-05T20:04:21.514Z] <<< [apiv2][status] GET https://www.gstatic.com/firebasejs/11.2.0/firebase-performance-compat.js 200
+[debug] [2025-02-05T20:04:21.514Z] <<< [apiv2][body] GET https://www.gstatic.com/firebasejs/11.2.0/firebase-performance-compat.js [stream]
+[info] i  hosting: ::1 - - [05/Feb/2025:20:04:21 +0000] "GET /__/firebase/11.2.0/firebase-performance-compat.js HTTP/1.1" 200 10253 "http://localhost:5000/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.6 Safari/605.1.15" {"metadata":{"emulator":{"name":"hosting"},"message":"::1 - - [05/Feb/2025:20:04:21 +0000] \"GET /__/firebase/11.2.0/firebase-performance-compat.js HTTP/1.1\" 200 10253 \"http://localhost:5000/\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.6 Safari/605.1.15\""}}
+[info] i  hosting: ::1 - - [05/Feb/2025:20:04:21 +0000] "GET /__/firebase/11.2.0/firebase-storage-compat.js HTTP/1.1" 200 12994 "http://localhost:5000/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.6 Safari/605.1.15" {"metadata":{"emulator":{"name":"hosting"},"message":"::1 - - [05/Feb/2025:20:04:21 +0000] \"GET /__/firebase/11.2.0/firebase-storage-compat.js HTTP/1.1\" 200 12994 \"http://localhost:5000/\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.6 Safari/605.1.15\""}}
+[info] i  hosting: ::1 - - [05/Feb/2025:20:04:21 +0000] "GET /favicon.ico HTTP/1.1" 404 - "http://localhost:5000/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.6 Safari/605.1.15" {"metadata":{"emulator":{"name":"hosting"},"message":"::1 - - [05/Feb/2025:20:04:21 +0000] \"GET /favicon.ico HTTP/1.1\" 404 - \"http://localhost:5000/\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.6 Safari/605.1.15\""}}
+[info] i  hosting: ::1 - - [05/Feb/2025:20:04:41 +0000] "GET /__/firebase/init.js?useEmulator=true HTTP/1.1" 200 - "http://localhost:5000/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.6 Safari/605.1.15" {"metadata":{"emulator":{"name":"hosting"},"message":"::1 - - [05/Feb/2025:20:04:41 +0000] \"GET /__/firebase/init.js?useEmulator=true HTTP/1.1\" 200 - \"http://localhost:5000/\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.6 Safari/605.1.15\""}}
+[info] i  hosting: ::1 - - [05/Feb/2025:20:09:44 +0000] "GET / HTTP/1.1" 200 - "-" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.6 Safari/605.1.15" {"metadata":{"emulator":{"name":"hosting"},"message":"::1 - - [05/Feb/2025:20:09:44 +0000] \"GET / HTTP/1.1\" 200 - \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.6 Safari/605.1.15\""}}
+[info] i  hosting: ::1 - - [05/Feb/2025:20:09:44 +0000] "GET /__/firebase/init.js?useEmulator=true HTTP/1.1" 200 - "http://localhost:5000/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.6 Safari/605.1.15" {"metadata":{"emulator":{"name":"hosting"},"message":"::1 - - [05/Feb/2025:20:09:44 +0000] \"GET /__/firebase/init.js?useEmulator=true HTTP/1.1\" 200 - \"http://localhost:5000/\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.6 Safari/605.1.15\""}}
+[info] i  hosting: ::1 - - [05/Feb/2025:20:12:15 +0000] "GET /favicon.ico HTTP/1.1" 304 - "http://localhost:5000/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.6 Safari/605.1.15" {"metadata":{"emulator":{"name":"hosting"},"message":"::1 - - [05/Feb/2025:20:12:15 +0000] \"GET /favicon.ico HTTP/1.1\" 304 - \"http://localhost:5000/\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.6 Safari/605.1.15\""}}
+[info] i  hosting: ::1 - - [05/Feb/2025:20:12:15 +0000] "GET /__/firebase/init.js?useEmulator=true HTTP/1.1" 200 - "http://localhost:5000/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.6 Safari/605.1.15" {"metadata":{"emulator":{"name":"hosting"},"message":"::1 - - [05/Feb/2025:20:12:15 +0000] \"GET /__/firebase/init.js?useEmulator=true HTTP/1.1\" 200 - \"http://localhost:5000/\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.6 Safari/605.1.15\""}}
+[info] i  hosting: ::1 - - [05/Feb/2025:20:12:16 +0000] "GET /__/firebase/init.js?useEmulator=true HTTP/1.1" 200 - "http://localhost:5000/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.6 Safari/605.1.15" {"metadata":{"emulator":{"name":"hosting"},"message":"::1 - - [05/Feb/2025:20:12:16 +0000] \"GET /__/firebase/init.js?useEmulator=true HTTP/1.1\" 200 - \"http://localhost:5000/\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.6 Safari/605.1.15\""}}
+[debug] [2025-02-05T20:13:34.623Z] File /Users/abou/functions/index.js changed, reloading triggers {"metadata":{"emulator":{"name":"functions"},"message":"File /Users/abou/functions/index.js changed, reloading triggers"}}
+[debug] [2025-02-05T20:13:35.627Z] Validating nodejs source
+[debug] [2025-02-05T20:13:36.860Z] > [functions] package.json contents: {
+  "name": "functions",
+  "description": "Cloud Functions for Firebase",
+  "scripts": {
+    "lint": "eslint .",
+    "serve": "firebase emulators:start --only functions",
+    "shell": "firebase functions:shell",
+    "start": "npm run shell",
+    "deploy": "firebase deploy --only functions",
+    "logs": "firebase functions:log"
+  },
+  "engines": {
+    "node": "22"
+  },
+  "main": "index.js",
+  "dependencies": {
+    "firebase-admin": "^12.6.0",
+    "firebase-functions": "^6.0.1"
+  },
+  "devDependencies": {
+    "eslint": "^8.15.0",
+    "eslint-config-google": "^0.14.0",
+    "firebase-functions-test": "^3.1.0"
+  },
+  "private": true
+}
+[debug] [2025-02-05T20:13:36.860Z] Building nodejs source
+[debug] [2025-02-05T20:13:36.860Z] Failed to find version of module node: reached end of search path /Users/abou/functions/node_modules
+[warn] ⚠  functions: Your requested "node" version "22" doesn't match your global version "18". Using node@18 from host. 
+[debug] [2025-02-05T20:13:36.861Z] Could not find functions.yaml. Must use http discovery
+[debug] [2025-02-05T20:13:36.863Z] Found firebase-functions binary at '/Users/abou/functions/node_modules/.bin/firebase-functions'
+[info] Serving at port 8726
+
+[debug] [2025-02-05T20:13:37.362Z] Got response from /__/functions.yaml {"endpoints":{},"specVersion":"v1alpha1","requiredAPIs":[],"extensions":{}}
+[info] ✔  functions: Loaded functions definitions from source: . {"metadata":{"emulator":{"name":"functions"},"message":"Loaded functions definitions from source: ."}}
+[debug] [2025-02-05T20:13:39.504Z] File /Users/abou/functions/index.js changed, reloading triggers {"metadata":{"emulator":{"name":"functions"},"message":"File /Users/abou/functions/index.js changed, reloading triggers"}}
+[debug] [2025-02-05T20:13:40.509Z] Validating nodejs source
+[debug] [2025-02-05T20:13:41.686Z] > [functions] package.json contents: {
+  "name": "functions",
+  "description": "Cloud Functions for Firebase",
+  "scripts": {
+    "lint": "eslint .",
+    "serve": "firebase emulators:start --only functions",
+    "shell": "firebase functions:shell",
+    "start": "npm run shell",
+    "deploy": "firebase deploy --only functions",
+    "logs": "firebase functions:log"
+  },
+  "engines": {
+    "node": "22"
+  },
+  "main": "index.js",
+  "dependencies": {
+    "firebase-admin": "^12.6.0",
+    "firebase-functions": "^6.0.1"
+  },
+  "devDependencies": {
+    "eslint": "^8.15.0",
+    "eslint-config-google": "^0.14.0",
+    "firebase-functions-test": "^3.1.0"
+  },
+  "private": true
+}
+[debug] [2025-02-05T20:13:41.687Z] Building nodejs source
+[debug] [2025-02-05T20:13:41.688Z] Failed to find version of module node: reached end of search path /Users/abou/functions/node_modules
+[warn] ⚠  functions: Your requested "node" version "22" doesn't match your global version "18". Using node@18 from host. 
+[debug] [2025-02-05T20:13:41.689Z] Could not find functions.yaml. Must use http discovery
+[debug] [2025-02-05T20:13:41.691Z] Found firebase-functions binary at '/Users/abou/functions/node_modules/.bin/firebase-functions'
+[info] Serving at port 8008
+
+[debug] [2025-02-05T20:13:42.114Z] Got response from /__/functions.yaml {"endpoints":{},"specVersion":"v1alpha1","requiredAPIs":[],"extensions":{}}
+[info] ✔  functions: Loaded functions definitions from source: . {"metadata":{"emulator":{"name":"functions"},"message":"Loaded functions definitions from source: ."}}
+[info] i  hosting: ::1 - - [05/Feb/2025:20:17:54 +0000] "GET / HTTP/1.1" 200 - "-" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.6 Safari/605.1.15" {"metadata":{"emulator":{"name":"hosting"},"message":"::1 - - [05/Feb/2025:20:17:54 +0000] \"GET / HTTP/1.1\" 200 - \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.6 Safari/605.1.15\""}}
+[info] i  hosting: ::1 - - [05/Feb/2025:20:17:54 +0000] "GET /__/firebase/init.js?useEmulator=true HTTP/1.1" 200 - "http://localhost:5000/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.6 Safari/605.1.15" {"metadata":{"emulator":{"name":"hosting"},"message":"::1 - - [05/Feb/2025:20:17:54 +0000] \"GET /__/firebase/init.js?useEmulator=true HTTP/1.1\" 200 - \"http://localhost:5000/\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.6 Safari/605.1.15\""}}
