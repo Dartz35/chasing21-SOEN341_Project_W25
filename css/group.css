@@ -1,0 +1,58 @@
+/* Minimal resets */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    padding: 20px;
+    position: relative; /* so the top-right info can be absolutely placed if desired */
+}
+
+/* Top-right info styling (if you have a #topRightInfo element) */
+#topRightInfo {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    font-size: 0.9rem;
+    background-color: #eef;
+    padding: 6px 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+/* Create group section hidden by default */
+#createGroupSection {
+    display: none;
+    margin: 20px 0;
+    padding: 10px;
+    border: 1px solid #444;
+    background-color: #fafafa;
+}
+
+/* Container for groups */
+#groupsContainer {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* Individual group item */
+.group-item {
+    display: flex;
+    justify-content: space-between;
+    border: 1px solid #aaa;
+    padding: 10px;
+    background-color: #f9f9f9;
+}
+
+.group-name {
+    font-weight: bold;
+}
+
+.group-owner {
+    font-style: italic;
+}
