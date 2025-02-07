@@ -4,16 +4,17 @@ import { auth, database } from "../js/firebaseConfig.js";
 import {
   onAuthStateChanged,
   signOut,
-  updateEmail,
-  reauthenticateWithCredential,
-  EmailAuthProvider,
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 import {
   ref,
   get,
-  set,
   update,
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+import {
+  fetchProfileData,
+  updateNameUI,
+  updateProfilePictureUI,
+} from "../js/pageLoadingUtils.js";
 
 // Check if user is logged in
 onAuthStateChanged(auth, async (user) => {
@@ -136,24 +137,6 @@ document
     window.location.href = "../html/loginPage.html";
   });
 
-// Fetch user data from Realtime Database
-async function fetchProfileData(user) {
-  const userRef = ref(database, "users/" + user.email.replace(".", ","));
-  const snapshot = await get(userRef);
-
-  if (snapshot.exists()) {
-    const userData = snapshot.val();
-
-    // Update UI with user data
-    updateNameUI(userData.name);
-    updateEmailUI(userData.email);
-    updateRoleUI(userData.role);
-    updateProfilePictureUI(userData.profilePicture);
-  } else {
-    console.log("No user data found.");
-  }
-}
-
 // Delete the current profile picture
 document
   .getElementById("deletePic")
@@ -215,44 +198,3 @@ document
       window.location.href = "../html/loginPage.html"; // Redirect if not logged in
     }
   });
-
-// Updates the name
-function updateNameUI(newName) {
-  const names = document.getElementsByClassName("name");
-
-  for (let i = 0; i < names.length; i++) {
-    names[i].textContent = newName;
-  }
-
-  document.getElementById("editName").value = newName;
-}
-
-// Updates the email
-function updateEmailUI(newEmail) {
-  const emails = document.getElementsByClassName("email");
-
-  for (let i = 0; i < emails.length; i++) {
-    emails[i].textContent = newEmail;
-  }
-
-  /*document.getElementById("editEmail").value = newEmail;*/
-}
-
-// Updates the role
-function updateRoleUI(newRole) {
-  const roles = document.getElementsByClassName("role");
-
-  for (let i = 0; i < roles.length; i++) {
-    roles[i].textContent = newRole || "Member";
-  }
-}
-
-// Updates the profile picture
-function updateProfilePictureUI(newProfilePicture) {
-  const profilePictures = document.getElementsByClassName("profilePic");
-
-  for (let i = 0; i < profilePictures.length; i++) {
-    profilePictures[i].src =
-      newProfilePicture || "../images/defaultUserLogo.png";
-  }
-}

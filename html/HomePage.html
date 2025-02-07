@@ -8,13 +8,15 @@
   </head>
   <body>
     <div class="container">
-      <header class="header">
-        <div class="logo">
-          <h1>ChatHaven</h1>
-        </div>
-      </header>
-
-      <div id="main" class="main">
+      <div class="header">
+        <h1>
+          <img
+            src="../images/Chat-Icon-Transparent-Background.webp"
+            width="30"
+            height="30"
+          />
+          Chat Haven
+        </h1>
         <button class="profileBtn sidebarToggle">
           <img class="profilePic" />
         </button>
@@ -24,21 +26,49 @@
     <!-- Sidebar Profile -->
     <div id="sidebar" class="sidebar">
       <button class="closeBtn sidebarToggle">&#10005;</button>
-      <h2>Profile</h2>
+      <h2>Dashboard</h2>
       <div class="profile">
         <img class="profilePic" alt="Profile Picture" />
         <h3 class="userName name"></h3>
-        <p class="profileRole role"></p>
+        <span class="userInfo role"></span>
+        <span class="userInfo email"></span>
       </div>
-      <p>
-        <strong>Email:</strong>
-        <span class="email"></span>
-      </p>
-      <button class="profBtns toggleEditProfile">Edit Profile✏️</button>
-      <!--<button id="settingBtn" class="profBtns toggleSettings">
-        Settings⚙️
-      </button>-->
-      <button id="logoutBtn" class="logoutBtn">Logout🚪</button>
+      <ul class="dashBtns">
+        <li>
+          <button class="profBtns toggleEditProfile">
+            <i class="fas fa-pen"></i> Edit Profile
+          </button>
+        </li>
+        <li>
+          <a href="#home" class="profBtns"><i class="fas fa-home"></i> Home</a>
+        </li>
+        <li>
+          <a href="#Notifications" class="profBtns"
+            ><i class="fas fa-bell"></i> Notifications</a
+          >
+        </li>
+        <li>
+          <a href="group.html" class="profBtns"
+            ><i class="fas fa-user-group"></i> Groups</a
+          >
+        </li>
+        <li>
+          <a href="#Contacts" class="profBtns"
+            ><i class="fas fa-address-book"></i> Contacts</a
+          >
+        </li>
+        <li>
+          <button id="settingBtn" class="profBtns toggleSettings">
+            <i class="fas fa-cog"></i> Settings
+          </button>
+        </li>
+        <hr />
+        <li>
+          <button id="logoutBtn" class="profBtns logoutBtn">
+            <i class="fas fa-right-from-bracket"></i> Logout
+          </button>
+        </li>
+      </ul>
     </div>
 
     <!-- Edit Profile Display-->
@@ -54,7 +84,13 @@
 
       <div class="input">
         <label for="editName">Name: </label>
-        <input type="text" id="editName" name="name" autocomplete="name" />
+        <input
+          class="name"
+          type="text"
+          id="editName"
+          name="name"
+          autocomplete="name"
+        />
         <button id="confirmName" class="confirmChange">✔️</button>
       </div>
     </div>
@@ -112,10 +148,40 @@
           <button id="confirmPassword" class="confirmChange submit">✔️</button>
         </div>
       </div>
-
+      
       <button class="deleteBtn">Delete Account</button>
     </div>
-  -->
+    -->
+
+    <div class="row">
+      <div class="column side1" style="background-color: #aaa">
+        Channels | Chats
+        <a href="#">General</a>
+        <a href="#">Project Help</a>
+        <a href="#">Social</a>
+      </div>
+
+      <div class="column middle" style="background-color: #bbb">Chatroom</div>
+
+      <div class="column side2" style="background-color: #ccc">
+        Chatters
+        <ab href="#">Steph</ab>
+        <ab href="#">Steve</ab>
+        <ab href="#">Steven</ab>
+        <ab href="#">Stephen</ab>
+        <ab href="#">Stephenie</ab>
+        <ab href="#">You</ab>
+      </div>
+
+      <div class="column side2" style="background-color: #ccc">
+        Admins
+        <ab href="#">Kevin</ab>
+      </div>
+    </div>
+
+    <div class="footer">
+      <p>Footer</p>
+    </div>
     <script src="../js/profile.js" type="module" defer></script>
   </body>
 </html>
