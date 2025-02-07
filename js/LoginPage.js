@@ -56,7 +56,7 @@ document
         name: name,
         email: email,
         id: user.uid,
-        role: roles,
+        role: role,
         profilePicture: "", // Default empty
       });
 
