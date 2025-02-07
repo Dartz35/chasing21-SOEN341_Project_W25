@@ -8,22 +8,6 @@ import {
   createUserWithEmailAndPassword,
 } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-auth.js";
 
-document.getElementById("email_login").addEventListener("input", function () {
-  this.style.color = "white"; // Change text color while typing
-});
-document
-  .getElementById("password_login")
-  .addEventListener("input", function () {
-    this.style.color = "white"; // Change text color while typing
-  });
-
-document.getElementById("email").addEventListener("input", function () {
-  this.style.color = "white"; // Change text color while typing
-});
-document.getElementById("password").addEventListener("input", function () {
-  this.style.color = "white"; // Change text color while typing
-});
-
 // Add event listener to the register button
 document
   .getElementById("submit_register")
@@ -34,14 +18,7 @@ document
     const name = document.getElementById("name").value.trim();
     const email = document.getElementById("email").value.trim();
     const password = document.getElementById("password").value.trim();
-    const role = document.getElementById("role").value;
-
-    // Check if a valid role is selected
-    if (role === "") {
-      // Default option has an empty value (""), not "--Choose Role--"
-      alert("Please select a role!"); // Display error message
-      return; // Stop execution
-    }
+    const roles = document.getElementById("role").value.trim();
 
     try {
       const userCredential = await createUserWithEmailAndPassword(
