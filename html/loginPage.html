@@ -4,7 +4,7 @@
   <head>
     <meta charset="UTF-8">
     <title> Login and Sign-up</title>
-    <link rel="stylesheet" href="../css/LoginStyle.css">
+    <link rel="stylesheet" href="../css/style.css">
 
     <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <script type="module" src="../js/LoginPage.js" defer> </script>
@@ -13,26 +13,24 @@
   </head>
 <body>
 <div class="container">
-  <input type="checkbox" id="flip">
+     <input type="checkbox" id="flip">
     <div class="cover">
-      
-      <div class="front-panel">
-        <img src="../images/Chat-Icon-Transparent-Background.png" >
+    <div class="front-panel">
+        <img src="https://images.pexels.com/photos/5053765/pexels-photo-5053765.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="">
         <div class="text">
-            <span class="text-1"> <br>  </span>
-            <span class="text-2"> </span>
+            <span class="text-1">Find your friends. <br> Don't be lonely! </span>
+            <span class="text-2"> Connect with a friend!</span>
 
         </div>
     </div>
     <div class="back-panel">
-      <img src="../images/Chat-Icon-Transparent-Background.png" >
+      <img  class="backImg" src="https://images.pexels.com/photos/4959789/pexels-photo-4959789.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="">
       <div class="text">
-        <span class="text-1"><br> </span>
-        <span class="text-2"></span>
+        <span class="text-1">Find your friends. <br> Don't be lonely! </span>
+        <span class="text-2"> Connect with a friend!</span>
 
       </div>
- 
-</div>
+  </div>
 </div>
   <form action="#">
    <div class="form-content"> 
@@ -47,7 +45,7 @@
             <i class="fas fa-lock"></i>
               <input type="password" placeholder="Enter your password" id="password_login" required>
         </div>
-        <div class="text"><a href="../html/forget.html" id="forgot_password">Forgot password?</a></div>
+        <div class="text"><a href="#" id="forgot_password">Forgot password?</a></div>
         <div class="button input-field">
            
               <input type="submit" value="Submit" id="submit_login">
@@ -56,7 +54,6 @@
         </div>
 
     </div>
-    
   </form>
   
   
@@ -64,11 +61,10 @@
     <div class="signup-form">
         <div class="title-name">Sign-up</div>
            <div class="input-fields">
-              <div class="role-container">
-                  
-                    
-                  <select class="role-select" id="role" required>
-                          <option value="" >--Choose Role--</option>
+              <div class="input-field">
+                  <i class="fas fa-user"></i>
+                    <select name="role" id="role" required>
+                          <option value="">--Choose Role--</option>
                           <option value="user">User</option>
                           <option value="admin">Admin</option>
 
