@@ -1,4 +1,3 @@
-/* Minimal resets */
 * {
     margin: 0;
     padding: 0;
@@ -7,32 +6,71 @@
 
 body {
     font-family: Arial, sans-serif;
+    background-color: #fff;
+    color: #333;
     padding: 20px;
-    position: relative; /* so the top-right info can be absolutely placed if desired */
 }
 
-/* Top-right info styling (if you have a #topRightInfo element) */
-#topRightInfo {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    font-size: 0.9rem;
+.navbar {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.navbar button {
     background-color: #eef;
-    padding: 6px 10px;
     border: 1px solid #ccc;
+    padding: 8px 16px;
     border-radius: 4px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s;
 }
 
-/* Create group section hidden by default */
+.navbar button:hover {
+    background-color: #dde;
+}
+
+h1,
+h2 {
+    margin-bottom: 10px;
+}
+
+p {
+    margin-bottom: 10px;
+}
+
 #createGroupSection {
     display: none;
     margin: 20px 0;
-    padding: 10px;
+    padding: 15px;
     border: 1px solid #444;
     background-color: #fafafa;
+    border-radius: 4px;
 }
 
-/* Container for groups */
+#createGroupSection input[type="text"] {
+    padding: 6px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 1rem;
+}
+
+#createGroupSection button {
+    padding: 6px 12px;
+    border: 1px solid #ccc;
+    background-color: #eef;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s;
+}
+
+#createGroupSection button:hover {
+    background-color: #dde;
+}
+
 #groupsContainer {
     margin-top: 20px;
     display: flex;
@@ -40,19 +78,22 @@ body {
     gap: 10px;
 }
 
-/* Individual group item */
 .group-item {
     display: flex;
     justify-content: space-between;
+    align-items: center;
     border: 1px solid #aaa;
-    padding: 10px;
+    padding: 12px;
     background-color: #f9f9f9;
+    border-radius: 4px;
 }
 
 .group-name {
     font-weight: bold;
+    font-size: 1.1rem;
 }
 
 .group-owner {
     font-style: italic;
+    font-size: 0.9rem;
 }
