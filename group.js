@@ -89,3 +89,34 @@ function loadGroups() {
     }
   })
 }
+ * @param {string} groupId
+ * @param {string} memberKey
+ 
+function kickMember(groupId, memberKey) {
+  // Verify that a user is logged in
+  const userJSON = localStorage.getItem("loggedInUser");
+  if (!userJSON) {
+    alert("No user logged in.");
+    return;
+  }
+  const userData = JSON.parse(userJSON);
+
+  // Only an admin can kick members
+  if (userData.role !== "admin") {
+    alert("You do not have permission to kick members.");
+    return;
+  }
+
+  // Create a reference to the member node inside the group
+  const memberRef = ref(database, `groups/${groupId}/members/${memberKey}`);
+
+  // Remove the member from the database
+  remove(memberRef)
+    .then(() => {
+      alert("Member has been kicked from the group.");
+    })
+    .catch((error) => {
+      console.error("Error kicking member: ", error);
+      alert("Failed to kick member.");
+    });
+}
