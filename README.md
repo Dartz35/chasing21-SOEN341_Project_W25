@@ -58,7 +58,7 @@ Role-Based Permissions: ChatHaven features a robust admin-member model, allowing
   A fourth-year Electrical Engineering student with extensive experience in JavaScript, HTML/CSS, C/C++, Java, and Agile processes. As the designated scrum master, brings strong leadership and organizational skills to the team, ensuring smooth collaboration and adherence to Agile methodologies.
 
 - **Arham Akram (40224890/[@ArhamAkram](https://github.com/ArhamAkram))** - *Fullstack Developer / <Role>*
-  <Description>
+  A third year Computer Engineer student with experience in C++, HTML, Python and Java. Passionate about algorithms and AI technology.
   
   ![ArhamAkram's Top Languages](https://github-readme-stats.vercel.app/api/top-langs/?username=ArhamAkram&theme=highcontrast&show_icons=true&hide_border=true&layout=compact)
   
