@@ -61,8 +61,8 @@ Role-Based Permissions: ChatHaven features a robust admin-member model, allowing
   
   ![ArhamAkram's Top Languages](https://github-readme-stats.vercel.app/api/top-langs/?username=ArhamAkram&theme=highcontrast&show_icons=true&hide_border=true&layout=compact)
   
-- **Aboubacry Ba (<ID>/[@Aboubacry97](https://github.com/Aboubacry97))** - *Fullstack Developer / <Role>*
-  <Description>
+- **Aboubacry Ba (<ID>/[@Aboubacry97](https://github.com/Aboubacry97))** - *Fullstack Developer / Developer*
+  A third-year Computer Engineering student with experience in C++, C#, HTML, CSS, and JavaScript. Focused on developing efficient software solutions while adhering to Agile methodologies. Passionate about designing and improving software architecture to enhance performance.
 
   ![Aboubacry97's Top Languages](https://github-readme-stats.vercel.app/api/top-langs/?username=Aboubacry97&theme=highcontrast&show_icons=true&hide_border=true&layout=compact)
 
