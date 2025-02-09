@@ -1,99 +1,160 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-app.js";
+// group.js
+
+import { auth, database } from "../js/firebaseConfig.js";
 import {
-  getDatabase,
+  onAuthStateChanged,
+  EmailAuthProvider,
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import {
   ref,
-  push,
+  get,
   set,
-  onValue,
-} from "https://www.gstatic.com/firebasejs/11.2.0/firebase-database.js";
-import { getAuth } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-auth.js";
+  update,
+  push,
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
-const firebaseConfig = {
-  apiKey: "AIzaSyDebF1-QZrTf6Ad3fycFQrjTq2W9MEpWRQ",
-  authDomain: "chathaven-d181a.firebaseapp.com",
-  projectId: "chathaven-d181a",
-  storageBucket: "chathaven-d181a.firebasestorage.app",
-  messagingSenderId: "885486697811",
-  appId: "1:885486697811:web:b75ebfd796ed23a83675a6",
-  measurementId: "G-D1W5TPK13Q",
-};
+function getUserKey(email) {
+  return email.replace(/\./g, ",");
+}
 
-const app = initializeApp(firebaseConfig);
-const database = getDatabase(app);
-const auth = getAuth(app);
+let currentUserData = {};
 
-const adminSection = document.getElementById("adminSection");
-const createGroupForm = document.getElementById("createGroupForm");
-const createGroupBtn = document.getElementById("createGroupBtn");
-const groupNameInput = document.getElementById("groupName");
-const groupItemsUl = document.getElementById("groupItems");
-const userStatus = document.getElementById("userStatus");
+onAuthStateChanged(auth, async (user) => {
+  if (user) {
+    await fetchProfileData(user);
 
-window.addEventListener("load", () => {
-  const userJSON = localStorage.getItem("loggedInUser");
-  if (!userJSON) {
-    userStatus.textContent = "Not logged in";
-    alert("No user is logged in.");
-    return;
+    await fetchGroups();
+  } else {
+    if (!window.loggingOut) {
+      alert("You must be logged in to view this page.");
+      window.location.href = "../html/loginPage.html";
+    }
   }
-  const userData = JSON.parse(userJSON);
-  userStatus.textContent = userData.email;
-  if (userData.role === "admin") adminSection.classList.remove("hidden");
-  loadGroups();
 });
 
-createGroupBtn.addEventListener("click", (e) => {
-  e.preventDefault();
-  const userJSON = localStorage.getItem("loggedInUser");
-  if (!userJSON) {
-    alert("User not found in storage.");
-    return;
+async function fetchProfileData(user) {
+  const userKey = getUserKey(user.email);
+  const userRef = ref(database, "users/" + userKey);
+
+  try {
+    const snapshot = await get(userRef);
+    if (snapshot.exists()) {
+      const userData = snapshot.val();
+      currentUserData = userData; // Store for later use
+
+      updateNameUI(userData.name);
+      updateEmailUI(userData.email);
+      updateRoleUI(userData.role);
+    } else {
+      updateNameUI("Profile not found");
+      updateRoleUI(""); // default to "Member"
+    }
+  } catch (error) {
+    console.error("Error fetching profile data: " + error);
   }
-  const userData = JSON.parse(userJSON);
-  const groupName = groupNameInput.value.trim();
+}
+
+function updateNameUI(newName) {
+  const userNameEl = document.getElementById("userName");
+  if (userNameEl) {
+    userNameEl.textContent = newName || "Unknown";
+  }
+}
+
+function updateEmailUI(newEmail) {
+  const userEmailEl = document.getElementById("userEmail");
+  if (userEmailEl) {
+    userEmailEl.textContent = newEmail || "";
+  }
+}
+
+function updateRoleUI(newRole) {
+  const userRoleEl = document.getElementById("userRole");
+  if (userRoleEl) {
+    userRoleEl.textContent = newRole || "Member";
+  }
+
+  // Show or hide create group section based on role
+  const createGroupSection = document.getElementById("createGroupSection");
+  if (createGroupSection) {
+    if (newRole === "admin") {
+      createGroupSection.style.display = "block";
+    } else {
+      createGroupSection.style.display = "none";
+    }
+  }
+}
+
+const createGroupBtn = document.getElementById("createGroupBtn");
+if (createGroupBtn) {
+  createGroupBtn.addEventListener("click", createGroup);
+}
+
+async function createGroup() {
+  const groupNameInput = document.getElementById("groupName");
+  const groupName = groupNameInput ? groupNameInput.value.trim() : "";
+
   if (!groupName) {
     alert("Please enter a group name.");
     return;
   }
-  const groupsRef = ref(database, "groups");
-  const newGroupRef = push(groupsRef);
-  set(newGroupRef, {
-    name: groupName,
-    createdBy: userData.email,
-  })
-    .then(() => {
-      alert("Group created.");
-      createGroupForm.reset();
-    })
-    .catch(() => {
-      alert("Failed to create group.");
-    });
-});
 
-function loadGroups() {
+  const groupOwner = currentUserData.name || currentUserData.email || "Unknown";
+
+  try {
+    const newGroupRef = push(ref(database, "groups"));
+    await set(newGroupRef, {
+      name: groupName,
+      owner: groupOwner,
+    });
+
+    groupNameInput.value = "";
+
+    await fetchGroups();
+  } catch (error) {
+    console.error("Error creating group:", error);
+    alert("Failed to create group. Check console for details.");
+  }
+}
+
+async function fetchGroups() {
   const groupsRef = ref(database, "groups");
-  onValue(groupsRef, (snapshot) => {
-    groupItemsUl.innerHTML = "";
+
+  try {
+    const snapshot = await get(groupsRef);
+    const groupsContainer = document.getElementById("groupsContainer");
+    if (!groupsContainer) return;
+
+    groupsContainer.innerHTML = "";
+
     if (snapshot.exists()) {
-      const data = snapshot.val();
-      const keys = Object.keys(data);
-      keys.forEach((key) => {
-        const g = data[key];
-        const li = document.createElement("li");
-        li.style.display = "flex";
-        li.style.alignItems = "center";
-        li.innerHTML = `
-          <span style="font-weight:bold;">${g.name}</span>
-          <span style="margin-left:auto;"> ${g.createdBy}</span>
-        `;
-        groupItemsUl.appendChild(li);
+      const groupsData = snapshot.val();
+
+      Object.keys(groupsData).forEach((groupId) => {
+        const groupInfo = groupsData[groupId];
+
+        const groupItemEl = document.createElement("div");
+        groupItemEl.classList.add("group-item");
+
+        const groupNameEl = document.createElement("span");
+        groupNameEl.classList.add("group-name");
+        groupNameEl.textContent = groupInfo.name || "Untitled Group";
+
+        const groupOwnerEl = document.createElement("span");
+        groupOwnerEl.classList.add("group-owner");
+        groupOwnerEl.textContent = groupInfo.owner || "Unknown Owner";
+
+        groupItemEl.appendChild(groupNameEl);
+        groupItemEl.appendChild(groupOwnerEl);
+
+        groupsContainer.appendChild(groupItemEl);
       });
     } else {
-      const li = document.createElement("li");
-      li.textContent = "No groups available.";
-      groupItemsUl.appendChild(li);
+      groupsContainer.textContent = "No groups have been created yet.";
     }
-  });
+  } catch (error) {
+    console.error("Error fetching groups:", error);
+  }
 }
 
 /*
