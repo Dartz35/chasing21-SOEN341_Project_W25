@@ -20,6 +20,7 @@ In today's digital landscape, the world is more connected than ever, and communi
 What sets ChatHaven apart is its ability to balance functionality with an intuitive design. Users can participate in topic-specific discussions via public channels, engage in private conversations through direct messaging, and share multimedia content—all without feeling overwhelmed by cluttered interfaces.
 
 Role-Based Permissions: ChatHaven features a robust admin-member model, allowing admins to manage channels, moderate content, and customize access controls. This ensures smooth, secure communication while empowering members to enjoy the app’s simplicity.
+
 ---
 
 ### **Key Features:**
@@ -61,7 +62,8 @@ Role-Based Permissions: ChatHaven features a robust admin-member model, allowing
   
   ![ArhamAkram's Top Languages](https://github-readme-stats.vercel.app/api/top-langs/?username=ArhamAkram&theme=highcontrast&show_icons=true&hide_border=true&layout=compact)
   
-- **Aboubacry Ba (<ID>/[@Aboubacry97](https://github.com/Aboubacry97))** - *Fullstack Developer / Developer*
+- **Aboubacry Ba ([@Aboubacry97](https://github.com/Aboubacry97))** - *Fullstack Developer / Developer*
+  
   A third-year Computer Engineering student with experience in C++, C#, HTML, CSS, and JavaScript. Focused on developing efficient software solutions while adhering to Agile methodologies. Passionate about designing and improving software architecture to enhance performance.
 
   ![Aboubacry97's Top Languages](https://github-readme-stats.vercel.app/api/top-langs/?username=Aboubacry97&theme=highcontrast&show_icons=true&hide_border=true&layout=compact)
