@@ -7,8 +7,6 @@
 
 body {
   font-family: Arial, sans-serif;
-  margin: 0;
-  padding: 0;
   background-image: url("https://images.pexels.com/photos/7135028/pexels-photo-7135028.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1");
   background-repeat: no-repeat;
   background-position: center;
@@ -19,8 +17,7 @@ body {
 /* header */
 .header {
   padding: 0px;
-  margin: 0px;
-  margin-left: 20px;
+  margin: 0 20px;
   text-align: left;
   font-size: 15px;
   background-image: url("https://images.pexels.com/photos/7135028/pexels-photo-7135028.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1");
@@ -28,6 +25,8 @@ body {
   background-position: center;
   background-attachment: fixed;
   background-size: cover;
+  display: flex;
+  justify-content: space-between;
 }
 
 /* ==========================
@@ -37,9 +36,6 @@ body {
   background: none;
   border: none;
   cursor: pointer;
-  position: fixed;
-  top: 20px;
-  right: 20px;
   z-index: 99;
 }
 
@@ -53,77 +49,6 @@ body {
 
 .profileBtn:hover img {
   border-color: blue;
-}
-
-/* column */
-.column {
-  float: left;
-  padding: 10px;
-  height: 300px; /* remove when final*/
-}
-
-/* side column*/
-.column.side1 {
-  width: 20%;
-}
-
-/* middle column*/
-.column.middle {
-  width: 60%;
-}
-
-/* 2 equal columns */
-.column.side2 {
-  width: 10%;
-}
-
-/* Links */
-.column a {
-  color: blue;
-  padding: 16px;
-  text-decoration: none;
-  display: block;
-}
-
-/* User links */
-.column ab {
-  color: blue;
-  padding: 8px;
-  text-decoration: none;
-  display: block;
-}
-
-/* Change color on hover */
-.column a:hover {
-  background-color: #30e2ed;
-  color: red;
-}
-
-/* Change color on hover for user links */
-.column ab:hover {
-  background-color: #30e2ed;
-  color: red;
-}
-
-/* Clear floats after the columns */
-.row:after {
-  content: "";
-  display: table;
-  clear: both;
-}
-
-/* Style the footer */
-.footer {
-  background-color: #f1f1f1;
-  padding: 10px;
-  text-align: center;
-}
-
-/* Responsive layout - makes the three columns stack on top of each other instead of next to each other */
-@media (max-width: 600px) {
-  .column {
-    width: 100%;
-  }
 }
 
 /* ==========================
@@ -259,8 +184,8 @@ Sidebar Styles
 }
 
 /* ==========================
-     Edit Profile & Settings Panels
-     ========================== */
+Edit Profile & Settings Panels
+========================== */
 .editProfile/*,
 .settings */ {
   position: fixed;
@@ -295,8 +220,8 @@ Sidebar Styles
 }
 
 /* ==========================
-     Profile Picture Change
-     ========================== */
+Profile Picture Change
+========================== */
 .changePicBtn {
   background: none;
   border: none;
@@ -328,8 +253,8 @@ Sidebar Styles
 }
 
 /* ==========================
-     General Input Fields
-     ========================== */
+General Input Fields
+========================== */
 .input {
   display: flex;
   align-items: center;
@@ -380,6 +305,107 @@ Edit Profile Input
 
 .confirmChange:hover {
   background: #5f73a1;
+}
+
+/* ==========================
+Main Panel
+========================== */
+/* Main layout */
+main {
+  padding: min(30px, 7%);
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 20px;
+  height: 100%;
+  margin: 0;
+}
+
+/* Sidebar layout */
+.sidebarChat {
+  background-color: #2c2f33;
+  padding: 10px;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  color: white;
+}
+.sidebarChat h4 {
+  margin-bottom: 10px;
+  text-align: center; /* Align icon and text */
+}
+
+.sidebarChat i {
+  margin-right: 8px; /* Adds space between icon and text */
+}
+
+/* Links in the sidebar */
+.sidebarChat a,
+.sidebarChat ab {
+  color: #fff;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+  border-radius: 6px;
+  font-weight: 500;
+}
+
+/* Change color on hover for sidebar links */
+.sidebarChat a:hover,
+.sidebarChat ab:hover {
+  background-color: #5f73a1;
+}
+
+/* Messages area */
+.messages-area {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  border-radius: 8px;
+}
+
+/* Conversation and chatbar styling */
+.conversation {
+  border: 1px solid var(--line-clr);
+  border-radius: 8px;
+  padding: 10px;
+  margin-bottom: 20px;
+  height: 685px;
+  overflow-y: auto;
+  background-color: #fff;
+}
+
+.chatbar {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+#chat-input {
+  flex: 1;
+  padding: 10px;
+  border: 1px solid var(--line-clr);
+  border-radius: 4px;
+}
+
+#send-btn {
+  padding: 10px 20px;
+  background-color: green;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+#send-btn:hover {
+  background-color: #0056b3;
+}
+
+/* Messages styling */
+.message {
+  padding: 8px;
+  border-radius: 4px;
+  margin: 5px 0;
+  background-color: #f1f1f1;
 }
 
 /*

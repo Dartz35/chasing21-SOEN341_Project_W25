@@ -1,34 +1,19 @@
-// Sidebar functions
-const toggleButton = document.getElementById('toggle-button');
-const sidebar = document.getElementById('sidebar');
+const sendBtn = document.getElementById("send-btn");
+const chatInput = document.getElementById("chat-input");
+const messagesContainer = document.getElementById("messages");
 
-function toggleSidebar(){
-    sidebar.classList.toggle('close');
-    toggleButton.classList.toggle('rotate');
-}
-
-function toggleSubMenu(button){
-    button.nextElementSibling.classList.toggle('show');
-    button.classList.toggle('rotate');
-}
-
-
-const sendBtn = document.getElementById('send-btn');
-const chatInput = document.getElementById('chat-input');
-const messagesContainer = document.getElementById('messages');
-
-sendBtn.addEventListener('click', sendMessage);
-chatInput.addEventListener('keypress', function(e) {
-  if (e.key === 'Enter') {
+sendBtn.addEventListener("click", sendMessage);
+chatInput.addEventListener("keypress", function (e) {
+  if (e.key === "Enter") {
     sendMessage();
   }
 });
 
-function sendMessage(){
+function sendMessage() {
   const messageText = chatInput.value.trim();
-  if(messageText !== ""){
-    const messageDiv = document.createElement('div');
-    messageDiv.classList.add('message');
+  if (messageText !== "") {
+    const messageDiv = document.createElement("div");
+    messageDiv.classList.add("message");
     messageDiv.textContent = messageText;
     messagesContainer.appendChild(messageDiv);
     chatInput.value = "";
