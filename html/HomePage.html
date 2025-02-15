@@ -44,7 +44,9 @@
           </button>
         </li>
         <li>
-          <a href="#home" class="profBtns"><i class="fas fa-home"></i> Home</a>
+          <a href="HomePage.html" class="profBtns"
+            ><i class="fas fa-home"></i> Home</a
+          >
         </li>
         <li>
           <a href="#Notifications" class="profBtns"
@@ -157,35 +159,35 @@
     </div>
     -->
 
-    <div class="row">
-      <div class="column side1" style="background-color: #aaa">
-        Channels | Chats
+    <main>
+      <!-- Sidebar for channels/chats (previously .column) -->
+      <div class="sidebarChat">
+        <h4><i class="fas fa-comment"></i> Chats</h4>
         <a href="#">General</a>
         <a href="#">Project Help</a>
         <a href="#">Social</a>
       </div>
 
-      <div class="column middle" style="background-color: #bbb">Chatroom</div>
+      <!-- Messages Area (conversation and chatbar) -->
+      <div class="messages-area">
+        <div class="conversation">
+          <h2>Messages</h2>
+          <div id="messages"></div>
+        </div>
 
-      <div class="column side2" style="background-color: #ccc">
-        Chatters
-        <ab href="#">Steph</ab>
-        <ab href="#">Steve</ab>
-        <ab href="#">Steven</ab>
-        <ab href="#">Stephen</ab>
-        <ab href="#">Stephenie</ab>
-        <ab href="#">You</ab>
+        <div class="chatbar">
+          <input
+            type="text"
+            id="chat-input"
+            placeholder="Type your message here..."
+          />
+          <button id="send-btn">Send</button>
+        </div>
       </div>
+    </main>
 
-      <div class="column side2" style="background-color: #ccc">
-        Admins
-        <ab href="#">Kevin</ab>
-      </div>
-    </div>
-
-    <div class="footer">
-      <p>Footer</p>
-    </div>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="../js/profile.js" type="module" defer></script>
+    <script src="../js/homepage.js"></script>
   </body>
 </html>
