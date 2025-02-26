@@ -1,30 +1,21 @@
 // group.js
 
 import { auth, database } from "../js/firebaseConfig.js";
-import {
-  onAuthStateChanged,
-  EmailAuthProvider,
-} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 import {
   ref,
   get,
   set,
-  update,
   push,
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
-
-function getUserKey(email) {
-  return email.replace(/\./g, ",");
-}
+import { fetchProfileData } from "./pageLoading.js";
 
 let currentUserData = {};
 
-
 onAuthStateChanged(auth, async (user) => {
   if (user) {
-    await fetchProfileData(user);
-
+    currentUserData = await fetchProfileData(user);
     await fetchGroups();
   } else {
     if (!window.loggingOut) {
@@ -33,59 +24,6 @@ onAuthStateChanged(auth, async (user) => {
     }
   }
 });
-
-async function fetchProfileData(user) {
-  const userKey = getUserKey(user.email);
-  const userRef = ref(database, "users/" + userKey);
-
-  try {
-    const snapshot = await get(userRef);
-    if (snapshot.exists()) {
-      const userData = snapshot.val();
-      currentUserData = userData; // Store for later use
-
-      updateNameUI(userData.name);
-      updateEmailUI(userData.email);
-      updateRoleUI(userData.role);
-    } else {
-      updateNameUI("Profile not found");
-      updateRoleUI(""); // default to "Member"
-    }
-  } catch (error) {
-    console.error("Error fetching profile data: " + error);
-  }
-}
-
-function updateNameUI(newName) {
-  const userNameEl = document.getElementById("userName");
-  if (userNameEl) {
-    userNameEl.textContent = newName || "Unknown";
-  }
-}
-
-function updateEmailUI(newEmail) {
-  const userEmailEl = document.getElementById("userEmail");
-  if (userEmailEl) {
-    userEmailEl.textContent = newEmail || "";
-  }
-}
-
-function updateRoleUI(newRole) {
-  const userRoleEl = document.getElementById("userRole");
-  if (userRoleEl) {
-    userRoleEl.textContent = newRole || "Member";
-  }
-
-  // Show or hide create group section based on role
-  const createGroupSection = document.getElementById("createGroupSection");
-  if (createGroupSection) {
-    if (newRole === "admin") {
-      createGroupSection.style.display = "block";
-    } else {
-      createGroupSection.style.display = "none";
-    }
-  }
-}
 
 const createGroupBtn = document.getElementById("createGroupBtn");
 if (createGroupBtn) {

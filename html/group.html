@@ -3,39 +3,34 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Groups</title>
+    <title>Channel List</title>
     <link rel="stylesheet" href="../css/group.css" />
+    <link rel="stylesheet" href="../css/header.css" />
+    <link rel="stylesheet" href="../css/dashboard.css" />
+    <link
+      rel="stylesheet"
+      href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+    />
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
   </head>
   <body>
-    <h1>Groups</h1>
-
-    <p>
-      <a href="../html/HomePage.html">Return to Homepage</a> |
-      <a href="../html/loginPage.html">Log Out</a>
-    </p>
-
-    <p>
-      <strong>Name:</strong>
-      <span id="userName">Loading...</span>
-    </p>
-    <p>
-      <strong>Role:</strong>
-      <span id="userRole">Loading...</span>
-    </p>
+    <div id="app"></div>
 
     <!-- Section for creating a group (hidden by default, only shown for admin) -->
     <div id="createGroupSection" style="display: none">
-      <h2>Create Group</h2>
-      <label for="groupName">Group Name:</label>
+      <h2>Create a Channel</h2>
+      <label for="groupName">Channel Name:</label>
       <input type="text" id="groupName" />
-      <button id="createGroupBtn">Create Group</button>
+      <button id="createGroupBtn">Create Channel</button>
     </div>
 
     <!-- Container for groups (visible to everyone) -->
-    <h2>All Groups</h2>
+    <h2>All Channels</h2>
     <div id="groupsContainer"></div>
 
     <!-- Import group.js as a module -->
     <script type="module" src="../js/group.js"></script>
+    <script src="../js/headerSidebar.js" type="module"></script>
   </body>
 </html>
