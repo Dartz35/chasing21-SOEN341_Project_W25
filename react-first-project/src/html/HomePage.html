@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ChatHaven</title>
+    <link rel="stylesheet" href="../css/homePageStyle.css" />
+    <link
+      rel="stylesheet"
+      href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+    />
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h1>
+          <img
+            src="../images/Chat-Icon-Transparent-Background.webp"
+            width="30"
+            height="30"
+          />
+          Chat Haven
+        </h1>
+        <button class="profileBtn sidebarToggle">
+          <img class="profilePic" />
+        </button>
+      </div>
+    </div>
+
+    <!-- Sidebar Profile -->
+    <div id="sidebar" class="sidebar">
+      <button class="closeBtn sidebarToggle">&#10005;</button>
+      <h2>Dashboard</h2>
+      <div class="profile">
+        <img class="profilePic" alt="Profile Picture" />
+        <h3 class="userName name"></h3>
+        <span class="userInfo role"></span>
+        <span class="userInfo email"></span>
+      </div>
+      <ul class="dashBtns">
+        <li>
+          <button class="profBtns toggleEditProfile">
+            <i class="fas fa-pen"></i> Edit Profile
+          </button>
+        </li>
+        <li>
+          <a href="HomePage.html" class="profBtns"
+            ><i class="fas fa-home"></i> Home</a
+          >
+        </li>
+        <li>
+          <a href="#Notifications" class="profBtns"
+            ><i class="fas fa-bell"></i> Notifications</a
+          >
+        </li>
+        <li>
+          <a href="group.html" class="profBtns"
+            ><i class="fas fa-users"></i> Groups</a
+          >
+        </li>
+        <li>
+          <a href="#Contacts" class="profBtns"
+            ><i class="fas fa-address-book"></i> Contacts</a
+          >
+        </li>
+        <li>
+          <button id="settingBtn" class="profBtns toggleSettings">
+            <i class="fas fa-cog"></i> Settings
+          </button>
+        </li>
+        <hr />
+        <li>
+          <button id="logoutBtn" class="profBtns logoutBtn">
+            <i class="fas fa-sign-out-alt"></i> Logout
+          </button>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Edit Profile Display-->
+    <div id="editProfile" class="editProfile" hidden>
+      <button class="backBtn toggleEditProfile">&#8592;</button>
+      <h2>Edit Profile</h2>
+      <label for="newProfilePic" class="changePicBtn">
+        <img class="profilePic" />
+      </label>
+      <label for="newProfilePic" class="changePicText">Edit Picture</label>
+      <input type="file" id="newProfilePic" accept="image/*" hidden />
+      <button id="deletePic" class="changePicText">Delete Picture</button>
+
+      <div class="input">
+        <label for="editName">Name: </label>
+        <input
+          class="name"
+          type="text"
+          id="editName"
+          name="name"
+          autocomplete="name"
+        />
+        <button id="confirmName" class="confirmChange">✔️</button>
+      </div>
+    </div>
+
+    <!--
+    <div id="settings" class="settings" hidden>
+      <button class="backBtn toggleSettings">&#8592;</button>
+      <h2>Settings</h2>
+      <div class="emailInput">
+        <button class="settingsBtns">Change email📤</button>
+        <div class="input">
+          <input
+            type="email"
+            id="editEmail"
+            name="email"
+            autocomplete="email"
+          />
+          <div class="input">
+            <input
+              id="passwordConfirm"
+              type="password"
+              name="passwordConfirm"
+              placeholder="Enter password to confirm."
+            />
+          </div>
+          <button id="confirmEmail" class="confirmChange submit">✔️</button>
+        </div>
+      </div>
+
+      <div class="passwordInput">
+        <button class="settingsBtns">Change password🔐</button>
+        <div class="input">
+          <input
+            id="currentPassword"
+            type="password"
+            name="currentPassword"
+            placeholder="Enter your current password..."
+          />
+        </div>
+        <div class="input">
+          <input
+            id="newPassword"
+            type="password"
+            name="newPassword"
+            placeholder="Enter your new password..."
+          />
+        </div>
+        <div class="input">
+          <input
+            id="confirmPassword"
+            type="password"
+            name="confirmPassword"
+            placeholder="Confirm your new password..."
+          />
+          <button id="confirmPassword" class="confirmChange submit">✔️</button>
+        </div>
+      </div>
+      
+      <button class="deleteBtn">Delete Account</button>
+    </div>
+    -->
+
+    <main>
+      <!-- Sidebar for channels/chats (previously .column) -->
+      <div class="sidebarChat">
+        <h4><i class="fas fa-comment"></i> Chats</h4>
+        
+        <div id="home-buttons" style="display: block;">
+        <a href="#" id="general-link">General</a>
+        <a href="#" id="project-link">Project Help</a>
+        <a href="#" id="social-link">Social</a> <!-- Social link -->
+        </div>
+
+        <!-- Hidden Social Buttons -->
+        <div id="social-buttons" style="display: none;">
+            <div class="chatList">
+              <div class="search">
+                <button id="go-back" class="btn">Go Back</button> <!-- Go Back Button -->
+                <div class="searchBar">
+                  <img src="../images/search.png" alt="" />
+                  <input type="text" placeholder="Search">
+                </div>
+                <img src="../images/plus.png" alt="" class="add">
+              </div>
+            
+            <div class="listProfiles">
+            <div class="item">
+              <img src="../images/avatar.png" alt="">
+              <div class="texts">
+                <span>TOP G</span>
+                <p>Hello</p>
+              </div>
+            </div>
+           
+          </div>
+           
+            
+          </div>
+           
+        </div>
+    </div>
+
+      <!-- Messages Area (conversation and chatbar) -->
+      <div class="messages-area">
+        <div class="profile_chat">
+          <div class="top">
+            <div  class="user">
+              <img src="../images/avatar.png" alt="">
+              <span id="currentUser">TOPG
+              <p>jrfgrygfyurg</p>
+              </span>
+            </div>
+            <div class="icons">
+              <img src="../images/info.png" alt="">
+               </div>
+          </div>
+          
+        </div>
+        <div class="conversation">
+          
+          <div id="messages"></div>
+        </div>
+
+        <div class="chatbar">
+          <input
+            type="text"
+            id="chat-input"
+            placeholder="Type your message here..."
+          />
+          <button id="send-btn">Send</button>
+        </div>
+      </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="../js/profile.js" type="module" defer></script>
+    <script  src="../js/homepage.js" type="module" defer></script>
+    <script  >
+    window.onload = function () {
+      // Retrieve the stored username from sessionStorage
+      const username = sessionStorage.getItem("username");
+      if (username) {
+        document.getElementById("currentUser").innerText = username;
+      } else {
+        document.getElementById("currentUser").innerText = "User not logged in";
+      }
+    };</script>
+
+  </body>
+</html>
