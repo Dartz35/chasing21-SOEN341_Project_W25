@@ -61,7 +61,7 @@ p {
   color: #fff;
 }
 
-#createGroupSection {
+#createchannelSection {
   display: none;
   margin: 20px 0;
   padding: 15px;
@@ -70,7 +70,7 @@ p {
   border-radius: 4px;
 }
 
-#createGroupSection input[type="text"] {
+#createchannelSection input[type="text"] {
   padding: 6px;
   border: 1px solid #ccc;
   border-radius: 4px;
@@ -79,12 +79,12 @@ p {
   color: rgba(255, 255, 255, 0.5);
 }
 
-#createGroupSection input[type="text"]:focus {
+#createchannelSection input[type="text"]:focus {
   background-color: #fff;
   color: #000;
 }
 
-#createGroupSection button {
+#createchannelSection button {
   padding: 6px 12px;
   border: 1px solid #ccc;
   background-color: #7289da;
@@ -95,11 +95,11 @@ p {
   color: #fff;
 }
 
-#createGroupSection button:hover {
+#createchannelSection button:hover {
   background-color: #5f73a1;
 }
 
-#groupsContainer {
+#channelsContainer {
   margin-top: 20px;
   display: flex;
   flex-direction: column;
@@ -107,7 +107,7 @@ p {
   height: 50px;
 }
 
-.group-item {
+.channel-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -118,7 +118,7 @@ p {
   color: #fff;
 }
 
-.group-end {
+.channel-end {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -126,12 +126,12 @@ p {
   height: 50px;
 }
 
-.group-name {
+.channel-name {
   font-weight: bold;
   font-size: 1.1rem;
 }
 
-.group-owner {
+.channel-owner {
   font-style: italic;
   font-size: 0.9rem;
 }
@@ -153,7 +153,7 @@ p {
   background-color: #444;
 }
 
-.group-options {
+.channel-options {
   position: absolute;
   background-color: rgba(44, 47, 51, 0.9);
   border: 1px solid #444;
@@ -164,7 +164,7 @@ p {
   max-width: 150px;
 }
 
-.group-options button {
+.channel-options button {
   background: none;
   border: none;
   color: white;
@@ -175,6 +175,6 @@ p {
   font-size: small;
 }
 
-.group-options button:hover {
+.channel-options button:hover {
   background-color: rgba(255, 255, 255, 0.1);
 }

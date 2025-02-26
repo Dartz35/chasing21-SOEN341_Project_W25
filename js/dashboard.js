@@ -77,9 +77,9 @@ function Dashboard() {
           null,
           React.createElement(
             "a",
-            { href: "group.html", className: "profBtns" },
+            { href: "channels.html", className: "profBtns" },
             React.createElement("i", { className: "fas fa-users" }),
-            " Groups"
+            " Channels"
           )
         ),
         React.createElement(
