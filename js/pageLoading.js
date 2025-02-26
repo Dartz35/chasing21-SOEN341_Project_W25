@@ -75,13 +75,13 @@ function updateRoleUI(newRole) {
     element.textContent = newRole || "Member";
   }
 
-  // Show or hide create group section based on role
-  const createGroupSection = document.getElementById("createGroupSection");
-  if (createGroupSection) {
+  // Show or hide sections
+  const adminSections = document.getElementsByClassName("admin");
+  for (let element of adminSections) {
     if (newRole === "admin") {
-      createGroupSection.style.display = "block";
+      element.style.display = "block";
     } else {
-      createGroupSection.style.display = "none";
+      element.style.display = "none";
     }
   }
 }

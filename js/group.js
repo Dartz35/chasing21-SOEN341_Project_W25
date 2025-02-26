@@ -80,13 +80,24 @@ async function fetchGroups() {
         groupNameEl.classList.add("group-name");
         groupNameEl.textContent = groupInfo.name || "Untitled Group";
 
+        const groupEnd = document.createElement("div");
+        groupEnd.classList.add("group-end");
+
         const groupOwnerEl = document.createElement("span");
         groupOwnerEl.classList.add("group-owner");
         groupOwnerEl.textContent = groupInfo.owner || "Unknown Owner";
 
-        groupItemEl.appendChild(groupNameEl);
-        groupItemEl.appendChild(groupOwnerEl);
+        const optionsBtn = document.createElement("button");
+        optionsBtn.classList.add("options-btn");
+        optionsBtn.addEventListener("click", (event) =>
+          showGroupOptions(event, groupInfo)
+        );
+        optionsBtn.textContent = "...";
 
+        groupEnd.appendChild(groupOwnerEl);
+        groupEnd.appendChild(optionsBtn);
+        groupItemEl.appendChild(groupNameEl);
+        groupItemEl.appendChild(groupEnd);
         groupsContainer.appendChild(groupItemEl);
       });
     } else {
@@ -95,4 +106,65 @@ async function fetchGroups() {
   } catch (error) {
     console.error("Error fetching groups:", error);
   }
+}
+
+function generateAdminGroupOptions(dropdown) {
+  const deleteGroupBtn = document.createElement("button");
+  deleteGroupBtn.classList.add("delete-group-btn");
+  deleteGroupBtn.textContent = "Delete Group";
+
+  const addMemberBtn = document.createElement("button");
+  addMemberBtn.classList.add("add-member-btn");
+  addMemberBtn.textContent = "Add Member";
+
+  const removeMemberBtn = document.createElement("button");
+  removeMemberBtn.classList.add("remove-member-btn");
+  removeMemberBtn.textContent = "Remove Member";
+
+  dropdown.appendChild(deleteGroupBtn);
+  dropdown.appendChild(addMemberBtn);
+  dropdown.appendChild(removeMemberBtn);
+}
+
+function generateMemberGroupOptions(dropdown) {
+  const messageAdminBtn = document.createElement("button");
+  messageAdminBtn.classList.add("message-admin-btn");
+  messageAdminBtn.textContent = "Message admin";
+
+  dropdown.appendChild(messageAdminBtn);
+}
+
+function showGroupOptions(event, groupInfo) {
+  // Remove any existing dropdown before creating a new one
+  document.querySelectorAll(".group-options").forEach((el) => el.remove());
+
+  // Create dropdown menu
+  const dropdown = document.createElement("div");
+  dropdown.classList.add("group-options");
+
+  if (
+    currentUserData.role === "admin" &&
+    (currentUserData.email === groupInfo.owner ||
+      currentUserData.name === groupInfo.owner)
+  ) {
+    generateAdminGroupOptions(dropdown);
+  } else {
+    generateMemberGroupOptions(dropdown);
+  }
+
+  // Position the dropdown near the button
+  const rect = event.target.getBoundingClientRect();
+  dropdown.style.position = "absolute";
+  dropdown.style.top = `${window.scrollY + rect.bottom}px`;
+  dropdown.style.left = `${window.scrollX + rect.left - 75}px`;
+
+  document.body.appendChild(dropdown);
+
+  // Close dropdown when clicking outside
+  document.addEventListener("click", function closeDropdown(e) {
+    if (!dropdown.contains(e.target) && e.target !== event.target) {
+      dropdown.remove();
+      document.removeEventListener("click", closeDropdown);
+    }
+  });
 }

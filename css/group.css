@@ -104,6 +104,7 @@ p {
   display: flex;
   flex-direction: column;
   gap: 10px;
+  height: 50px;
 }
 
 .group-item {
@@ -117,6 +118,14 @@ p {
   color: #fff;
 }
 
+.group-end {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  height: 50px;
+}
+
 .group-name {
   font-weight: bold;
   font-size: 1.1rem;
@@ -125,4 +134,47 @@ p {
 .group-owner {
   font-style: italic;
   font-size: 0.9rem;
+}
+
+.options-btn {
+  background-color: inherit;
+  border-radius: 50px;
+  border: none;
+  padding: 0px 20px 45px;
+  font-size: 25px;
+  font-weight: bold;
+  color: #fff;
+  transition: background-color 0.3s;
+  height: 30px;
+  cursor: pointer;
+}
+
+.options-btn:hover {
+  background-color: #444;
+}
+
+.group-options {
+  position: absolute;
+  background-color: rgba(44, 47, 51, 0.9);
+  border: 1px solid #444;
+  border-radius: 4px;
+  padding: 10px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+  max-width: 150px;
+}
+
+.group-options button {
+  background: none;
+  border: none;
+  color: white;
+  width: 100%;
+  text-align: left;
+  padding: 8px 10px;
+  cursor: pointer;
+  font-size: small;
+}
+
+.group-options button:hover {
+  background-color: rgba(255, 255, 255, 0.1);
 }
