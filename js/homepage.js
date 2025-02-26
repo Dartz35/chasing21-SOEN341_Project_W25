@@ -8,6 +8,9 @@ import {
   update,
   push,
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+import { onChildAdded } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
 // Web app's Firebase configuration
 const firebaseConfig = {
   apiKey: "AIzaSyDebF1-QZrTf6Ad3fycFQrjTq2W9MEpWRQ",
@@ -132,7 +135,7 @@ checkExistingChat(userID, currentUserID)
     if (existingChatID) {
       // Chat already exists, show it
       console.log("Found existing chat with ID: " + existingChatID);
-      alert(`Found existing chat with ID: ${existingChatID}`);
+      //alert(`Found existing chat with ID: ${existingChatID}`);
       currentChatID = existingChatID; // Update currentChatID
        loadMessages(currentChatID);
     } else {
@@ -224,66 +227,109 @@ if (e.key === "Enter") {
   function sendMessage(currChatID) {
     const logedinUserID = sessionStorage.getItem("currentID");
     const messageText = chatInput.value.trim();
-  if (messageText !== "") {
-    const messageDiv = document.createElement("div");
-    messageDiv.classList.add("message");
-    messageDiv.textContent = messageText;
-    messagesContainer.appendChild(messageDiv);
-    chatInput.value = "";
-    messagesContainer.scrollTop = messagesContainer.scrollHeight;
-    const messagesRef = ref(database, `messages/${currChatID}`); // Get reference to 'messages' node
-    const newMessageRef = push(messagesRef); // Create a unique child node
-    //const name = document.getElementById("name").value.trim();
-   
-      messageDiv.style.color = 'blue'; // Change color to blue if it is the current user's message
-    
-    set(newMessageRef, {message: messageText, senderID: logedinUserID}) // Store message inside new child
-      .then(() => console.log("Message sent to Firebase!"))
-      .catch((error) => console.error("Error sending message:", error));
-  }
-}
 
+    if (messageText !== "") {
+        // Append message instantly to UI
+        const messageDiv = document.createElement("div");
+        messageDiv.classList.add("message");
+        messageDiv.textContent = messageText;
+        if (logedinUserID) messageDiv.style.color = 'blue'; // Highlight user's messages
+        messagesContainer.appendChild(messageDiv);
+        chatInput.value = "";
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
 
-function loadMessages(currChatID) {
-  alert(currChatID+"  heiufheirowbferlrjer")
-  if (!currChatID) {
-    console.error("No chat ID provided.");
-    return;
-  }
+        // Firebase Database Reference
+        const messagesRef = ref(database, `messages/${currChatID}`);
+        const newMessageRef = push(messagesRef);
 
-  const messagesRef = ref(database, `messages/${currChatID}`);
-
-  get(messagesRef)
-  .then((snapshot) => {
-    messagesContainer.innerHTML = ""; // Clear previous messages
-
-    if (snapshot.exists()) {
-      snapshot.forEach((childSnapshot) => {
-        const messageData = childSnapshot.val();
-        const messageText = messageData?.message; // Ensure 'message' exists
-        const senderID = messageData?.senderID;
-
-        if (messageText) {
-          const messageDiv = document.createElement("div");
-          messageDiv.classList.add("message");
-          messageDiv.textContent = messageText;
-
-          // Check if the senderID matches the current user's ID
-          if (senderID === sessionStorage.getItem("currentID")) {
-            messageDiv.style.color = 'blue'; // Change color to blue if it is the current user's message
-          }
-
-          messagesContainer.appendChild(messageDiv);
-        }
-      
-      });
-    } else {
-      console.log("No messages found for this chat.");
+        // Store Message in Firebase
+        set(newMessageRef, { message: messageText, senderID: logedinUserID })
+            .then(() => console.log("Message sent to Firebase!"))
+            .catch((error) => console.error("Error sending message:", error));
     }
-  })
-  .catch((error) => {
-    console.error("Error loading messages:", error);
-  });
 }
+
+// ✅ Prevent multiple listeners from being attached
+let isListenerAttached = false;
+
+function listenForNewMessages(currChatID) {
+    if (isListenerAttached) return; // Avoid multiple listeners
+    isListenerAttached = true; 
+
+    const messagesRef = ref(database, `messages/${currChatID}`);
+
+    onChildAdded(messagesRef, (snapshot) => {
+        const messageData = snapshot.val();
+        if (!messageData) return;
+
+        const messageText = messageData.message;
+        const senderID = messageData.senderID;
+
+        // Prevent duplicate messages
+        if (!document.querySelector(`.message[data-id="${snapshot.key}"]`)) {
+            const messageDiv = document.createElement("div");
+            messageDiv.classList.add("message");
+            messageDiv.setAttribute("data-id", snapshot.key); // Prevent duplicates
+            messageDiv.textContent = messageText;
+
+            if (senderID === sessionStorage.getItem("currentID")) {
+                messageDiv.style.color = 'blue'; // Highlight current user's messages
+            }
+
+            messagesContainer.appendChild(messageDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+    });
+}
+
+// ✅ Load Messages on Page Load
+function loadMessages(currChatID) {
+    if (!currChatID) {
+        console.error("No chat ID provided.");
+        return;
+    }
+
+    const messagesRef = ref(database, `messages/${currChatID}`);
+    get(messagesRef)
+        .then((snapshot) => {
+            messagesContainer.innerHTML = ""; // Clear previous messages
+
+            if (snapshot.exists()) {
+                snapshot.forEach((childSnapshot) => {
+                    const messageData = childSnapshot.val();
+                    const messageText = messageData?.message;
+                    const senderID = messageData?.senderID;
+
+                    if (messageText) {
+                        const messageDiv = document.createElement("div");
+                        messageDiv.classList.add("message");
+                        messageDiv.setAttribute("data-id", childSnapshot.key);
+                        messageDiv.textContent = messageText;
+
+                        if (senderID === sessionStorage.getItem("currentID")) {
+                            messageDiv.style.color = 'blue';
+                        }
+
+                        messagesContainer.appendChild(messageDiv);
+                    }
+                });
+            } else {
+                console.log("No messages found for this chat.");
+            }
+        })
+        .catch((error) => {
+            console.error("Error loading messages:", error);
+        });
+
+    // Start listening for real-time updates (if not already attached)
+    listenForNewMessages(currChatID);
+}
+
+// ✅ Call `loadMessages` with the current chat ID when the page loads
+document.addEventListener("DOMContentLoaded", () => {
+    const currChatID = "your_chat_id_here"; // Replace with actual chat ID logic
+    loadMessages(currChatID);
+});
+
 
 
