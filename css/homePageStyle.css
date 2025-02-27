@@ -62,6 +62,108 @@ main {
   background-color: #5f73a1;
 }
 
+/*serach bar in social*/
+
+.listProfiles :hover{
+  background-color: #5f73a1;
+}
+
+.sidebarChat{
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  height: 750px; /* Full height of viewport */
+  overflow: hidden; /* Prevent overflow issues */
+}
+.chatList {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto; /* Enables vertical scrolling */
+  max-height: 100vh; /* Ensures it does not exceed viewport height */
+
+  .search{
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 20px;
+
+.searchBar{
+
+  flex:1;
+  background-color: rgba(17, 25, 40, 0.5);
+  display: flex;
+  align-items: center;
+  gap:20px;
+  border-radius: 10px;
+  padding: 10px;
+  input{
+    background-color: transparent;
+    border:none;
+    outline:none;
+    color: #fff;
+    flex:1;
+  }
+  img{
+    width:20px;
+    height:20px;
+  }
+
+}
+.add{
+  width:35px;
+  height: 35px;
+  background-color: rgba(17, 25, 40, 0.5);
+  border-radius: 10px;
+  padding:10px;
+  cursor: pointer;
+
+}
+
+}
+
+.item-profile-container {
+  flex: 1; /* Takes remaining space */
+  overflow-y: auto; /* Enables scrolling */
+}
+
+listProfiles {
+  margin: 20px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  background-color: #f9f9f9;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  margin: 10px 0;
+  padding: 10px;
+  border: 1px solid #ddd;
+  background-color: #fff;
+}
+
+.item img {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  margin-right: 10px;
+}
+
+.texts {
+  display: flex;
+  flex-direction: column;
+}
+
+.texts span {
+  font-weight: bold;
+}
+
+.texts p {
+  margin-top: 5px;
+  color: gray;
+}
+}
 /* Messages area */
 .messages-area {
   display: flex;
@@ -69,6 +171,61 @@ main {
   height: 100%;
   border-radius: 8px;
 }
+.profile_chat{
+  flex:2;
+  border-left: 1px solid #dddddd35;
+  border-right: 1px solid #dddddd35;
+  height:100%;
+  background-color: #2c2f33;
+  .top{
+  padding:20px;
+  display:flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #dddddd35;
+
+ .user{
+  display: flex;
+  align-items: center;
+  gap: 20px;
+ }
+ img{
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  object-fit: cover;
+ }
+ .texts{
+  display: flex;
+  flex-direction: column;
+  gap:5px;
+ }
+ span{
+  font-size:18px;
+  font-weight: bold;
+  color:#fff;
+ }
+p{
+  font-size: 14px;
+  font-weight: 300;
+  
+  color:#a5a5a5;
+}
+}
+.icons{
+  display: flex;
+  gap:20px;
+  img{
+  width: 20px;
+  height: 20px;
+}
+
+}
+
+}
+
+
+
 
 /* Conversation and chatbar styling */
 .conversation {
@@ -76,7 +233,7 @@ main {
   border-radius: 8px;
   padding: 10px;
   margin-bottom: 20px;
-  height: 685px;
+  height: 634px;
   overflow-y: auto;
   background-color: #fff;
 }
@@ -108,7 +265,7 @@ main {
 }
 
 /* Messages styling */
-.message {
+.message {   /*change color to blue when it is current logged in user that sends messages*/
   padding: 8px;
   border-radius: 4px;
   margin: 5px 0;
