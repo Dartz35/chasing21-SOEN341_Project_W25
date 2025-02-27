@@ -1,0 +1,52 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap");
+
+/* header */
+.header {
+  padding: 0px;
+  margin: 0 20px;
+  text-align: left;
+  font-size: 15px;
+  background-image: url("https://images.pexels.com/photos/7135028/pexels-photo-7135028.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-attachment: fixed;
+  background-size: cover;
+  display: flex;
+  justify-content: space-between;
+}
+
+/* ==========================
+       Profile Button 
+       ========================== */
+.profileBtn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  z-index: 99;
+}
+
+.profileBtn img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 2px solid #fff;
+  object-fit: cover;
+}
+
+.profileBtn:hover img {
+  border-color: blue;
+}
+
+/* ==========================
+  Global Styles
+  ========================== */
+
+h1 {
+  color: #fff;
+}
+
+h1 img {
+  width: 50px;
+  height: 50px;
+  vertical-align: middle;
+}
