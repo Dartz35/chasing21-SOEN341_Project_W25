@@ -4,7 +4,7 @@ import {
     get,
     set,
     push,
-    update,
+    onChildAdded,
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
 export async function openChannelChat(channelId) {
@@ -30,7 +30,6 @@ export async function openChannelChat(channelId) {
             updatedDate: new Date().toISOString(),
             channelId: channelId,
         });
-        await update(channelRef, { groupChatId: newChatId });
         displayChatUI(newChatId, channelData.name);
     }
 }
@@ -48,22 +47,49 @@ function displayChatUI(chatId, channelName) {
         <h3>Chat for channel: ${channelName}</h3>
         <button id="backToChannelsBtn">Back</button>
       </div>
-      <p>Chat ID: ${chatId}</p>
-      <div id="messagesContainer" class="messages-container">
-        No messages yet
-      </div>
+      <div id="messagesContainer" class="messages-container"></div>
       <div class="chat-footer">
-        <input
-          type="text"
-          id="messageInput"
-          placeholder="Write your message..."
-        />
+        <input type="text" id="messageInput" placeholder="Write your message..." />
+        <button id="sendMessageBtn">Send</button>
       </div>
     </div>
   `;
     document.body.appendChild(chatView);
     document.getElementById("backToChannelsBtn").addEventListener("click", () => {
         goBackToChannels();
+    });
+    document.getElementById("sendMessageBtn").addEventListener("click", () => {
+        sendMessage(chatId);
+    });
+    loadMessages(chatId);
+}
+
+async function sendMessage(chatId) {
+    const messageInput = document.getElementById("messageInput");
+    const messageText = messageInput.value.trim();
+    if (!messageText) return;
+
+    const messagesRef = ref(database, `groupChats/${chatId}/messages`);
+    const newMessageRef = push(messagesRef);
+    await set(newMessageRef, {
+        senderID: "user", // Replace with actual user ID when authentication is implemented
+        text: messageText,
+        timestamp: new Date().toISOString(),
+    });
+    messageInput.value = "";
+}
+
+function loadMessages(chatId) {
+    const messagesContainer = document.getElementById("messagesContainer");
+    messagesContainer.innerHTML = "";
+
+    const messagesRef = ref(database, `groupChats/${chatId}/messages`);
+    onChildAdded(messagesRef, (snapshot) => {
+        const message = snapshot.val();
+        const messageEl = document.createElement("div");
+        messageEl.classList.add("message");
+        messageEl.textContent = `${message.senderID}: ${message.text}`;
+        messagesContainer.appendChild(messageEl);
     });
 }
 
