@@ -23,6 +23,13 @@ onAuthStateChanged(auth, async (user) => {
     }
   }
 });
+function sanitizeEmail(email) {
+  return email.replace(/\./g, ",");
+}
+
+function unsanitizeEmail(email) {
+  return email.replace(/,/g, ".");
+}
 
 const createchannelBtn = document.getElementById("createchannelBtn");
 if (createchannelBtn) {
@@ -36,8 +43,8 @@ async function createchannel() {
     alert("Please enter a channel name.");
     return;
   }
-  const channelOwner =
-      currentUserData.name || currentUserData.email || "Unknown";
+
+  const channelOwner = currentUserData.name || currentUserData.email || "Unknown";
 
   try {
     const newchannelRef = push(ref(database, "channels"));
@@ -45,11 +52,14 @@ async function createchannel() {
       id: newchannelRef.key,
       name: channelName,
       owner: channelOwner,
+      members: [sanitizeEmail(channelOwner)], // Sanitize the owner's email
     });
+
     channelNameInput.value = "";
     await fetchchannels();
   } catch (error) {
-    alert("Failed to create Channel. Check console for details.");
+    console.error("Failed to create Channel:", error);
+    alert("Failed to create Channel.");
   }
 }
 
@@ -62,47 +72,38 @@ async function fetchchannels() {
   const channelsRef = ref(database, "channels");
   try {
     const snapshot = await get(channelsRef);
-    const myChannelsContainer = document.getElementById("myChannelsContainer");
     const allChannelsContainer = document.getElementById("allChannelsContainer");
-    if (!myChannelsContainer || !allChannelsContainer) return;
-
-    myChannelsContainer.innerHTML = "";
+    if (!allChannelsContainer) return;
     allChannelsContainer.innerHTML = "";
 
     if (!snapshot.exists()) {
-      myChannelsContainer.textContent = "You have no channels.";
-      allChannelsContainer.textContent = "No other channels exist.";
+      allChannelsContainer.textContent = "No channels exist.";
       return;
     }
 
     const channelsData = snapshot.val();
     Object.keys(channelsData).forEach((channelId) => {
       const channelInfo = channelsData[channelId];
-      const { owner, members } = channelInfo;
-      const userEmail = currentUserData.email || "";
-      const userName = currentUserData.name || "";
 
-      // If user is the owner or a member, they're "in" the channel
-      const inChannel =
-          owner === userEmail ||
-          owner === userName ||
-          (members && members.includes(userEmail)) ||
-          (members && members.includes(userName));
-
+      // Create channel container
       const channelItemEl = document.createElement("div");
       channelItemEl.classList.add("channel-item");
 
+      // Create and set channel name element
       const channelNameEl = document.createElement("span");
       channelNameEl.classList.add("channel-name");
       channelNameEl.textContent = channelInfo.name || "Untitled channel";
 
+      // Create channel info container
       const channelEnd = document.createElement("div");
       channelEnd.classList.add("channel-end");
 
+      // Create and set channel owner element
       const channelOwnerEl = document.createElement("span");
       channelOwnerEl.classList.add("channel-owner");
       channelOwnerEl.textContent = channelInfo.owner || "Unknown Owner";
 
+      // Create options button (for channel actions)
       const optionsBtn = document.createElement("button");
       optionsBtn.classList.add("options-btn");
       optionsBtn.textContent = "...";
@@ -110,26 +111,25 @@ async function fetchchannels() {
           showchannelOptions(event, channelInfo)
       );
 
+      // Append owner and options button
       channelEnd.appendChild(channelOwnerEl);
       channelEnd.appendChild(optionsBtn);
 
+      // Always add chat button on every channel
+      const chatBtn = document.createElement("button");
+      chatBtn.classList.add("chat-btn");
+      chatBtn.textContent = "Chat";
+      chatBtn.addEventListener("click", () =>
+          openChannelChat(channelInfo.id)
+      );
+      channelEnd.appendChild(chatBtn);
+
+      // Build the channel element
       channelItemEl.appendChild(channelNameEl);
       channelItemEl.appendChild(channelEnd);
 
-      // If user is in channel => goes to "My Channels" + Chat button
-      // Otherwise => goes to "All Channels"
-      if (inChannel) {
-        const chatBtn = document.createElement("button");
-        chatBtn.textContent = "Chat";
-        chatBtn.classList.add("chat-btn");
-        chatBtn.addEventListener("click", () =>
-            openChannelChat(channelInfo.id)
-        );
-        channelEnd.appendChild(chatBtn);
-        myChannelsContainer.appendChild(channelItemEl);
-      } else {
-        allChannelsContainer.appendChild(channelItemEl);
-      }
+      // Append to the single channels container
+      allChannelsContainer.appendChild(channelItemEl);
     });
   } catch (error) {
     console.error("Error fetching channels:", error);
@@ -226,36 +226,37 @@ async function deletechannel(channelId) {
   }
 }
 
+
 async function addMember(channelId) {
   const newMemberEmail = prompt("Enter the email of the member to add:");
   if (!newMemberEmail) return;
-  try {
-    const channelMembersRef = ref(database, `channels/${channelId}/members`);
-    const userRef = ref(database, "users/" + newMemberEmail.replace(".", ","));
-    const userSnapshot = await get(userRef);
-    if (!userSnapshot.exists()) {
-      alert("User not found.");
-      return;
-    }
-    let userData = userSnapshot.val();
-    const channelMembersSnap = await get(channelMembersRef);
-    const channelMembers = channelMembersSnap.exists()
-        ? channelMembersSnap.val()
-        : [];
 
-    if (channelMembers.includes(newMemberEmail)) {
+  try {
+    // Sanitize the email
+    const sanitizedEmail = sanitizeEmail(newMemberEmail);
+
+    // Reference to the members array in the channel
+    const channelMembersRef = ref(database, `channels/${channelId}/members`);
+
+    // Fetch the current members
+    const channelMembersSnap = await get(channelMembersRef);
+    const channelMembers = channelMembersSnap.exists() ? channelMembersSnap.val() : [];
+
+    // Check if the user is already a member
+    if (channelMembers.includes(sanitizedEmail)) {
       alert("This user is already a member.");
       return;
     }
-    channelMembers.push(newMemberEmail);
+
+    // Add the new member to the array
+    channelMembers.push(sanitizedEmail);
+
+    // Update the members array in Firebase
     await set(channelMembersRef, channelMembers);
 
-    const updatedchannels = userData.channels
-        ? [...userData.channels, channelId]
-        : [channelId];
-    await update(userRef, { channels: updatedchannels });
     alert("Member added successfully!");
   } catch (error) {
+    console.error("Failed to add member:", error);
     alert("Failed to add member.");
   }
 }
@@ -268,30 +269,23 @@ async function removeMember(channelId) {
       alert("No members found in this channel.");
       return;
     }
+
     const members = snapshot.val();
     const memberToRemove = prompt(
-        `Members: \n${members.join("\n")}\nEnter email to remove:`
+        `Members: \n${members.map(unsanitizeEmail).join("\n")}\nEnter email to remove:`
     );
-    if (!memberToRemove || !members.includes(memberToRemove)) {
+
+    if (!memberToRemove || !members.includes(sanitizeEmail(memberToRemove))) {
       alert("Invalid member email.");
       return;
     }
-    const updatedMembers = members.filter((m) => m !== memberToRemove);
+
+    const updatedMembers = members.filter((m) => m !== sanitizeEmail(memberToRemove));
     await set(channelMembersRef, updatedMembers);
 
-    const userRef = ref(database, "users/" + memberToRemove.replace(".", ","));
-    const userSnapshot = await get(userRef);
-    if (!userSnapshot.exists()) {
-      alert("User not found.");
-      return;
-    }
-    const userData = userSnapshot.val();
-    const updatedchannels = userData.channels.filter(
-        (ch) => ch !== channelId
-    );
-    await update(userRef, { channels: updatedchannels });
     alert("Member removed successfully!");
   } catch (error) {
+    console.error("Failed to remove member:", error);
     alert("Failed to remove member.");
   }
 }
