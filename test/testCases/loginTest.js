@@ -1,4 +1,4 @@
-import { runCSSValidation } from "../scripts/styleTest.js";
+const { runCSSValidation } = require("../scripts/styleTest.js");
 
 // Run tests only in CI/CD
 if (process.env.CI) {
