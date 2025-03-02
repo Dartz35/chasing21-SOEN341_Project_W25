@@ -43,7 +43,7 @@ jobs:
         run: cat results/*.log || echo "⚠️ No test results found."
 
       - name: Upload Test Results as Artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: CSS-Test-Results
           path: results/
