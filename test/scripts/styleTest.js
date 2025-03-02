@@ -148,4 +148,4 @@ async function runCSSValidation(htmlFilePath, expectedStylesPath, logFilePath) {
   }
 }
 
-export { runCSSValidation };
+module.exports = { runCSSValidation };
