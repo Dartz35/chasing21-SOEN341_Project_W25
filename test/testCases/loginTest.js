@@ -3,7 +3,7 @@ const { runCSSValidation } = require("../scripts/styleTest.js");
 
 // Define full absolute paths
 const htmlFilePath = "../html/loginPage.html";
-const expectedStylesPath = path.join(__dirname, "/expectedResults/coucou.json");
+const expectedStylesPath = "../expectedResults/expectedLoginPageStyles.json";
 
 // Run tests only in CI/CD
 if (process.env.CI) {
