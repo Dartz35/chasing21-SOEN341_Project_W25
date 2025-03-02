@@ -4,11 +4,17 @@ Note: This script may not work in all scenarios, especially if the page has comp
 It's recommended to test it on a sample page before using it in a production environment.
 */
 
-// Automatically detects all styled elements on the page
+// Get all elements that have computed styles applied
 function getAllStyledElements() {
   const elements = new Set();
   document.querySelectorAll("*").forEach((el) => {
-    if (el.style.length > 0 || window.getComputedStyle(el).cssText !== "") {
+    const computedStyle = window.getComputedStyle(el);
+    // Only add elements that have non-default computed styles
+    if (
+      [...computedStyle].some(
+        (prop) => computedStyle.getPropertyValue(prop).trim() !== ""
+      )
+    ) {
       elements.add(el);
     }
   });
@@ -19,7 +25,21 @@ function getAllStyledElements() {
 function getComputedStylesForElements(elements) {
   let styles = {};
   elements.forEach((element) => {
-    let selector = element.id ? `#${element.id}` : `.${element.classList[0]}`;
+    let selector;
+
+    // Prioritize ID selector
+    if (element.id) {
+      selector = `#${element.id}`;
+    }
+    // Use all classes instead of just the first one
+    else if (element.className && typeof element.className === "string") {
+      selector = `.${element.className.trim().replace(/\s+/g, ".")}`;
+    }
+    // If no ID or class, generate a tag selector
+    else {
+      selector = element.tagName.toLowerCase();
+    }
+
     let computedStyle = window.getComputedStyle(element);
     styles[selector] = {};
     for (let property of computedStyle) {
@@ -29,7 +49,9 @@ function getComputedStylesForElements(elements) {
   return styles;
 }
 
+// Run the script
 const styledElements = getAllStyledElements();
 const extractedStyles = getComputedStylesForElements(styledElements);
+
+// Log to console (copy/paste output)
 console.log(JSON.stringify(extractedStyles, null, 2));
-// Output: Computed styles for all styled elements on the page
