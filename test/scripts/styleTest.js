@@ -41,7 +41,7 @@ async function loadExpectedStyles(filePath, logFilePath) {
 }
 
 // prevented redirection to login page
-function preventRedirection(window, blockedPage = "../html/loginPage.html") {
+/*function preventRedirection(window, blockedPage = "../html/loginPage.html") {
   Object.defineProperty(window, "location", {
     get() {
       return {
@@ -73,7 +73,7 @@ function preventRedirection(window, blockedPage = "../html/loginPage.html") {
       }
     },
   });
-}
+}*/
 
 // Extract computed styles using jsdom (Node.js)
 async function getComputedStylesFromHTML(filePath, logFilePath) {
@@ -85,7 +85,7 @@ async function getComputedStylesFromHTML(filePath, logFilePath) {
   const { document } = dom.window;
 
   // Prevent redirection to login page
-  preventRedirection(dom.window, "../html/loginPage.html");
+  //preventRedirection(dom.window, "../html/loginPage.html");
 
   let computedStyles = {};
   document.querySelectorAll("*").forEach((el) => {
