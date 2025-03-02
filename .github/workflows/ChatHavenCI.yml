@@ -4,9 +4,11 @@ on:
   push:
     branches:
       - main
+      - CI-Pipeline
   pull_request:
     branches:
       - main
+      - CI-Pipeline
 
 jobs:
   test:
