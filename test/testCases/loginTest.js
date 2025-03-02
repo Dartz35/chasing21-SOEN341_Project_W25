@@ -11,14 +11,13 @@ if (!fs.existsSync(resultsDir)) {
 // Define full absolute paths
 const htmlFilePath = "../html/loginPage.html";
 const expectedStylesPath = "../expectedResults/expectedLoginPageStyles.json";
-const logFilePath = "../results/loginPageTestResults.log";
 
 // Ensure log file is created before writing results
 fs.writeFileSync(logFilePath, "CSS Test Log Start\n", "utf8");
 
 // Run tests only in CI/CD
 if (process.env.CI) {
-  runCSSValidation(htmlFilePath, expectedStylesPath, logFilePath);
+  runCSSValidation(htmlFilePath, expectedStylesPath);
 } else {
   console.log("Running locally: Skipping CSS tests.");
 }

@@ -1,6 +1,18 @@
 const fs = require("fs");
 const { JSDOM } = require("jsdom");
 
+// Ensure results folder exists
+const resultsDir = path.join(__dirname, "../results");
+if (!fs.existsSync(resultsDir)) {
+  fs.mkdirSync(resultsDir, { recursive: true });
+}
+
+// Function to generate a unique log file name
+function createNewLogFile() {
+  const timestamp = new Date().toISOString().replace(/:/g, "-"); // Prevents issues with Windows filenames
+  return path.join(resultsDir, `css_test_${timestamp}.log`);
+}
+
 // Function to log test results into a file
 function logToFile(message, logFilePath) {
   fs.appendFileSync(
@@ -8,11 +20,6 @@ function logToFile(message, logFilePath) {
     `[${new Date().toISOString()}] ${message}\n`,
     "utf8"
   );
-}
-
-// Function to clear the log file
-function clearLogFile(logFilePath) {
-  fs.writeFileSync(logFilePath, "", "utf8");
 }
 
 // Load expected styles from JSON
@@ -96,8 +103,8 @@ function normalizeCSSValue(value) {
 }
 
 // Compare extracted styles with expected styles and log results
-async function runCSSValidation(htmlFilePath, expectedStylesPath, logFilePath) {
-  clearLogFile(logFilePath);
+async function runCSSValidation(htmlFilePath, expectedStylesPath) {
+  const logFilePath = createNewLogFile();
   logToFile("Running CSS Tests...\n", logFilePath);
 
   const expectedStyles = await loadExpectedStyles(
