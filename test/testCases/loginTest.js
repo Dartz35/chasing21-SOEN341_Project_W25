@@ -16,9 +16,12 @@ const expectedStylesPath = path.join(
 );
 const logFilePath = path.join(__dirname, "../results/loginPageTestResults.log");
 
+// Ensure log file is created before writing results
+fs.writeFileSync(logFilePath, "CSS Test Log Start\n", "utf8");
+
 // Run tests only in CI/CD
 if (process.env.CI) {
   runCSSValidation(htmlFilePath, expectedStylesPath, logFilePath);
 } else {
-  console.log("🟢 Running locally: Skipping CSS tests.");
+  console.log("Running locally: Skipping CSS tests.");
 }

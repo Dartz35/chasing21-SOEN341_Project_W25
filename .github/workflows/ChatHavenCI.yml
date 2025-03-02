@@ -26,9 +26,24 @@ jobs:
       - name: Install Dependencies
         run: npm install jsdom --save-dev
 
+      - name: Ensure results folder exists
+        run: mkdir -p results
+
       - name: Run All CSS Tests
         run: |
           for test in test/testCases/*.js; do
             echo "Running test: $test"
             node "$test" || exit 1
           done
+
+      - name: "Debug: List All Files"
+        run: ls -R
+
+      - name: Display Test Results in Logs
+        run: cat results/*.log || echo "⚠️ No test results found."
+
+      - name: Upload Test Results as Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: CSS-Test-Results
+          path: results/
