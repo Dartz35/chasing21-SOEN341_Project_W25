@@ -9,12 +9,9 @@ if (!fs.existsSync(resultsDir)) {
 }
 
 // Define full absolute paths
-const htmlFilePath = path.join(__dirname, "../html/loginPage.html");
-const expectedStylesPath = path.join(
-  __dirname,
-  "../expectedResults/expectedloginPageStyles.json"
-);
-const logFilePath = path.join(__dirname, "../results/loginPageTestResults.log");
+const htmlFilePath = "../html/loginPage.html";
+const expectedStylesPath = "../expectedResults/expectedLoginPageStyles.json";
+const logFilePath = "../results/loginPageTestResults.log";
 
 // Ensure log file is created before writing results
 fs.writeFileSync(logFilePath, "CSS Test Log Start\n", "utf8");

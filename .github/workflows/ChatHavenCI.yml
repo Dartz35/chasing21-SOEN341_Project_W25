@@ -37,10 +37,4 @@ jobs:
           done
 
       - name: Display Test Results in Logs
-        run: cat test/results/*.log || echo "No test results found."
-
-      - name: Upload Test Results as Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: CSS-Test-Results
-          path: test/results/
+        run: cat
