@@ -28,7 +28,7 @@ jobs:
 
       - name: Run All CSS Tests
         run: |
-          for test in test/testCases/*.js; do
+          for test in test/testCases/*.mjs; do
             echo "Running test: $test"
             node "$test" || exit 1
           done
