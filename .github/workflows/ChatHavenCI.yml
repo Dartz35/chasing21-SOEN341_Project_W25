@@ -37,4 +37,4 @@ jobs:
           done
 
       - name: Display Test Results in Logs
-        run: cat
+        run: cat test/results/*.log || echo "No test results found."

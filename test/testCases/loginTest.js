@@ -2,12 +2,6 @@ const fs = require("fs");
 const path = require("path");
 const { runCSSValidation } = require("../scripts/styleTest.js");
 
-// Ensure the results directory exists
-const resultsDir = path.join(__dirname, "../results");
-if (!fs.existsSync(resultsDir)) {
-  fs.mkdirSync(resultsDir, { recursive: true });
-}
-
 // Define full absolute paths
 const htmlFilePath = "../html/loginPage.html";
 const expectedStylesPath = "../expectedResults/expectedLoginPageStyles.json";
