@@ -26,6 +26,12 @@ function logToFile(message, logFilePath) {
 // Load expected styles from JSON
 async function loadExpectedStyles(filePath, logFilePath) {
   try {
+    console.log(`Loading expected styles from: ${filePath}`);
+
+    if (!fs.existsSync(filePath)) {
+      throw new Error("Expected styles file not found. ${filePath}");
+    }
+
     const data = fs.readFileSync(filePath, "utf8");
     return JSON.parse(data);
   } catch (error) {
