@@ -29,7 +29,7 @@ async function loadExpectedStyles(filePath, logFilePath) {
     console.log(`Loading expected styles from: ${filePath}`);
 
     if (!fs.existsSync(filePath)) {
-      throw new Error("Expected styles file not found. ${filePath}");
+      throw new Error(`Expected styles file not found. ${filePath}`);
     }
 
     const data = fs.readFileSync(filePath, "utf8");
