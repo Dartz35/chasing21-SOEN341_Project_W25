@@ -36,14 +36,11 @@ jobs:
             node "$test" || exit 1
           done
 
-      - name: "Debug: List All Files"
-        run: ls -R
-
       - name: Display Test Results in Logs
-        run: cat results/*.log || echo "⚠️ No test results found."
+        run: cat test/results/*.log || echo "No test results found."
 
       - name: Upload Test Results as Artifact
         uses: actions/upload-artifact@v4
         with:
           name: CSS-Test-Results
-          path: results/
+          path: test/results/
