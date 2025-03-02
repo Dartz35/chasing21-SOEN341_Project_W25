@@ -1,0 +1,32 @@
+name: ChatHaven CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Install Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Install Dependencies
+        run: npm install jsdom --save-dev
+
+      - name: Run All CSS Tests
+        run: |
+          for test in test/testCases/*.js; do
+            echo "Running test: $test"
+            node "$test" || exit 1
+          done
