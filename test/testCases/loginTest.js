@@ -2,7 +2,7 @@ const path = require("path");
 const { runCSSValidation } = require("../scripts/styleTest.js");
 
 // Define full absolute paths
-const htmlFilePath = "../html/loginPage.html";
+const htmlFilePath = "../chasing21-SOEN341_Project_W25/html/loginPage.html";
 const expectedStylesPath =
   "../chasing21-SOEN341_Project_W25/test/expectedResults/expectedLoginPageStyles.json";
 
