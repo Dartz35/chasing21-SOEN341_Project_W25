@@ -97,7 +97,10 @@ function Dashboard() {
           null,
           React.createElement(
             "button",
-            { id: "settingBtn", className: "profBtns toggleSettings" },
+            {
+              className: "profBtns toggleSettings",
+              onClick: toggleSettings,
+            },
             React.createElement("i", { className: "fas fa-cog" }),
             " Settings"
           )
