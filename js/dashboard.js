@@ -214,7 +214,13 @@ function Dashboard() {
     )
   );
 }
+function toggleSettings() {
+  const editSettings = document.getElementById("toggleSettings");
+  const sidebar = document.getElementById("sidebar").classList;
 
+  sidebar.toggle("active");
+  editSettings.hidden = !editSettings.hidden;
+}
 // Toggle Edit Profile Visibility
 function toggleEditProfile() {
   const editProfile = document.getElementById("editProfile");
@@ -254,13 +260,7 @@ async function handleConfirmName(event) {
   }
 
 
-  function toggleSettings() {
-    const editSettings = document.getElementById("toggleSettings");
-    const sidebar = document.getElementById("sidebar").classList;
-  
-    sidebar.toggle("active");
-    editSettings.hidden = !editSettings.hidden;
-  }}
+}
 
 /*
 //Setting function
