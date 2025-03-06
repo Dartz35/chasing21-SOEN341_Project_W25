@@ -237,3 +237,31 @@ Sidebar Styles
 .confirmChange:hover {
   background: #5f73a1;
 }
+/* Settings CSS */
+button.settingsBtn {
+  padding: 10px 20px;
+  margin: 10px;
+  min-width: 150px;
+  display: inline-block;
+  border-radius: 10px;
+  color: white;
+  background: #7289da;
+  width: 100%;
+}
+.editSettings {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 250px;
+  background: #2c2f33;
+  color: white;
+  padding: 20px;
+  box-shadow: -2px 0 5px rgba(0, 0, 0, 0.5);
+  z-index: 2000;
+  flex-direction: column;
+  align-items: center;
+  border-radius: 10px;
+}
+button.settingsBtn.deleteBtn {
+  background: #af3d3d !important;
+}
