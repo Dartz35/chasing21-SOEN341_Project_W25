@@ -124,8 +124,34 @@ function Dashboard() {
         )
       )
     ),
-
+//edit setting 
+    React.createElement(
+      "div",
+      { id: "toggleSettings", className: "editSettings", hidden: true },
+      React.createElement(
+        "button",
+        { className: "backBtn toggleSettings", onClick: toggleSettings },
+        "←"
+      ),
+      React.createElement("h2", null, "Settings"),
+      React.createElement(
+        "button",
+        { className: "settingsBtn",  },
+        "Change Email 📩"
+      ),
+      React.createElement(
+        "button",
+        { className: "settingsBtn",  },
+        "Change Password 🔒"
+      ),
+      React.createElement(
+        "button",
+        { className: "settingsBtn deleteBtn", },
+        "Delete Account"
+      )
+    ),
     // Edit Profile Display
+   
     React.createElement(
       "div",
       { id: "editProfile", className: "editProfile", hidden: true },
@@ -226,7 +252,15 @@ async function handleConfirmName(event) {
     alert("Please log in to change your name");
     window.location.href = "../html/loginPage.html"; // Redirect if not logged in
   }
-}
+
+
+  function toggleSettings() {
+    const editSettings = document.getElementById("toggleSettings");
+    const sidebar = document.getElementById("sidebar").classList;
+  
+    sidebar.toggle("active");
+    editSettings.hidden = !editSettings.hidden;
+  }}
 
 /*
 //Setting function
