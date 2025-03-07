@@ -7,7 +7,8 @@ import {
     query,
     orderByChild,
     equalTo,
-    onChildAdded
+    onChildAdded,
+    remove
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
 function displayError(message) {
@@ -23,6 +24,22 @@ function displayError(message) {
     setTimeout(() => {
         errorDiv.textContent = "";
     }, 5000);
+}
+
+async function fetchRoleById(uid) {
+    try {
+        const snapshot = await get(ref(database, "users"));
+        if (!snapshot.exists()) return "member";
+        const usersData = snapshot.val();
+        for (const key in usersData) {
+            if (usersData[key].id === uid) {
+                return usersData[key].role || "member";
+            }
+        }
+        return "member";
+    } catch {
+        return "member";
+    }
 }
 
 export async function openChannelChat(channelId) {
@@ -51,7 +68,7 @@ export async function openChannelChat(channelId) {
                 lastMessage: "",
                 senderID: "",
                 updatedDate: new Date().toISOString(),
-                channelId: channelId,
+                channelId: channelId
             });
             await set(ref(database, `channels/${channelId}/groupChatId`), groupChatId);
         }
@@ -74,6 +91,7 @@ function displayChatUI(groupChatId, channelName) {
       <div class="chat-container">
         <div class="chat-header">
           <h3>Chat for channel: ${channelName}</h3>
+          <p id="userRoleDisplay"></p>
           <button id="backToChannelsBtn">Back</button>
         </div>
         <div id="messagesContainer" class="messages-container"></div>
@@ -84,6 +102,10 @@ function displayChatUI(groupChatId, channelName) {
       </div>
     `;
         document.body.appendChild(chatView);
+        fetchRoleById(sessionStorage.getItem("currentID") || "unknown").then(role => {
+            document.getElementById("userRoleDisplay").textContent = "Role: " + role;
+            sessionStorage.setItem("role", role);
+        });
         document.getElementById("backToChannelsBtn").addEventListener("click", () => {
             goBackToChannels();
         });
@@ -111,7 +133,7 @@ async function sendMessage(groupChatId) {
             senderID: currentUserId,
             senderName: currentUserName,
             text: messageText,
-            timestamp: new Date().toISOString(),
+            timestamp: new Date().toISOString()
         });
         messageInput.value = "";
     } catch (error) {
@@ -136,8 +158,31 @@ function loadMessages(groupChatId) {
             const messageEl = document.createElement("div");
             messageEl.classList.add("message");
             messageEl.textContent = `${message.senderName}: ${message.text}`;
+            const currentUserRole = sessionStorage.getItem("role") || "member";
+            if (currentUserRole === "admin") {
+                const deleteBtn = document.createElement("button");
+                deleteBtn.textContent = "X";
+                deleteBtn.style.marginLeft = "10px";
+                deleteBtn.classList.add("delete-btn");
+            
+                deleteBtn.addEventListener("click", async () => {
+                    if (confirm("Are you sure you want to delete this message?")) {
+                        try {
+                            await remove(ref(database, "groupMessages/" + snapshot.key));
+                            messageEl.remove();
+                        } catch (err) {
+                            console.error(err);
+                            displayError("Error deleting message: " + err.message);
+                        }
+                    }
+                });
+            
+                messageEl.appendChild(deleteBtn);
+            }
+            
             messagesContainer.appendChild(messageEl);
             messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            
         });
     } catch (error) {
         console.error(error.stack);
