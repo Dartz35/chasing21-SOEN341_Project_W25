@@ -1,6 +1,5 @@
 import { auth, database } from "./firebaseConfig.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-
 import {
   ref,
   get,
@@ -169,14 +168,9 @@ async function fetchNamesForIDs(memberIDs) {
 }
 
 function showchannelOptions(event, channelInfo) {
-  // Remove any existing dropdowns
   document.querySelectorAll(".channel-options").forEach((el) => el.remove());
-
-  // Create the dropdown container
   const dropdown = document.createElement("div");
   dropdown.classList.add("channel-options");
-
-  // Determine the user's role and generate appropriate options
   const userRole = currentUserData.role || "";
   const userId = currentUserData.id || "";
   if (userRole === "admin" && channelInfo.ownerId === userId) {
@@ -184,103 +178,34 @@ function showchannelOptions(event, channelInfo) {
   } else {
     generateMemberchannelOptions(dropdown, channelInfo);
   }
-
-  // Position the dropdown near the button that was clicked
   const rect = event.target.getBoundingClientRect();
   dropdown.style.position = "absolute";
   dropdown.style.top = `${window.scrollY + rect.bottom}px`;
   dropdown.style.left = `${window.scrollX + rect.left - 75}px`;
-
-  // Append the dropdown to the body
   document.body.appendChild(dropdown);
-
-  // Function to clean up the real-time listener
-  let membersRef; // Reference to the members node in the database
-  const cleanup = () => {
-    if (membersRef) {
-      off(membersRef); // Remove the real-time listener
-    }
-  };
-
-  // Close the dropdown when clicking outside
   document.addEventListener("click", function closeDropdown(e) {
     if (!dropdown.contains(e.target) && e.target !== event.target) {
       dropdown.remove();
       document.removeEventListener("click", closeDropdown);
-      cleanup(); // Clean up the listener when the dropdown is closed
     }
   });
-
-  // Function to update the members list in real-time
-  const updateMembersList = async (members) => {
-    const membersContainer = dropdown.querySelector(".members-container");
-    if (!membersContainer) return;
-
-    try {
-      const nameList = await fetchNamesForIDs(members);
-      membersContainer.innerHTML = "Channel Members:<br>" + nameList.join("<br>");
-    } catch {
-      membersContainer.innerHTML = "Could not fetch member names.";
-    }
-  };
-
-  // Add a "View Members" button to the dropdown
-  const viewMembersBtn = document.createElement("button");
-  viewMembersBtn.textContent = "View Members";
-  viewMembersBtn.addEventListener("click", () => {
-    if (!channelInfo.members || channelInfo.members.length === 0) {
-      alert("No members in this channel.");
-      return;
-    }
-
-    // Create a container to display members
-    const membersContainer = document.createElement("div");
-    membersContainer.classList.add("members-container");
-    dropdown.appendChild(membersContainer);
-
-    // Set up a real-time listener for the members node
-    membersRef = ref(database, `channels/${channelInfo.id}/members`);
-    onValue(membersRef, (snapshot) => {
-      const members = snapshot.val() || [];
-      updateMembersList(members);
-    });
-  });
-
-  // Append the "View Members" button to the dropdown
-  dropdown.appendChild(viewMembersBtn);
 }
 
 function generateAdminchannelOptions(dropdown, channelInfo) {
   const viewMembersBtn = document.createElement("button");
   viewMembersBtn.textContent = "View Members";
-  viewMembersBtn.addEventListener("click", () => {
+  viewMembersBtn.addEventListener("click", async () => {
     if (!channelInfo.members || channelInfo.members.length === 0) {
       alert("No members in this channel.");
       return;
     }
-
-    // Create a container to display members
-    const membersContainer = document.createElement("div");
-    membersContainer.classList.add("members-container");
-
-    const updateMembersList = async (members) => {
-      try {
-        const nameList = await fetchNamesForIDs(members);
-        membersContainer.innerHTML = "Channel Members:<br>" + nameList.join("<br>");
-      } catch {
-        membersContainer.innerHTML = "Could not fetch member names.";
-      }
-    };
-
-    const membersRef = ref(database, `channels/${channelInfo.id}/members`);
-    onValue(membersRef, (snapshot) => {
-      const members = snapshot.val() || [];
-      updateMembersList(members);
-    });
-
-    dropdown.appendChild(membersContainer);
+    try {
+      const nameList = await fetchNamesForIDs(channelInfo.members);
+      alert("Channel Members:\n" + nameList.join("\n"));
+    } catch {
+      alert("Could not fetch member names.");
+    }
   });
-
   dropdown.appendChild(viewMembersBtn);
   const deletechannelBtn = document.createElement("button");
   deletechannelBtn.classList.add("delete-channel-btn");
@@ -304,21 +229,17 @@ function generateAdminchannelOptions(dropdown, channelInfo) {
 function generateMemberchannelOptions(dropdown, channelInfo) {
   const viewMembersBtn = document.createElement("button");
   viewMembersBtn.textContent = "View Members";
-  viewMembersBtn.addEventListener("click", () => {
-    const channelMembersRef = ref(database, `channels/${channelInfo.id}/members`);
-    onValue(channelMembersRef, async (snapshot) => {
-      if (!snapshot.exists()) {
-        alert("No members in this channel.");
-        return;
-      }
-      const members = snapshot.val();
-      try {
-        const nameList = await fetchNamesForIDs(members);
-        alert("Channel Members (updated):\n" + nameList.join("\n"));
-      } catch {
-        alert("Could not fetch member names.");
-      }
-    });
+  viewMembersBtn.addEventListener("click", async () => {
+    if (!channelInfo.members || channelInfo.members.length === 0) {
+      alert("No members in this channel.");
+      return;
+    }
+    try {
+      const nameList = await fetchNamesForIDs(channelInfo.members);
+      alert("Channel Members:\n" + nameList.join("\n"));
+    } catch {
+      alert("Could not fetch member names.");
+    }
   });
   dropdown.appendChild(viewMembersBtn);
   const messageAdminBtn = document.createElement("button");
@@ -338,11 +259,11 @@ async function deletechannel(channelId) {
     }
     await set(channelRef, null);
     alert("Channel deleted successfully!");
+    await fetchchannels();
   } catch {
     alert("Failed to delete channel.");
   }
 }
-
 
 async function addMember(channelId) {
   const newMemberEmail = prompt("Enter the email of the member to add:");
@@ -414,3 +335,16 @@ async function removeMember(channelId) {
   }
 }
 
+export async function createGroupChat(members, lastMessage, senderID) {
+  const groupChatsRef = ref(database, "groupChats");
+  const newChatRef = push(groupChatsRef);
+  const chatId = newChatRef.key;
+  const updatedDate = new Date().toISOString();
+  await set(newChatRef, {
+    chatId,
+    lastMessage,
+    members,
+    senderID,
+    updatedDate,
+  });
+}
