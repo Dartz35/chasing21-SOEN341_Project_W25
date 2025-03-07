@@ -1,5 +1,6 @@
 import { auth, database } from "./firebaseConfig.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
 import {
   ref,
   get,
@@ -15,6 +16,9 @@ let currentUserData = {};
 onAuthStateChanged(auth, async (user) => {
   if (user) {
     currentUserData = await fetchProfileData(user);
+    currentUserData.id = user.uid;
+    const fetchedName = await fetchNameById(currentUserData.id);
+    currentUserData.name = fetchedName || "Unknown";
     await fetchchannels();
   } else {
     if (!window.loggingOut) {
@@ -23,12 +27,23 @@ onAuthStateChanged(auth, async (user) => {
     }
   }
 });
-function sanitizeEmail(email) {
-  return email.replace(/\./g, ",");
-}
 
-function unsanitizeEmail(email) {
-  return email.replace(/,/g, ".");
+async function fetchNameById(uid) {
+  try {
+    const snapshot = await get(ref(database, "users"));
+    if (!snapshot.exists()) {
+      return null;
+    }
+    const usersData = snapshot.val();
+    for (const key in usersData) {
+      if (usersData[key].id === uid) {
+        return usersData[key].name;
+      }
+    }
+    return null;
+  } catch {
+    return null;
+  }
 }
 
 const createchannelBtn = document.getElementById("createchannelBtn");
@@ -43,158 +58,273 @@ async function createchannel() {
     alert("Please enter a channel name.");
     return;
   }
-
-  const channelOwner = currentUserData.name || currentUserData.email || "Unknown";
-
+  const channelOwnerId = currentUserData.id;
+  if (!channelOwnerId) {
+    alert("Error: Could not find your user ID to create the channel.");
+    return;
+  }
   try {
-    const newchannelRef = push(ref(database, "channels"));
-    await set(newchannelRef, {
-      id: newchannelRef.key,
+    const newChannelRef = push(ref(database, "channels"));
+    await set(newChannelRef, {
+      id: newChannelRef.key,
       name: channelName,
-      owner: channelOwner,
-      members: [sanitizeEmail(channelOwner)], // Sanitize the owner's email
+      ownerId: channelOwnerId,
+      members: [channelOwnerId],
     });
-
-    channelNameInput.value = "";
+    if (channelNameInput) channelNameInput.value = "";
     await fetchchannels();
-  } catch (error) {
-    console.error("Failed to create Channel:", error);
+  } catch {
     alert("Failed to create Channel.");
   }
 }
 
-/**
- * Splits channels into two lists:
- * 1. My Channels (where user is owner or in members)
- * 2. All Channels (where user is NOT in members and not owner)
- */
 async function fetchchannels() {
   const channelsRef = ref(database, "channels");
   try {
     const snapshot = await get(channelsRef);
-    const allChannelsContainer = document.getElementById("allChannelsContainer");
-    if (!allChannelsContainer) return;
-    allChannelsContainer.innerHTML = "";
-
     if (!snapshot.exists()) {
-      allChannelsContainer.textContent = "No channels exist.";
+      const myChannelsContainer = document.getElementById("myChannelsContainer");
+      const allChannelsContainer = document.getElementById("allChannelsContainer");
+      if (myChannelsContainer) myChannelsContainer.innerHTML = "No channels exist.";
+      if (allChannelsContainer) allChannelsContainer.innerHTML = "";
+      return;
+    }
+    const channelsData = snapshot.val();
+    const myChannelsContainer = document.getElementById("myChannelsContainer");
+    const allChannelsContainer = document.getElementById("allChannelsContainer");
+    if (!myChannelsContainer || !allChannelsContainer) {
+      return;
+    }
+    myChannelsContainer.innerHTML = "";
+    allChannelsContainer.innerHTML = "";
+    const userId = currentUserData.id;
+    Object.keys(channelsData).forEach((channelId) => {
+      const channelInfo = channelsData[channelId];
+      const isMember = channelInfo.members && channelInfo.members.includes(userId);
+      const channelItemEl = buildChannelItem(channelInfo, isMember);
+      if (isMember) {
+        myChannelsContainer.appendChild(channelItemEl);
+      } else {
+        allChannelsContainer.appendChild(channelItemEl);
+      }
+    });
+  } catch {}
+}
+
+function buildChannelItem(channelInfo, isMember) {
+  const channelItemEl = document.createElement("div");
+  channelItemEl.classList.add("channel-item");
+  const channelNameEl = document.createElement("span");
+  channelNameEl.classList.add("channel-name");
+  channelNameEl.textContent = channelInfo.name || "Untitled channel";
+  const channelEnd = document.createElement("div");
+  channelEnd.classList.add("channel-end");
+  const channelOwnerEl = document.createElement("span");
+  channelOwnerEl.classList.add("channel-owner");
+  getOwnerName(channelInfo.ownerId).then(ownerName => {
+    channelOwnerEl.textContent = `Owner: ${ownerName}`;
+  });
+  const optionsBtn = document.createElement("button");
+  optionsBtn.classList.add("options-btn");
+  optionsBtn.textContent = "...";
+  optionsBtn.addEventListener("click", (event) =>
+      showchannelOptions(event, channelInfo)
+  );
+  channelEnd.appendChild(channelOwnerEl);
+  channelEnd.appendChild(optionsBtn);
+  if (isMember) {
+    const chatBtn = document.createElement("button");
+    chatBtn.classList.add("chat-btn");
+    chatBtn.textContent = "Chat";
+    chatBtn.addEventListener("click", () => openChannelChat(channelInfo.id));
+    channelEnd.appendChild(chatBtn);
+  }
+  channelItemEl.appendChild(channelNameEl);
+  channelItemEl.appendChild(channelEnd);
+  return channelItemEl;
+}
+
+async function getOwnerName(ownerId) {
+  const usersSnapshot = await get(ref(database, "users"));
+  if (!usersSnapshot.exists()) return "Unknown Owner";
+  const usersData = usersSnapshot.val();
+  const ownerEntry = Object.values(usersData).find(user => user.id === ownerId);
+  return ownerEntry ? ownerEntry.name : "Unknown Owner";
+}
+
+async function fetchNamesForIDs(memberIDs) {
+  if (!memberIDs || memberIDs.length === 0) return [];
+  const usersSnapshot = await get(ref(database, "users"));
+  if (!usersSnapshot.exists()) return [];
+  const usersData = usersSnapshot.val();
+  return memberIDs.map((uid) => {
+    const foundKey = Object.keys(usersData).find(
+        (key) => usersData[key].id === uid
+    );
+    if (!foundKey) {
+      return `Unknown user (ID: ${uid})`;
+    }
+    return usersData[foundKey].name || `No name (ID: ${uid})`;
+  });
+}
+
+function showchannelOptions(event, channelInfo) {
+  // Remove any existing dropdowns
+  document.querySelectorAll(".channel-options").forEach((el) => el.remove());
+
+  // Create the dropdown container
+  const dropdown = document.createElement("div");
+  dropdown.classList.add("channel-options");
+
+  // Determine the user's role and generate appropriate options
+  const userRole = currentUserData.role || "";
+  const userId = currentUserData.id || "";
+  if (userRole === "admin" && channelInfo.ownerId === userId) {
+    generateAdminchannelOptions(dropdown, channelInfo);
+  } else {
+    generateMemberchannelOptions(dropdown, channelInfo);
+  }
+
+  // Position the dropdown near the button that was clicked
+  const rect = event.target.getBoundingClientRect();
+  dropdown.style.position = "absolute";
+  dropdown.style.top = `${window.scrollY + rect.bottom}px`;
+  dropdown.style.left = `${window.scrollX + rect.left - 75}px`;
+
+  // Append the dropdown to the body
+  document.body.appendChild(dropdown);
+
+  // Function to clean up the real-time listener
+  let membersRef; // Reference to the members node in the database
+  const cleanup = () => {
+    if (membersRef) {
+      off(membersRef); // Remove the real-time listener
+    }
+  };
+
+  // Close the dropdown when clicking outside
+  document.addEventListener("click", function closeDropdown(e) {
+    if (!dropdown.contains(e.target) && e.target !== event.target) {
+      dropdown.remove();
+      document.removeEventListener("click", closeDropdown);
+      cleanup(); // Clean up the listener when the dropdown is closed
+    }
+  });
+
+  // Function to update the members list in real-time
+  const updateMembersList = async (members) => {
+    const membersContainer = dropdown.querySelector(".members-container");
+    if (!membersContainer) return;
+
+    try {
+      const nameList = await fetchNamesForIDs(members);
+      membersContainer.innerHTML = "Channel Members:<br>" + nameList.join("<br>");
+    } catch {
+      membersContainer.innerHTML = "Could not fetch member names.";
+    }
+  };
+
+  // Add a "View Members" button to the dropdown
+  const viewMembersBtn = document.createElement("button");
+  viewMembersBtn.textContent = "View Members";
+  viewMembersBtn.addEventListener("click", () => {
+    if (!channelInfo.members || channelInfo.members.length === 0) {
+      alert("No members in this channel.");
       return;
     }
 
-    const channelsData = snapshot.val();
-    Object.keys(channelsData).forEach((channelId) => {
-      const channelInfo = channelsData[channelId];
+    // Create a container to display members
+    const membersContainer = document.createElement("div");
+    membersContainer.classList.add("members-container");
+    dropdown.appendChild(membersContainer);
 
-      // Create channel container
-      const channelItemEl = document.createElement("div");
-      channelItemEl.classList.add("channel-item");
-
-      // Create and set channel name element
-      const channelNameEl = document.createElement("span");
-      channelNameEl.classList.add("channel-name");
-      channelNameEl.textContent = channelInfo.name || "Untitled channel";
-
-      // Create channel info container
-      const channelEnd = document.createElement("div");
-      channelEnd.classList.add("channel-end");
-
-      // Create and set channel owner element
-      const channelOwnerEl = document.createElement("span");
-      channelOwnerEl.classList.add("channel-owner");
-      channelOwnerEl.textContent = channelInfo.owner || "Unknown Owner";
-
-      // Create options button (for channel actions)
-      const optionsBtn = document.createElement("button");
-      optionsBtn.classList.add("options-btn");
-      optionsBtn.textContent = "...";
-      optionsBtn.addEventListener("click", (event) =>
-          showchannelOptions(event, channelInfo)
-      );
-
-      // Append owner and options button
-      channelEnd.appendChild(channelOwnerEl);
-      channelEnd.appendChild(optionsBtn);
-
-      // Always add chat button on every channel
-      const chatBtn = document.createElement("button");
-      chatBtn.classList.add("chat-btn");
-      chatBtn.textContent = "Chat";
-      chatBtn.addEventListener("click", () =>
-          openChannelChat(channelInfo.id)
-      );
-      channelEnd.appendChild(chatBtn);
-
-      // Build the channel element
-      channelItemEl.appendChild(channelNameEl);
-      channelItemEl.appendChild(channelEnd);
-
-      // Append to the single channels container
-      allChannelsContainer.appendChild(channelItemEl);
+    // Set up a real-time listener for the members node
+    membersRef = ref(database, `channels/${channelInfo.id}/members`);
+    onValue(membersRef, (snapshot) => {
+      const members = snapshot.val() || [];
+      updateMembersList(members);
     });
-  } catch (error) {
-    console.error("Error fetching channels:", error);
-  }
+  });
+
+  // Append the "View Members" button to the dropdown
+  dropdown.appendChild(viewMembersBtn);
 }
 
 function generateAdminchannelOptions(dropdown, channelInfo) {
+  const viewMembersBtn = document.createElement("button");
+  viewMembersBtn.textContent = "View Members";
+  viewMembersBtn.addEventListener("click", () => {
+    if (!channelInfo.members || channelInfo.members.length === 0) {
+      alert("No members in this channel.");
+      return;
+    }
+
+    // Create a container to display members
+    const membersContainer = document.createElement("div");
+    membersContainer.classList.add("members-container");
+
+    const updateMembersList = async (members) => {
+      try {
+        const nameList = await fetchNamesForIDs(members);
+        membersContainer.innerHTML = "Channel Members:<br>" + nameList.join("<br>");
+      } catch {
+        membersContainer.innerHTML = "Could not fetch member names.";
+      }
+    };
+
+    const membersRef = ref(database, `channels/${channelInfo.id}/members`);
+    onValue(membersRef, (snapshot) => {
+      const members = snapshot.val() || [];
+      updateMembersList(members);
+    });
+
+    dropdown.appendChild(membersContainer);
+  });
+
+  dropdown.appendChild(viewMembersBtn);
   const deletechannelBtn = document.createElement("button");
   deletechannelBtn.classList.add("delete-channel-btn");
   deletechannelBtn.textContent = "Delete Channel";
   deletechannelBtn.addEventListener("click", () =>
       deletechannel(channelInfo.id)
   );
-
+  dropdown.appendChild(deletechannelBtn);
   const addMemberBtn = document.createElement("button");
   addMemberBtn.classList.add("add-member-btn");
   addMemberBtn.textContent = "Add Member";
   addMemberBtn.addEventListener("click", () => addMember(channelInfo.id));
-
+  dropdown.appendChild(addMemberBtn);
   const removeMemberBtn = document.createElement("button");
   removeMemberBtn.classList.add("remove-member-btn");
   removeMemberBtn.textContent = "Remove Member";
   removeMemberBtn.addEventListener("click", () => removeMember(channelInfo.id));
-
-  dropdown.appendChild(deletechannelBtn);
-  dropdown.appendChild(addMemberBtn);
   dropdown.appendChild(removeMemberBtn);
 }
 
-function generateMemberchannelOptions(dropdown) {
+function generateMemberchannelOptions(dropdown, channelInfo) {
+  const viewMembersBtn = document.createElement("button");
+  viewMembersBtn.textContent = "View Members";
+  viewMembersBtn.addEventListener("click", () => {
+    const channelMembersRef = ref(database, `channels/${channelInfo.id}/members`);
+    onValue(channelMembersRef, async (snapshot) => {
+      if (!snapshot.exists()) {
+        alert("No members in this channel.");
+        return;
+      }
+      const members = snapshot.val();
+      try {
+        const nameList = await fetchNamesForIDs(members);
+        alert("Channel Members (updated):\n" + nameList.join("\n"));
+      } catch {
+        alert("Could not fetch member names.");
+      }
+    });
+  });
+  dropdown.appendChild(viewMembersBtn);
   const messageAdminBtn = document.createElement("button");
   messageAdminBtn.classList.add("message-admin-btn");
   messageAdminBtn.textContent = "Message admin";
   dropdown.appendChild(messageAdminBtn);
-}
-
-function showchannelOptions(event, channelInfo) {
-  document.querySelectorAll(".channel-options").forEach((el) => el.remove());
-  const dropdown = document.createElement("div");
-  dropdown.classList.add("channel-options");
-
-  const userEmail = currentUserData.email || "";
-  const userName = currentUserData.name || "";
-
-  if (
-      currentUserData.role === "admin" &&
-      (channelInfo.owner === userEmail || channelInfo.owner === userName)
-  ) {
-    generateAdminchannelOptions(dropdown, channelInfo);
-  } else {
-    generateMemberchannelOptions(dropdown);
-  }
-
-  const rect = event.target.getBoundingClientRect();
-  dropdown.style.position = "absolute";
-  dropdown.style.top = `${window.scrollY + rect.bottom}px`;
-  dropdown.style.left = `${window.scrollX + rect.left - 75}px`;
-  document.body.appendChild(dropdown);
-
-  document.addEventListener("click", function closeDropdown(e) {
-    if (!dropdown.contains(e.target) && e.target !== event.target) {
-      dropdown.remove();
-      document.removeEventListener("click", closeDropdown);
-    }
-  });
 }
 
 async function deletechannel(channelId) {
@@ -206,22 +336,9 @@ async function deletechannel(channelId) {
       alert("Channel not found.");
       return;
     }
-    const channelMembers = snapshot.val().members || [];
-    for (const member of channelMembers) {
-      const userRef = ref(database, "users/" + member.replace(".", ","));
-      const userSnapshot = await get(userRef);
-      if (userSnapshot.exists()) {
-        const userData = userSnapshot.val();
-        const updatedchannels = userData.channels.filter(
-            (ch) => ch !== channelId
-        );
-        await update(userRef, { channels: updatedchannels });
-      }
-    }
     await set(channelRef, null);
-    alert("channel deleted successfully!");
-    await fetchchannels();
-  } catch (error) {
+    alert("Channel deleted successfully!");
+  } catch {
     alert("Failed to delete channel.");
   }
 }
@@ -230,76 +347,70 @@ async function deletechannel(channelId) {
 async function addMember(channelId) {
   const newMemberEmail = prompt("Enter the email of the member to add:");
   if (!newMemberEmail) return;
-
+  const emailKey = newMemberEmail.replace(/\./g, ",");
+  const userRef = ref(database, "users/" + emailKey);
   try {
-    // Sanitize the email
-    const sanitizedEmail = sanitizeEmail(newMemberEmail);
-
-    // Reference to the members array in the channel
+    const userSnap = await get(userRef);
+    if (!userSnap.exists()) {
+      alert("No user found with that email.");
+      return;
+    }
+    const userData = userSnap.val();
+    const newMemberId = userData.id;
+    if (!newMemberId) {
+      alert("No user ID found for this email.");
+      return;
+    }
     const channelMembersRef = ref(database, `channels/${channelId}/members`);
-
-    // Fetch the current members
     const channelMembersSnap = await get(channelMembersRef);
-    const channelMembers = channelMembersSnap.exists() ? channelMembersSnap.val() : [];
-
-    // Check if the user is already a member
-    if (channelMembers.includes(sanitizedEmail)) {
+    const channelMembers = channelMembersSnap.exists()
+        ? channelMembersSnap.val()
+        : [];
+    if (channelMembers.includes(newMemberId)) {
       alert("This user is already a member.");
       return;
     }
-
-    // Add the new member to the array
-    channelMembers.push(sanitizedEmail);
-
-    // Update the members array in Firebase
+    channelMembers.push(newMemberId);
     await set(channelMembersRef, channelMembers);
-
     alert("Member added successfully!");
-  } catch (error) {
-    console.error("Failed to add member:", error);
+  } catch {
     alert("Failed to add member.");
   }
 }
 
 async function removeMember(channelId) {
+  const memberEmail = prompt("Enter the email of the member to remove:");
+  if (!memberEmail) return;
+  const emailKey = memberEmail.replace(/\./g, ",");
+  const userRef = ref(database, "users/" + emailKey);
   try {
+    const userSnap = await get(userRef);
+    if (!userSnap.exists()) {
+      alert("No user found with that email.");
+      return;
+    }
+    const userData = userSnap.val();
+    const memberId = userData.id;
+    if (!memberId) {
+      alert("No user ID found for this email.");
+      return;
+    }
     const channelMembersRef = ref(database, `channels/${channelId}/members`);
     const snapshot = await get(channelMembersRef);
     if (!snapshot.exists()) {
       alert("No members found in this channel.");
       return;
     }
-
     const members = snapshot.val();
-    const memberToRemove = prompt(
-        `Members: \n${members.map(unsanitizeEmail).join("\n")}\nEnter email to remove:`
-    );
-
-    if (!memberToRemove || !members.includes(sanitizeEmail(memberToRemove))) {
-      alert("Invalid member email.");
+    if (!members.includes(memberId)) {
+      alert("That user is not in this channel.");
       return;
     }
-
-    const updatedMembers = members.filter((m) => m !== sanitizeEmail(memberToRemove));
+    const updatedMembers = members.filter((m) => m !== memberId);
     await set(channelMembersRef, updatedMembers);
-
     alert("Member removed successfully!");
-  } catch (error) {
-    console.error("Failed to remove member:", error);
+  } catch {
     alert("Failed to remove member.");
   }
 }
 
-async function createGroupChat(members, lastMessage, senderID) {
-  const groupChatsRef = ref(database, "groupChats");
-  const newChatRef = push(groupChatsRef);
-  const chatId = newChatRef.key;
-  const updatedDate = new Date().toISOString();
-  await set(newChatRef, {
-    chatId,
-    lastMessage,
-    members,
-    senderID,
-    updatedDate,
-  });
-}

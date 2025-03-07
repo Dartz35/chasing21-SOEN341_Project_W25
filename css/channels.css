@@ -178,3 +178,24 @@ p {
 .channel-options button:hover {
   background-color: rgba(255, 255, 255, 0.1);
 }
+
+.members-list {
+  position: absolute;
+  background-color: white;
+  border: 1px solid #ccc;
+  padding: 10px;
+  z-index: 1000;
+}
+
+.members-list div {
+  padding: 5px;
+  border-bottom: 1px solid #eee;
+}
+
+.members-list div:last-child {
+  border-bottom: none;
+}
+
+.members-btn{
+  width: 100%;
+}
