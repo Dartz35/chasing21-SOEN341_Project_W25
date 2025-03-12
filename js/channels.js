@@ -5,12 +5,21 @@ import {
   get,
   set,
   push,
-  update,
+  onChildAdded,
+  onChildRemoved,
+  query,
+  orderByChild,
+  limitToLast,
+  equalTo,
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
 import { fetchProfileData } from "./pageLoading.js";
 import { openChannelChat } from "./chatUI.js";
 
 let currentUserData = {};
+
+listenChannelsRemoved();
+listenChannelsAdded();
 
 onAuthStateChanged(auth, async (user) => {
   if (user) {
@@ -62,35 +71,46 @@ async function createchannel() {
     alert("Error: Could not find your user ID to create the channel.");
     return;
   }
+
   try {
-    const newChannelRef = push(ref(database, "channels"));
-    await set(newChannelRef, {
+    const channelsRef = ref(database, "channels");
+    const newChannelRef = push(channelsRef);
+    const channelData = {
       id: newChannelRef.key,
+      members: [channelOwnerId],
       name: channelName,
       ownerId: channelOwnerId,
-      members: [channelOwnerId],
-    });
+    };
     if (channelNameInput) channelNameInput.value = "";
-    await fetchchannels();
-  } catch {
-    alert("Failed to create Channel.");
+    await set(newChannelRef, channelData);
+    alert("Channel created successfully!");
+  } catch (e) {
+    alert(e);
   }
 }
 
 async function fetchchannels() {
+  console.log("Fetching channels...");
   const channelsRef = ref(database, "channels");
   try {
     const snapshot = await get(channelsRef);
     if (!snapshot.exists()) {
-      const myChannelsContainer = document.getElementById("myChannelsContainer");
-      const allChannelsContainer = document.getElementById("allChannelsContainer");
-      if (myChannelsContainer) myChannelsContainer.innerHTML = "No channels exist.";
+      const myChannelsContainer = document.getElementById(
+        "myChannelsContainer"
+      );
+      const allChannelsContainer = document.getElementById(
+        "allChannelsContainer"
+      );
+      if (myChannelsContainer)
+        myChannelsContainer.innerHTML = "No channels exist.";
       if (allChannelsContainer) allChannelsContainer.innerHTML = "";
       return;
     }
     const channelsData = snapshot.val();
     const myChannelsContainer = document.getElementById("myChannelsContainer");
-    const allChannelsContainer = document.getElementById("allChannelsContainer");
+    const allChannelsContainer = document.getElementById(
+      "allChannelsContainer"
+    );
     if (!myChannelsContainer || !allChannelsContainer) {
       return;
     }
@@ -99,20 +119,38 @@ async function fetchchannels() {
     const userId = currentUserData.id;
     Object.keys(channelsData).forEach((channelId) => {
       const channelInfo = channelsData[channelId];
-      const isMember = channelInfo.members && channelInfo.members.includes(userId);
-      const channelItemEl = buildChannelItem(channelInfo, isMember);
-      if (isMember) {
-        myChannelsContainer.appendChild(channelItemEl);
-      } else {
-        allChannelsContainer.appendChild(channelItemEl);
-      }
+      addChannelItem(
+        channelInfo,
+        myChannelsContainer,
+        allChannelsContainer,
+        userId
+      );
     });
-  } catch {}
+  } catch (e) {
+    console.error(e);
+  }
+}
+
+async function addChannelItem(
+  channelInfo,
+  myChannelsContainer,
+  allChannelsContainer,
+  userId
+) {
+  const isMember = channelInfo.members && channelInfo.members.includes(userId);
+  const channelItemEl = buildChannelItem(channelInfo, isMember);
+  if (isMember) {
+    myChannelsContainer.appendChild(channelItemEl);
+  } else {
+    allChannelsContainer.appendChild(channelItemEl);
+  }
 }
 
 function buildChannelItem(channelInfo, isMember) {
   const channelItemEl = document.createElement("div");
   channelItemEl.classList.add("channel-item");
+  channelItemEl.dataset.channelId = channelInfo.id;
+
   const channelNameEl = document.createElement("span");
   channelNameEl.classList.add("channel-name");
   channelNameEl.textContent = channelInfo.name || "Untitled channel";
@@ -120,14 +158,14 @@ function buildChannelItem(channelInfo, isMember) {
   channelEnd.classList.add("channel-end");
   const channelOwnerEl = document.createElement("span");
   channelOwnerEl.classList.add("channel-owner");
-  getOwnerName(channelInfo.ownerId).then(ownerName => {
+  getOwnerName(channelInfo.ownerId).then((ownerName) => {
     channelOwnerEl.textContent = `Owner: ${ownerName}`;
   });
   const optionsBtn = document.createElement("button");
   optionsBtn.classList.add("options-btn");
   optionsBtn.textContent = "...";
   optionsBtn.addEventListener("click", (event) =>
-      showchannelOptions(event, channelInfo)
+    showchannelOptions(event, channelInfo)
   );
   channelEnd.appendChild(channelOwnerEl);
   channelEnd.appendChild(optionsBtn);
@@ -147,7 +185,9 @@ async function getOwnerName(ownerId) {
   const usersSnapshot = await get(ref(database, "users"));
   if (!usersSnapshot.exists()) return "Unknown Owner";
   const usersData = usersSnapshot.val();
-  const ownerEntry = Object.values(usersData).find(user => user.id === ownerId);
+  const ownerEntry = Object.values(usersData).find(
+    (user) => user.id === ownerId
+  );
   return ownerEntry ? ownerEntry.name : "Unknown Owner";
 }
 
@@ -158,7 +198,7 @@ async function fetchNamesForIDs(memberIDs) {
   const usersData = usersSnapshot.val();
   return memberIDs.map((uid) => {
     const foundKey = Object.keys(usersData).find(
-        (key) => usersData[key].id === uid
+      (key) => usersData[key].id === uid
     );
     if (!foundKey) {
       return `Unknown user (ID: ${uid})`;
@@ -211,7 +251,7 @@ function generateAdminchannelOptions(dropdown, channelInfo) {
   deletechannelBtn.classList.add("delete-channel-btn");
   deletechannelBtn.textContent = "Delete Channel";
   deletechannelBtn.addEventListener("click", () =>
-      deletechannel(channelInfo.id)
+    deletechannel(channelInfo.id)
   );
   dropdown.appendChild(deletechannelBtn);
   const addMemberBtn = document.createElement("button");
@@ -259,9 +299,8 @@ async function deletechannel(channelId) {
     }
     await set(channelRef, null);
     alert("Channel deleted successfully!");
-    await fetchchannels();
-  } catch {
-    alert("Failed to delete channel.");
+  } catch (e) {
+    alert("Failed to delete channel." + e);
   }
 }
 
@@ -285,8 +324,8 @@ async function addMember(channelId) {
     const channelMembersRef = ref(database, `channels/${channelId}/members`);
     const channelMembersSnap = await get(channelMembersRef);
     const channelMembers = channelMembersSnap.exists()
-        ? channelMembersSnap.val()
-        : [];
+      ? channelMembersSnap.val()
+      : [];
     if (channelMembers.includes(newMemberId)) {
       alert("This user is already a member.");
       return;
@@ -348,3 +387,50 @@ export async function createGroupChat(members, lastMessage, senderID) {
     updatedDate,
   });
 }
+
+async function listenChannelsAdded() {
+  console.log("Listening for new channels...");
+  const channelsRef = ref(database, "channels");
+  const channelsQuery = query(channelsRef, limitToLast(1));
+
+  onChildAdded(channelsQuery, async (snapshot, prevChildKey) => {
+    console.log("New channel detected:", snapshot.val());
+
+    const channelInfo = snapshot.val();
+    const myChannelsContainer = document.getElementById("myChannelsContainer");
+    const allChannelsContainer = document.getElementById(
+      "allChannelsContainer"
+    );
+
+    addChannelItem(
+      channelInfo,
+      myChannelsContainer,
+      allChannelsContainer,
+      currentUserData.id
+    );
+
+    if (prevChildKey) {
+      console.log("Previous child key:", prevChildKey);
+    }
+
+    console.log("Channel added to UI at " + new Date().toLocaleString());
+    return true;
+  });
+}
+
+async function listenChannelsRemoved() {
+  console.log("Listening for deleted channels...");
+  const channelsRef = ref(database, "channels");
+  const channelsQuery = query(channelsRef, limitToLast(9000));
+
+  await onChildRemoved(channelsQuery, async (snapshot) => {
+    fetchchannels();
+    return true;
+  });
+}
+
+/*function listenForMemberChanges(channelInfo) {
+  const channelMembersRef = ref(database, `channels/${channelInfo.id}/members`);
+  onChildAdded(channelMembersRef, channelsUpdate);
+  onChildRemoved(channelMembersRef, channelsUpdate);
+}*/
