@@ -2,8 +2,8 @@ import { auth, database } from "./firebaseConfig.js";
 import {
   ref,
   get,
-} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
-import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+} from "https://www.gstatic.com/firebasejs/11.2.0/firebase-database.js";
+import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-auth.js";
 
 // Check if user is logged in
 onAuthStateChanged(auth, async (user) => {

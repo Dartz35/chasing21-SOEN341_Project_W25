@@ -1,28 +1,19 @@
-import { auth, database } from "../js/firebaseConfig.js";
+import { app, auth, database } from "../js/firebaseConfig.js";
 import {
   ref,
   set,
-  get
-} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+  get,
+} from "https://www.gstatic.com/firebasejs/11.2.0/firebase-database.js";
 import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
 } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-auth.js";
-import { initializeApp } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-app.js";
-import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-firestore.js";
-const firebaseConfig = {
-  apiKey: "AIzaSyDebF1-QZrTf6Ad3fycFQrjTq2W9MEpWRQ",
-  authDomain: "chathaven-d181a.firebaseapp.com",
-  projectId: "chathaven-d181a",
-  storageBucket: "chathaven-d181a.firebasestorage.app",
-  messagingSenderId: "885486697811",
-  appId: "1:885486697811:web:b75ebfd796ed23a83675a6",
-  measurementId: "G-D1W5TPK13Q"
-};
+import {
+  getFirestore,
+  doc,
+  getDoc,
+} from "https://www.gstatic.com/firebasejs/11.2.0/firebase-firestore.js";
 
-
-// Initialize Firebase
-export const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app);
 document.getElementById("email_login").addEventListener("input", function () {
   this.style.color = "white"; // Change text color while typing
@@ -97,11 +88,11 @@ document
     const password_login = document
       .getElementById("password_login")
       .value.trim();
-      const emailKey = email_login.replace('.', ',');
-  
-      // Get a reference to the user's data in the Realtime Database
-      const userRef = ref(database, 'users/' + emailKey);
-    
+    const emailKey = email_login.replace(".", ",");
+
+    // Get a reference to the user's data in the Realtime Database
+    const userRef = ref(database, "users/" + emailKey);
+
     try {
       const userCredential = await signInWithEmailAndPassword(
         auth,
@@ -116,22 +107,21 @@ document
       alert("Welcome, " + user.email + "!");
 
       // get name of loged in user
-      get(userRef)
-      .then((snapshot) => {
+      get(userRef).then((snapshot) => {
         if (snapshot.exists()) {
           const userData = snapshot.val();
           // Check if password matches
-         // document.getElementById("currentUser").innerHTML = "New Text Changed with JavaScript!";
-         sessionStorage.setItem("username", userData.name); 
-         sessionStorage.setItem("currentID", userData.id); // store the id of the current user that is logged in
-         console.log("Login successful:", userData.name);
-            alert("Welcome, " + userData.name + "!");
-            document.getElementById("currentUser").innerHTML = "New Text Changed with JavaScript!";
-
+          // document.getElementById("currentUser").innerHTML = "New Text Changed with JavaScript!";
+          sessionStorage.setItem("username", userData.name);
+          sessionStorage.setItem("currentID", userData.id); // store the id of the current user that is logged in
+          console.log("Login successful:", userData.name);
+          alert("Welcome, " + userData.name + "!");
+          document.getElementById("currentUser").innerHTML =
+            "New Text Changed with JavaScript!";
         } else {
           alert("Error: No user found with this email.");
         }
-      })
+      });
 
       // Redirect to HomePage.html
       setTimeout(function () {
