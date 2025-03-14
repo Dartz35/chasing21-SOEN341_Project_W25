@@ -329,3 +329,7 @@ p{
   background: #af3d3d;
 }
 */
+
+.message.sent {
+  color: blue;
+}
