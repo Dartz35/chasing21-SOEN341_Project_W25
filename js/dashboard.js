@@ -1,12 +1,12 @@
 // Contains the code for all profile-related functions
 
 import { auth, database } from "./firebaseConfig.js";
-import { signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { signOut } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-auth.js";
 import {
   ref,
   get,
   update,
-} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+} from "https://www.gstatic.com/firebasejs/11.2.0/firebase-database.js";
 import { updateNameUI, updateProfilePictureUI } from "./pageLoading.js";
 import { toggleSidebar } from "./header.js";
 
@@ -124,7 +124,7 @@ function Dashboard() {
         )
       )
     ),
-//edit setting 
+    //edit setting
     React.createElement(
       "div",
       { id: "toggleSettings", className: "editSettings", hidden: true },
@@ -136,22 +136,22 @@ function Dashboard() {
       React.createElement("h2", null, "Settings"),
       React.createElement(
         "button",
-        { className: "settingsBtn",  },
+        { className: "settingsBtn" },
         "Change Email 📩"
       ),
       React.createElement(
         "button",
-        { className: "settingsBtn",  },
+        { className: "settingsBtn" },
         "Change Password 🔒"
       ),
       React.createElement(
         "button",
-        { className: "settingsBtn deleteBtn", },
+        { className: "settingsBtn deleteBtn" },
         "Delete Account"
       )
     ),
     // Edit Profile Display
-   
+
     React.createElement(
       "div",
       { id: "editProfile", className: "editProfile", hidden: true },
@@ -258,8 +258,6 @@ async function handleConfirmName(event) {
     alert("Please log in to change your name");
     window.location.href = "../html/loginPage.html"; // Redirect if not logged in
   }
-
-
 }
 
 /*
