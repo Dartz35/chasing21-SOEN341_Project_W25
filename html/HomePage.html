@@ -1,63 +1,20 @@
-<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>ChatHaven</title>
+    <link rel="stylesheet" href="../css/header.css" />
+    <link rel="stylesheet" href="../css/dashboard.css" />
     <link rel="stylesheet" href="../css/homePageStyle.css" />
+    <link
+      rel="stylesheet"
+      href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+    />
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
   </head>
   <body>
-    <div class="container">
-      <header class="header">
-        <div class="logo">
-          <h1>ChatHaven</h1>
-        </div>
-      </header>
-
-      <div id="main" class="main">
-        <button class="profileBtn sidebarToggle">
-          <img class="profilePic" />
-        </button>
-      </div>
-    </div>
-
-    <!-- Sidebar Profile -->
-    <div id="sidebar" class="sidebar">
-      <button class="closeBtn sidebarToggle">&#10005;</button>
-      <h2>Profile</h2>
-      <div class="profile">
-        <img class="profilePic" alt="Profile Picture" />
-        <h3 class="userName name"></h3>
-        <p class="profileRole role"></p>
-      </div>
-      <p>
-        <strong>Email:</strong>
-        <span class="email"></span>
-      </p>
-      <button class="profBtns toggleEditProfile">Edit Profile✏️</button>
-      <!--<button id="settingBtn" class="profBtns toggleSettings">
-        Settings⚙️
-      </button>-->
-      <button id="logoutBtn" class="logoutBtn">Logout🚪</button>
-    </div>
-
-    <!-- Edit Profile Display-->
-    <div id="editProfile" class="editProfile" hidden>
-      <button class="backBtn toggleEditProfile">&#8592;</button>
-      <h2>Edit Profile</h2>
-      <label for="newProfilePic" class="changePicBtn">
-        <img class="profilePic" />
-      </label>
-      <label for="newProfilePic" class="changePicText">Edit Picture</label>
-      <input type="file" id="newProfilePic" accept="image/*" hidden />
-      <button id="deletePic" class="changePicText">Delete Picture</button>
-
-      <div class="input">
-        <label for="editName">Name: </label>
-        <input type="text" id="editName" name="name" autocomplete="name" />
-        <button id="confirmName" class="confirmChange">✔️</button>
-      </div>
-    </div>
+    <div id="app"></div>
 
     <!--
     <div id="settings" class="settings" hidden>
@@ -112,10 +69,94 @@
           <button id="confirmPassword" class="confirmChange submit">✔️</button>
         </div>
       </div>
-
+      
       <button class="deleteBtn">Delete Account</button>
     </div>
-  -->
-    <script src="../js/profile.js" type="module" defer></script>
+    -->
+
+    <main>
+      <!-- Sidebar for channels/chats (previously .column) -->
+      <div class="sidebarChat">
+        <h4><i class="fas fa-comment"></i> Chats</h4>
+
+        <div id="home-buttons" style="display: block">
+          <a href="#" id="general-link">Channels</a>
+          <a href="#" id="social-link">Social</a>
+          <!-- Social link -->
+        </div>
+
+        <!-- Hidden Social Buttons -->
+        <div id="social-buttons" style="display: none">
+          <div class="chatList">
+            <div class="search">
+              <button id="go-back" class="btn">Go Back</button>
+              <!-- Go Back Button -->
+              <div class="searchBar">
+                <img src="../images/search.png" alt="" />
+                <input type="text" placeholder="Search" />
+              </div>
+              <img src="../images/plus.png" alt="" class="add" />
+            </div>
+
+            <div class="listProfiles">
+              <div class="item">
+                <img src="../images/avatar.png" alt="" />
+                <div class="texts">
+                  <span>TOP G</span>
+                  <p>Hello</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Messages Area (conversation and chatbar) -->
+      <div class="messages-area">
+        <div class="profile_chat">
+          <div class="top">
+            <div class="user">
+              <img src="../images/avatar.png" alt="" />
+              <span id="currentUser"
+                >TOPG
+                <p>jrfgrygfyurg</p>
+              </span>
+            </div>
+            <div class="icons">
+              <img src="../images/info.png" alt="" />
+            </div>
+          </div>
+        </div>
+        <div class="conversation">
+          <div id="messages"></div>
+        </div>
+
+        <div class="chatbar">
+          <input
+            type="text"
+            id="chat-input"
+            placeholder="Type your message here..."
+          />
+          <button id="send-btn">Send</button>
+        </div>
+      </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="../js/headerSidebar.js" type="module"></script>
+    <script src="../js/pageLoading.js" type="module" defer></script>
+    <script src="../js/message.js" type="module"></script>
+    <script>
+      window.onload = function () {
+        // Retrieve the stored username from sessionStorage
+        const username = sessionStorage.getItem("username");
+        if (username) {
+          document.getElementById("currentUser").innerText = username;
+        } else {
+          document.getElementById("currentUser").innerText =
+            "User not logged in";
+        }
+      };
+    </script>
   </body>
 </html>

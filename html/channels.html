@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Channel List</title>
+  <link rel="stylesheet" href="../css/channels.css" />
+  <link rel="stylesheet" href="../css/header.css" />
+  <link rel="stylesheet" href="../css/dashboard.css" />
+  <link rel="stylesheet" href="../css/chatUI.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+  <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+</head>
+<body>
+
+<div id="app"></div>
+
+<div class="admin" id="createchannelSection" style="display: none">
+  <h2>Create a Channel</h2>
+  <label for="channelName">Channel Name:</label>
+  <input type="text" id="channelName" />
+  <button id="createchannelBtn">Create Channel</button>
+</div>
+
+<div id="channelsContainer">
+  <h2>My Channels</h2>
+  <div id="myChannelsContainer"></div>
+
+  <h2>Other Channels</h2>
+  <div id="allChannelsContainer"></div>
+</div>
+
+<!-- Import your JS modules -->
+<script type="module" src="../js/chatUI.js"></script>
+<script type="module" src="../js/channels.js"></script>
+<script type="module" src="../js/headerSidebar.js"></script>
+</body>
+</html>
