@@ -8,6 +8,7 @@ import {
   orderByChild,
   equalTo,
   onChildAdded,
+  onChildRemoved,
   remove,
 } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-database.js";
 
@@ -93,7 +94,7 @@ function displayChatUI(groupChatId, channelName) {
     chatView.innerHTML = `
       <div class="chat-container">
         <div class="chat-header">
-          <h3>Chat for channel: ${channelName}</h3>
+          <h3>${channelName}</h3>
           <p id="userRoleDisplay"></p>
           <button id="backToChannelsBtn">Back</button>
         </div>
@@ -166,7 +167,8 @@ function loadMessages(groupChatId) {
       const messageEl = document.createElement("div");
       messageEl.classList.add("message");
       messageEl.textContent = `${message.senderName}: ${message.text}`;
-      const currentUserRole = sessionStorage.getItem("role") || "member";
+      messageEl.dataset.id = snapshot.key;
+      const currentUserRole = sessionStorage.getItem("role") || "user";
       if (currentUserRole === "admin") {
         const deleteBtn = document.createElement("button");
         deleteBtn.textContent = "X";
@@ -177,7 +179,6 @@ function loadMessages(groupChatId) {
           if (confirm("Are you sure you want to delete this message?")) {
             try {
               await remove(ref(database, "groupMessages/" + snapshot.key));
-              messageEl.remove();
             } catch (err) {
               console.error(err);
               displayError("Error deleting message: " + err.message);
@@ -187,6 +188,13 @@ function loadMessages(groupChatId) {
 
         messageEl.appendChild(deleteBtn);
       }
+
+      onChildRemoved(messagesRef, (snapshot) => {
+        const messageEl = document.querySelector(
+          `.message[data-id="${snapshot.key}"]`
+        );
+        messageEl.remove();
+      });
 
       messagesContainer.appendChild(messageEl);
       messagesContainer.scrollTop = messagesContainer.scrollHeight;

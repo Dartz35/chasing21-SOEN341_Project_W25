@@ -136,11 +136,13 @@ p {
   font-size: 0.9rem;
 }
 
-.options-btn {
+.options-btn,
+.chat-btn,
+.delete-btn {
   background-color: inherit;
   border-radius: 50px;
   border: none;
-  padding: 0px 20px 45px;
+  padding: 0px 10px 45px;
   font-size: 25px;
   font-weight: bold;
   color: #fff;
@@ -149,8 +151,20 @@ p {
   cursor: pointer;
 }
 
-.options-btn:hover {
+.options-btn:hover,
+.chat-btn:hover {
   background-color: #444;
+}
+
+.delete-btn:hover {
+  background-color: #af3d3d;
+}
+
+.chat-btn,
+.delete-btn {
+  padding: 10px;
+  padding-top: 6px;
+  font-size: 0.9rem;
 }
 
 .channel-options {
@@ -196,6 +210,19 @@ p {
   border-bottom: none;
 }
 
-.members-btn{
+.members-btn {
   width: 100%;
+}
+
+#sendMessageBtn {
+  padding: 10px 20px;
+  background-color: green;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+#sendMessageBtn:hover {
+  background-color: #0056b3;
 }

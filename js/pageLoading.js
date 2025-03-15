@@ -69,10 +69,10 @@ function updateRoleUI(newRole) {
 
   for (let element of roles) {
     if (element.tagName === "INPUT") {
-      element.value = newRole || "Member";
+      element.value = newRole || "user";
       continue;
     }
-    element.textContent = newRole || "Member";
+    element.textContent = newRole || "user";
   }
 
   // Show or hide sections

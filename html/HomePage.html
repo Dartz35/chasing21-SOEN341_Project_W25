@@ -15,81 +15,14 @@
   </head>
   <body>
     <div id="app"></div>
-
-    <!--
-    <div id="settings" class="settings" hidden>
-      <button class="backBtn toggleSettings">&#8592;</button>
-      <h2>Settings</h2>
-      <div class="emailInput">
-        <button class="settingsBtns">Change email📤</button>
-        <div class="input">
-          <input
-            type="email"
-            id="editEmail"
-            name="email"
-            autocomplete="email"
-          />
-          <div class="input">
-            <input
-              id="passwordConfirm"
-              type="password"
-              name="passwordConfirm"
-              placeholder="Enter password to confirm."
-            />
-          </div>
-          <button id="confirmEmail" class="confirmChange submit">✔️</button>
-        </div>
-      </div>
-
-      <div class="passwordInput">
-        <button class="settingsBtns">Change password🔐</button>
-        <div class="input">
-          <input
-            id="currentPassword"
-            type="password"
-            name="currentPassword"
-            placeholder="Enter your current password..."
-          />
-        </div>
-        <div class="input">
-          <input
-            id="newPassword"
-            type="password"
-            name="newPassword"
-            placeholder="Enter your new password..."
-          />
-        </div>
-        <div class="input">
-          <input
-            id="confirmPassword"
-            type="password"
-            name="confirmPassword"
-            placeholder="Confirm your new password..."
-          />
-          <button id="confirmPassword" class="confirmChange submit">✔️</button>
-        </div>
-      </div>
-      
-      <button class="deleteBtn">Delete Account</button>
-    </div>
-    -->
-
     <main>
       <!-- Sidebar for channels/chats (previously .column) -->
       <div class="sidebarChat">
         <h4><i class="fas fa-comment"></i> Chats</h4>
-
-        <div id="home-buttons" style="display: block">
-          <a href="#" id="social-link">Social</a>
-          <!-- Social link -->
-        </div>
-
         <!-- Hidden Social Buttons -->
-        <div id="social-buttons" style="display: none">
+        <div id="social-buttons" style="display: block">
           <div class="chatList">
             <div class="search">
-              <button id="go-back" class="btn">Go Back</button>
-              <!-- Go Back Button -->
               <div class="searchBar">
                 <img src="../images/search.png" alt="" />
                 <input type="text" placeholder="Search" />
@@ -97,15 +30,7 @@
               <img src="../images/plus.png" alt="" class="add" />
             </div>
 
-            <div class="listProfiles">
-              <div class="item">
-                <img src="../images/avatar.png" alt="" />
-                <div class="texts">
-                  <span>TOP G</span>
-                  <p>Hello</p>
-                </div>
-              </div>
-            </div>
+            <div class="listProfiles"></div>
           </div>
         </div>
       </div>
@@ -115,11 +40,12 @@
         <div class="profile_chat">
           <div class="top">
             <div class="user">
-              <img src="../images/avatar.png" alt="" />
-              <span id="currentUser"
-                >TOPG
-                <p>jrfgrygfyurg</p>
-              </span>
+              <img
+                src="../images/defaultUserLogo.png"
+                id="currentProfilePic"
+                alt=""
+              />
+              <span id="currentUser"> </span>
             </div>
             <div class="icons">
               <img src="../images/info.png" alt="" />
@@ -145,17 +71,5 @@
     <script src="../js/headerSidebar.js" type="module"></script>
     <script src="../js/pageLoading.js" type="module" defer></script>
     <script src="../js/message.js" type="module"></script>
-    <script>
-      window.onload = function () {
-        // Retrieve the stored username from sessionStorage
-        const username = sessionStorage.getItem("username");
-        if (username) {
-          document.getElementById("currentUser").innerText = username;
-        } else {
-          document.getElementById("currentUser").innerText =
-            "User not logged in";
-        }
-      };
-    </script>
   </body>
 </html>

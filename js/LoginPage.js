@@ -104,7 +104,6 @@ document
       sessionStorage.setItem("email", user.email);
 
       console.log("Login successful:", user.displayName);
-      alert("Welcome, " + user.email + "!");
 
       // get name of loged in user
       get(userRef).then((snapshot) => {
