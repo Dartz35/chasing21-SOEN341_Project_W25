@@ -535,9 +535,36 @@ p{
   display: flex;
   gap: 10px;
   align-items: center;
+
+}
+.chatbar img{
+
+ 
+  margin-left: -40px;
+   cursor: pointer;
+
+}
+.emoji {
+
+  margin-left:3.5px;
+  margin-top:10px;
+  height:0px;
+  width:400px;
+  border-radius:5px;
+  background:#fff;
+  overflow-y:scroll;
+  cursor:pointer;
+  transition:0.5s height;
+}
+.emoji::-webkit-scrollbar{
+  width:0;
+}
+.emoji span{
+  margin-left: 9.8px;
+  font-size:26px;
 }
 
-#chat-input {
+#chat-input{
   flex: 1;
   padding: 10px;
   border: 1px solid var(--line-clr);

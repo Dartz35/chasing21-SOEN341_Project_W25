@@ -64,21 +64,38 @@ get(usersRef)
     userListContainer.innerHTML = '';
 
 
-    for (const email in allUsers) {
-      const user = allUsers[email];
+  for (const email in allUsers) {
+    const user = allUsers[email];
+    if (user.id === sessionStorage.getItem("currentID")) continue; // Skip current user
 
+    const userDiv = createUserElement(user, email);
+    userListContainer.appendChild(userDiv);
 
-      let userDiv = document.createElement('div');
-      userDiv.classList.add('user-item');
-      
+    if (!firstUser) {
+      firstUser = user; // Store the first user
+    }
+  }
 
-      userDiv.innerHTML = `
-        <img src="../images/avatar.png" alt="">
-        <div id="item-profile" class="item-profile">
-          <span>${user.name}</span>
-          <p>${email}</p>
-        </div>
-      `;
+  if (firstUser) {
+    handleUserClick(firstUser); // Automatically open chat with the first user
+  }
+}
+
+/**
+ * Creates a user element for the UI
+ */
+function createUserElement(user, email) {
+  let userDiv = document.createElement("div");
+  userDiv.classList.add("user-item");
+
+  let src = user.profilePicture || "../images/defaultUserLogo.png";
+  userDiv.innerHTML = `
+    <img src=${src} alt="">
+    <div id="item-profile" class="item-profile">
+      <span>${user.name}</span>
+      <p>${email.replace(",", ".")}</p>
+    </div>
+  `;
 
 
       userListContainer.appendChild(userDiv);
