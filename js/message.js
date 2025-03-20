@@ -221,10 +221,7 @@ if (e.key === "Enter") {
 
     
 
-  } else {
-    alert("No users found in the database.");
-  }
-})
+  })
 
 
   .catch((error) => {
