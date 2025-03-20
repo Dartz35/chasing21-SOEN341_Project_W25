@@ -94,7 +94,7 @@ function createUserElement(user, email) {
     <img src=${src} alt="">
     <div id="item-profile" class="item-profile">
       <span>${user.name}</span>
-      <p>${email.replace(",", ".")}</p>
+      <p>${email.replace(",", ".")} <button id = "add-friend-btn">Add Friend </button> </p>
     </div>
   `;
 
