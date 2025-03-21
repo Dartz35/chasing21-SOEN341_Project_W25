@@ -90,23 +90,34 @@ function createUserElement(user, email, status) {
   userDiv.classList.add("user-item");
   userDiv.dataset.id = user.id;
 
-  const statusClass = status === "online" ? "online-status" : (status === "away" ? "away-status" : "offline-status");
+  const statusClass =
+    status === "online"
+      ? "online-status"
+      : status === "away"
+      ? "away-status"
+      : "offline-status";
 
   let src = user.profilePicture || "../images/defaultUserLogo.png";
   userDiv.innerHTML = `
+  <a href="Homepage.html?user=${encodeURIComponent(email)}">
     <img src=${src} alt="">
     <div id="item-profile" class="item-profile">
-      <span>${user.name} <span class="status-indicator ${statusClass}"></span></span>
+      <span>${
+        user.name
+      } <span class="status-indicator ${statusClass}"></span></span>
       <p>${email.replace(",", ".")}</p>
       <p> <button id = "add-friend-btn">Add Friend </button> </p>
     </div>
-  `;
+  </a>
+`;
 
   const statusIndicator = userDiv.querySelector(".status-indicator");
   statusIndicator.addEventListener("click", () => showLastOnlineTime(user.id));
   statusIndicator.style.cursor = "pointer"; // Indicate it's clickable
-
-  userDiv.addEventListener("click", () => handleUserClick(user));
+  userDiv.addEventListener("click", (event) => {
+    event.preventDefault(); // Prevent default click behavior
+    handleUserClick(user);
+  });
   return userDiv;
 }
 
@@ -120,19 +131,33 @@ async function showLastOnlineTime(userId) {
     if (userStatus === "offline") {
       const lastChanged = snapshot.val().lastChanged;
       const dateTime = new Date(lastChanged);
-      const options = { year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric' };
-      alert(`Last Online: ${dateTime.toLocaleDateString('en-US', options)}`);
+      const options = {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+        hour: "numeric",
+        minute: "numeric",
+        second: "numeric",
+      };
+      alert(`Last Online: ${dateTime.toLocaleDateString("en-US", options)}`);
     } else {
       // Do nothing if the user is online or away
       console.log(`User is ${userStatus}, no need to show last online time.`);
     }
   } else {
     // If there's no status information (e.g., user never logged in)
-    const defaultDate = new Date('2025-03-19T10:00:00'); // Default date for when there's no data
-    alert(`Last Online: ${defaultDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric' })} `);
+    const defaultDate = new Date("2025-03-19T10:00:00"); // Default date for when there's no data
+    alert(
+      `Last Online: ${defaultDate.toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+        hour: "numeric",
+        minute: "numeric",
+      })} `
+    );
   }
 }
-
 
 /**
  * Handles user click event (opens chat)
@@ -146,21 +171,21 @@ function handleUserClick(user) {
   messagesContainer.innerHTML = "";
 
   checkExistingChat(userID, currentUserID)
-      .then((existingChatID) => {
-        if (existingChatID) {
-          console.log("Found existing chat with ID: " + existingChatID);
-          currentChatID = existingChatID;
-          loadMessages(currentChatID);
-        } else {
-          createNewChat(userID, currentUserID, chatID);
-        }
-        document.getElementById("currentUser").textContent = user.name;
-        document.getElementById("currentProfilePic").src =
-            user.profilePicture || "../images/defaultUserLogo.png";
-      })
-      .catch((error) =>
-          console.error("Error checking for existing chat:", error.message)
-      );
+    .then((existingChatID) => {
+      if (existingChatID) {
+        console.log("Found existing chat with ID: " + existingChatID);
+        currentChatID = existingChatID;
+        loadMessages(currentChatID);
+      } else {
+        createNewChat(userID, currentUserID, chatID);
+      }
+      document.getElementById("currentUser").textContent = user.name;
+      document.getElementById("currentProfilePic").src =
+        user.profilePicture || "../images/defaultUserLogo.png";
+    })
+    .catch((error) =>
+      console.error("Error checking for existing chat:", error.message)
+    );
 }
 
 /**
@@ -174,8 +199,8 @@ async function checkExistingChat(userID, currentID) {
     snapshot.forEach((childSnapshot) => {
       const chatData = childSnapshot.val();
       if (
-          (chatData.ReceiverID === userID && chatData.SenderID === currentID) ||
-          (chatData.ReceiverID === currentID && chatData.SenderID === userID)
+        (chatData.ReceiverID === userID && chatData.SenderID === currentID) ||
+        (chatData.ReceiverID === currentID && chatData.SenderID === userID)
       ) {
         existingChatID = chatData.ChatID;
       }
@@ -217,12 +242,12 @@ function createNewChat(userID, currentUserID, chatID) {
     set(chatRefCurrent, chatDataCurrent),
     set(chatRefUser, chatDataUser),
   ])
-      .then(() => {
-        console.log(`Chat created successfully with ID: ${chatID}`);
-        currentChatID = chatID;
-        loadMessages(currentChatID);
-      })
-      .catch((error) => console.error("Error creating chat:", error.message));
+    .then(() => {
+      console.log(`Chat created successfully with ID: ${chatID}`);
+      currentChatID = chatID;
+      loadMessages(currentChatID);
+    })
+    .catch((error) => console.error("Error creating chat:", error.message));
 }
 
 /**
@@ -264,8 +289,8 @@ function storeMessageInDatabase(senderID, messageText) {
     senderID: senderID,
     timestamp: Date.now(),
   })
-      .then(() => console.log("Message sent to Firebase!"))
-      .catch((error) => console.error("Error sending message:", error));
+    .then(() => console.log("Message sent to Firebase!"))
+    .catch((error) => console.error("Error sending message:", error));
 }
 
 // ✅ Prevent multiple listeners from being attached - now managed with detach
@@ -293,8 +318,8 @@ function listenForNewMessages(currChatID) {
     }
 
     if (
-        senderID !== sessionStorage.getItem("currentID") &&
-        !document.querySelector(`.message[data-id="${snapshot.key}"]`)
+      senderID !== sessionStorage.getItem("currentID") &&
+      !document.querySelector(`.message[data-id="${snapshot.key}"]`)
     ) {
       const messageDiv = document.createElement("div");
       messageDiv.classList.add("message", "received");
@@ -324,37 +349,37 @@ function loadMessages(currChatID) {
   messagesContainer.innerHTML = "";
   const messagesRef = ref(database, `messages/${currChatID}`);
   get(messagesRef)
-      .then((snapshot) => {
-        if (snapshot.exists()) {
-          snapshot.forEach((childSnapshot) => {
-            const messageData = childSnapshot.val();
-            const messageText = messageData?.message;
-            const senderID = messageData?.senderID;
+    .then((snapshot) => {
+      if (snapshot.exists()) {
+        snapshot.forEach((childSnapshot) => {
+          const messageData = childSnapshot.val();
+          const messageText = messageData?.message;
+          const senderID = messageData?.senderID;
 
-            if (messageText) {
-              const messageDiv = document.createElement("div");
-              messageDiv.classList.add("message");
-              messageDiv.setAttribute("data-id", childSnapshot.key);
-              messageDiv.textContent = messageText;
+          if (messageText) {
+            const messageDiv = document.createElement("div");
+            messageDiv.classList.add("message");
+            messageDiv.setAttribute("data-id", childSnapshot.key);
+            messageDiv.textContent = messageText;
 
-              if (senderID === sessionStorage.getItem("currentID")) {
-                messageDiv.classList.add("sent");
-              } else {
-                messageDiv.classList.add("received");
-              }
-
-              messagesContainer.appendChild(messageDiv);
+            if (senderID === sessionStorage.getItem("currentID")) {
+              messageDiv.classList.add("sent");
+            } else {
+              messageDiv.classList.add("received");
             }
-          });
-        } else {
-          console.log("No messages found for this chat.");
-        }
-        messagesContainer.scrollTop = messagesContainer.scrollHeight;
-        listenForNewMessages(currentChatID);
-      })
-      .catch((error) => {
-        console.error("Error loading messages:", error);
-      });
+
+            messagesContainer.appendChild(messageDiv);
+          }
+        });
+      } else {
+        console.log("No messages found for this chat.");
+      }
+      messagesContainer.scrollTop = messagesContainer.scrollHeight;
+      listenForNewMessages(currentChatID);
+    })
+    .catch((error) => {
+      console.error("Error loading messages:", error);
+    });
 }
 
 // Event listener for send button
@@ -383,7 +408,12 @@ function updateUserStatusInUI(userID, status) {
   const userDiv = document.querySelector(`.user-item[data-id="${userID}"]`);
   if (!userDiv) return;
 
-  const statusClass = status === "online" ? "online-status" : (status === "away" ? "away-status" : "offline-status");
+  const statusClass =
+    status === "online"
+      ? "online-status"
+      : status === "away"
+      ? "away-status"
+      : "offline-status";
 
   const statusSpan = userDiv.querySelector(".item-profile .status-indicator");
   if (statusSpan) {
