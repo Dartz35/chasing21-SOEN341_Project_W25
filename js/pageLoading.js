@@ -8,9 +8,13 @@ import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.2.0/fi
 // Check if user is logged in
 onAuthStateChanged(auth, async (user) => {
   if (user) {
+    await fetchProfileData(user);
     const userStatusRef = ref(database, "status/" + user.uid);
     await update(userStatusRef, { state: "online", lastChanged: Date.now() });
-    onDisconnect(userStatusRef).set({ state: "offline", lastChanged: Date.now() });
+    onDisconnect(userStatusRef).set({
+      state: "offline",
+      lastChanged: Date.now(),
+    });
     trackUserInactivity(user);
   } else {
     if (!window.loggingOut) {

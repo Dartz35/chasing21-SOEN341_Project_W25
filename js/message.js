@@ -98,6 +98,7 @@ function createUserElement(user, email, status) {
     <div id="item-profile" class="item-profile">
       <span>${user.name} <span class="status-indicator ${statusClass}"></span></span>
       <p>${email.replace(",", ".")}</p>
+      <p> <button id = "add-friend-btn">Add Friend </button> </p>
     </div>
   `;
 
