@@ -56,20 +56,133 @@
           <div id="messages"></div>
         </div>
 
-        <div class="chatbar">
-          <input
-            type="text"
-            id="chat-input"
-            placeholder="Type your message here..."
-          />
+        
+          
+          <div class="chatbar">
+            
+            
+            <div class="chat-input-wrapper">
+              <span id="reply-message-cont">oihuiyggugifitfutfu</span>
+              <input
+                type="text"
+                id="chat-input"
+                placeholder="Type your message here..."
+              />
+              <div class="emoji" style="height: 0px; padding: 0px; overflow: hidden;">
+                <span id="emoji1" onClick="emoji_func(this.id)">&#128512</span>
+                <span id="emoji2" onClick="emoji_func(this.id)">&#128512</span>
+                <span id="emoji3" onClick="emoji_func(this.id)">&#128512</span>
+                <span id="emoji4" onClick="emoji_func(this.id)">&#128512</span>
+                <span id="emoji5" onClick="emoji_func(this.id)">&#128512</span>
+                <span id="emoji6" onClick="emoji_func(this.id)">&#128512</span>
+                <span id="emoji7" onClick="emoji_func(this.id)">&#128512</span>
+                <span id="emoji8" onClick="emoji_func(this.id)">&#128512</span>
+                <span id="emoji9" onClick="emoji_func(this.id)">&#128512</span>
+                <span id="emoji10" onClick="emoji_func(this.id)">&#128512</span>
+                <span id="emoji11" onClick="emoji_func(this.id)">&#128512</span>
+                <span id="emoji12" onClick="emoji_func(this.id)">&#128512</span>
+                </div>
+            </div>
+          
+            <img src="../images/emoji.png" onclick="show_emoji()" alt="" style="width: 20px; height: 20px;">
+         
+
+          </div>
           <button id="send-btn">Send</button>
-        </div>
+        
       </div>
+
+
     </main>
 
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="../js/headerSidebar.js" type="module"></script>
     <script src="../js/pageLoading.js" type="module" defer></script>
     <script src="../js/message.js" type="module"></script>
+ <script>
+      click = false;
+      function show_emoji(){
+        if(click == false){
+          document.getElementsByClassName("emoji")[0].style.height = "542 px";
+          document.getElementsByClassName("emoji")[0].style.padding = "8px 0px";
+          click = true;
+        }else{
+          document.getElementsByClassName("emoji")[0].style.height = "0 px";
+          document.getElementsByClassName("emoji")[0].style.padding = " 0px";
+          click = false;
+        }
+      }
+      function emoji_func(emoji){
+        document.getElementById("chat-input").value += document.getElementById(emoji).innerHTML;
+      }
+    </script>
+
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const replySpan = document.getElementById('reply-message-cont');
+    const chatInput = document.getElementById('chat-input');
+    const originalPlaceholder = chatInput.getAttribute('placeholder');
+
+    function updateInputPlaceholder() {
+      if (replySpan.textContent.trim() === '') {
+        chatInput.setAttribute('placeholder', originalPlaceholder);
+      } else {
+        chatInput.removeAttribute('placeholder');
+      }
+    }
+
+    function setFocusAndCursorToEndOfSpan() {
+      console.log("setFocusAndCursorToEndOfSpan called");
+      if (!replySpan) {
+        console.error("replySpan element not found!");
+        return;
+      }
+      replySpan.focus();
+      console.log("replySpan focused");
+      if (replySpan.textContent) {
+        console.log("replySpan has text:", replySpan.textContent);
+        const range = document.createRange();
+        console.log("range created");
+        range.selectNodeContents(replySpan);
+        console.log("node contents selected");
+        range.collapse(false); // Collapse the range to the end
+        console.log("range collapsed to end");
+
+        const selection = window.getSelection();
+        console.log("selection obtained");
+        selection.removeAllRanges();
+        console.log("all ranges removed");
+        selection.addRange(range);
+        console.log("range added");
+      } else {
+        console.log("replySpan is empty, no cursor placement needed.");
+      }
+    }
+
+    // Call updateInputPlaceholder on page load
+    updateInputPlaceholder();
+
+    // Call setFocusAndCursorToEndOfSpan on page load as well, in case the span has initial text
+    setFocusAndCursorToEndOfSpan();
+
+    // Example of how to update the span's text dynamically (you would trigger this based on your application logic)
+    function setReplyMessage(message) {
+      console.log("setReplyMessage called with message:", message);
+      replySpan.textContent = message;
+      updateInputPlaceholder();
+      setFocusAndCursorToEndOfSpan(); // Set focus and cursor position after updating the reply
+    }
+
+    
+
+    // If you want to clear the reply
+    // setTimeout(function() {
+    //   setReplyMessage("");
+    //   updateInputPlaceholder();
+    // }, 5000);
+
+  });
+</script>
   </body>
 </html>
