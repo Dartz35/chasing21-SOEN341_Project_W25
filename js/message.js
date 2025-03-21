@@ -91,14 +91,21 @@ function createUserElement(user, email) {
 
   let src = user.profilePicture || "../images/defaultUserLogo.png";
   userDiv.innerHTML = `
+  <a href="Homepage.html?user=${encodeURIComponent(email)}">
     <img src=${src} alt="">
     <div id="item-profile" class="item-profile">
       <span>${user.name}</span>
-      <p>${email.replace(",", ".")} <button id = "add-friend-btn">Add Friend </button> </p>
+      <p>${email.replace(
+        ",",
+        "."
+      )} <button id="add-friend-btn">Add Friend</button></p>
     </div>
-  `;
-
-  userDiv.addEventListener("click", () => handleUserClick(user));
+  </a>
+`;
+  userDiv.addEventListener("click", (event) => {
+    event.preventDefault(); // Prevent default click behavior
+    handleUserClick(user);
+  });
   return userDiv;
 }
 

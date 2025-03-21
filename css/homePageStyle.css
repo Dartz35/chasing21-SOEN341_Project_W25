@@ -45,26 +45,20 @@ main {
   margin-right: 8px; /* Adds space between icon and text */
 }
 
-/* Links in the sidebar */
-.sidebarChat a,
-.sidebarChat ab {
-  color: #fff;
-  padding: 12px 16px;
+.sidebarChat a {
+  padding: 10px;
+  border-radius: 8px;
+  margin: 5px 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: white;
   text-decoration: none;
-  display: block;
-  border-radius: 6px;
-  font-weight: 500;
 }
 
 /* Change color on hover for sidebar links */
 .sidebarChat a:hover,
 .sidebarChat ab:hover {
-  background-color: #5f73a1;
-}
-
-/*serach bar in social*/
-
-.listProfiles :hover {
   background-color: #5f73a1;
 }
 
