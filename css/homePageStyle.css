@@ -160,6 +160,7 @@ main {
   flex-direction: column;
   height: 750px;
   border-radius: 8px;
+  
 }
 .profile_chat {
   flex: 2;
@@ -215,26 +216,47 @@ main {
 
 /* Conversation and chatbar styling */
 .conversation {
-  border: 1px solid var(--line-clr);
-  border-radius: 8px;
-  padding: 10px;
-  margin-bottom: 20px;
-  height: 634px;
-  overflow-y: auto;
-  background-color: #fff;
+  border: 1px solid var(--line-clr); /* Adds a border */
+  border-radius: 8px; /* Rounds the corners */
+  padding: 10px; /* Adds space inside the border */
+  margin-bottom: 20px; /* Adds space below the container */
+  height: 634px; /* Sets a fixed height for the container */
+  
+  overflow-y: auto; /* Enables vertical scrolling when content overflows */
+  background-color: #fff; /* Sets the background color to white */
 }
 
 .chatbar {
   display: flex;
   gap: 10px;
   align-items: center;
+  
+  background-color: #0056b3;
 }
 
-#chat-input {
-  flex: 1;
-  padding: 10px;
-  border: 1px solid var(--line-clr);
-  border-radius: 4px;
+
+.chatbar img{
+
+  margin-left:-35px;
+  cursor:pointer;
+}
+.emoji{
+  margin-left:3.5px;
+  
+  height:0px;
+  width:800px;
+  border-radius:5px;
+  background:#fff;
+  overflow-y:scroll;
+  cursor:pointer;
+  transition:0.5s height;
+}
+.emoji::-webkit-scrollbar{
+  width:0;
+}
+.emoji span{
+  margin-left:9.8px;
+  font-size:26px;
 }
 
 #send-btn {
@@ -257,6 +279,60 @@ main {
   border-radius: 4px;
   margin: 5px 0;
   background-color: #f1f1f1;
+}
+#chat-input.message-added {
+  color: #0056b3; /* Keep the blue color */
+  border: 1px solid #201d1d; /* Add a 1-pixel solid gray border */
+  padding: 10px; /* Add some space inside the box */
+  margin-bottom: 5px; /* Optional: Add some space below the box */
+  background-color: #f9f9f9; /* Optional: Add a light gray background */
+  border-radius: 5px; /* Optional: Round the corners of the box */
+}
+#reply-message-cont {
+  border: 1px solid #0c0b0b;
+  padding: 2px;
+  
+  
+ 
+}
+
+.chat-input-wrapper {
+  display: flex; /* Use flexbox to align items */
+  flex-direction: column; /* Stack the reply message and input vertically */
+  margin-bottom: 15px; /* Add some space below the entire input area */
+  width: 100%; /* Make the wrapper take full width if needed */
+}
+
+#reply-message-cont {
+  color: #6c757d; /* A muted gray color for the reply message */
+  font-size: 0.9em; /* Slightly smaller font size */
+  margin-bottom: 5px; /* Add a little space between the reply message and the input */
+ 
+  background-color: #f8f9fa; /* Light background for the reply message */
+  border: 1px solid #e9ecef; /* Light border */
+  border-radius: 5px;
+  word-break: break-word; /* Prevent long text from breaking the layout */
+}
+
+#chat-input {
+  padding: 10px;
+  border: 1px solid #ced4da; /* Standard border for input fields */
+  border-radius: 5px;
+  
+  font-size: 1em;
+  width: 100%; /* Make the input take full width of its container */
+  box-sizing: border-box; /* Include padding and border in the element's total width and height */
+}
+
+#chat-input::placeholder {
+  color: #6c757d; /* Style the placeholder text */
+}
+
+/* Optional: Style the input on focus */
+#chat-input:focus {
+  outline: none; /* Remove the default focus outline */
+  border-color: #007bff; /* Change border color on focus */
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25); /* Add a subtle focus shadow */
 }
 
 /*

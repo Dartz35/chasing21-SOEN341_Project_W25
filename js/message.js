@@ -256,10 +256,14 @@ function createNewChat(userID, currentUserID, chatID) {
 function sendMessage() {
   const logedinUserID = sessionStorage.getItem("currentID");
   const messageText = chatInput.value.trim();
-
+  const chatOutputContainer = document.getElementById("reply-message-cont");
   if (messageText !== "" && currentChatID) {
+    if(chatOutputContainer && chatOutputContainer.textContent.trim() !== ""){
+      appendMessageToUI("Reply: "+chatOutputContainer.textContent);
+    }
     appendMessageToUI(messageText);
     storeMessageInDatabase(logedinUserID, messageText);
+    chatOutputContainer.innerHTML = '';
   } else if (!currentChatID) {
     alert("Please select a user to start chatting.");
   }
@@ -275,6 +279,7 @@ function appendMessageToUI(messageText) {
   messagesContainer.appendChild(messageDiv);
   chatInput.value = "";
   messagesContainer.scrollTop = messagesContainer.scrollHeight;
+  
 }
 
 /**
@@ -369,6 +374,56 @@ function loadMessages(currChatID) {
             }
 
             messagesContainer.appendChild(messageDiv);
+            messageDiv.onclick = function() {
+              
+              const addButton = this.querySelector("#reply-btn");
+
+              if (addButton) {
+                // Button is displayed, so remove it
+                addButton.remove();
+              } else {
+                // Button is not displayed, so add it
+                // Create the button element
+                const addButton = document.createElement("button");
+                addButton.textContent = "reply"; // Button text
+                addButton.id = "reply-btn"; // Button ID for styling if needed
+
+                // Add button click handler (stopPropagation is important!)
+                addButton.onclick = function(event) {
+                  event.stopPropagation();
+                  console.log("Add Friend clicked for message:", messageText);
+                  
+                  const replyMessageText = messageText;
+
+                  // Create a new div element for the reply message container
+                  const replyContainer = document.createElement("div");
+                  
+                  // Add a CSS class to style the reply message (optional)
+                  replyContainer.classList.add("reply-message");
+                  
+                  // Set the text content of the container to the reply message
+                  replyContainer.textContent = replyMessageText;
+                  
+                  // Or, if the reply message might contain HTML, use innerHTML (be cautious)
+                  // replyContainer.innerHTML = replyMessageText;
+                  
+                  // Find a container element in your HTML where you want to display the reply
+                  const chatOutputContainer = document.getElementById("reply-message-cont"); // Replace "chat-output" with the actual ID of your output area
+                  
+                  // Append the reply container to the output container
+                  if (chatOutputContainer) {
+                    chatOutputContainer.innerHTML = ''; // Clear existing content 
+                    chatOutputContainer.appendChild(replyContainer);
+                  } else {
+                      console.error("Container element with ID 'chat-output' not found.");
+                  }
+                  // Handle "Add Friend" logic here
+                };
+
+                // Append the button to the message div
+                this.appendChild(addButton);
+              }
+            };
           }
         });
       } else {
