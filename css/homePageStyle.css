@@ -348,3 +348,36 @@ main {
   flex-direction: column;
   gap: 0px;
 }
+
+.online-status, .away-status, .offline-status {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  margin-left: 5px;
+}
+
+
+.online-status {
+  background-color: green;
+}
+
+.away-status {
+  background-color: orange;
+}
+
+.offline-status {
+  background-color: gray;
+}
+
+.userInfoDetails {
+  margin-bottom: 10px;
+  font-size: 14px;
+  font-weight: bold;
+  color: #333;
+}
+.userInfoDetails span {
+  display: block;
+  margin-bottom: 5px;
+}
+

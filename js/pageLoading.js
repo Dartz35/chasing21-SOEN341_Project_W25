@@ -8,7 +8,14 @@ import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.2.0/fi
 // Check if user is logged in
 onAuthStateChanged(auth, async (user) => {
   if (user) {
-    await fetchProfileData(user); // Fetch user data if logged in
+    await fetchProfileData(user);
+    const userStatusRef = ref(database, "status/" + user.uid);
+    await update(userStatusRef, { state: "online", lastChanged: Date.now() });
+    onDisconnect(userStatusRef).set({
+      state: "offline",
+      lastChanged: Date.now(),
+    });
+    trackUserInactivity(user);
   } else {
     if (!window.loggingOut) {
       alert("You must be logged in to view this page.");
@@ -16,6 +23,25 @@ onAuthStateChanged(auth, async (user) => {
     }
   }
 });
+let inactivityTimer;
+
+function trackUserInactivity(user) {
+  const userStatusRef = ref(database, "status/" + user.uid);
+
+  function resetTimer() {
+    clearTimeout(inactivityTimer);
+    update(userStatusRef, { state: "online", lastChanged: Date.now() });
+
+    inactivityTimer = setTimeout(() => {
+      update(userStatusRef, { state: "away", lastChanged: Date.now() });
+    }, 600000); // 1-minute inactivity threshold
+  }
+
+  document.addEventListener("mousemove", resetTimer);
+  document.addEventListener("keydown", resetTimer);
+
+  resetTimer(); // Initialize timer
+}
 
 // Fetch user data from Realtime Database
 async function fetchProfileData(user) {

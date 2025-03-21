@@ -1,5 +1,3 @@
-// Contains the code for all profile-related functions
-
 import { auth, database } from "./firebaseConfig.js";
 import { signOut } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-auth.js";
 import {
@@ -34,11 +32,27 @@ function Dashboard() {
         }),
         React.createElement("h3", { className: "userName name" }),
         React.createElement("span", { className: "userInfo role" }),
-        React.createElement("span", { className: "userInfo email" })
+        React.createElement("span", { className: "userInfo email" }),
+        React.createElement(
+          "div",
+          { className: "status" },
+          React.createElement("span", null, "Status: "),
+          React.createElement(
+            "select",
+            {
+              id: "statusDropdown",
+              onChange: handleStatusChange,
+            },
+            React.createElement("option", { value: "online" }, "Online"),
+            React.createElement("option", { value: "away" }, "Away")
+          )
+        )
       ),
+
       React.createElement(
         "ul",
         { className: "dashBtns" },
+
         React.createElement(
           "li",
           null,
@@ -214,6 +228,7 @@ function Dashboard() {
     )
   );
 }
+
 function toggleSettings() {
   const editSettings = document.getElementById("toggleSettings");
   const sidebar = document.getElementById("sidebar").classList;
@@ -260,58 +275,20 @@ async function handleConfirmName(event) {
   }
 }
 
-/*
-//Setting function
-document.querySelectorAll(".toggleSettings").forEach((btn) => {
-  btn.addEventListener("click", function (e) {
-    const settings = document.getElementById("settings");
-    const sidebar = document.getElementById("sidebar").classList;
-    sidebar.toggle("active");
-    settings.hidden = !settings.hidden;
-  });
-});*/
-
-// Confirm email change function
-/*
-document
-  .getElementById("confirmEmail")
-  .addEventListener("click", async function () {
-    const newEmail = document.getElementById("editEmail").value.trim();
-    const user = auth.currentUser;
-
-    if (user) {
-      const userRef = ref(database, "users/" + user.email.replace(".", ","));
-      const snapshot = await get(userRef);
-
-      if (snapshot.exists()) {
-        const userData = snapshot.val();
-
-        if (newEmail) {
-          if (newEmail != userData.email) {
-            await update(userRef, {
-              email: newEmail,
-            });
-            updateEmailUI(newEmail);
-            alert("Email updated successfully!");
-          }
-        } else {
-          alert("Email cannot be empty.");
-        }
-      }
-    } else {
-      alert("Please log in to change your email");
-      window.location.href = "../html/loginPage.html";
-    }
-  });
-*/
-
 // Logout Function
 async function handleLogout() {
-  window.loggingOut = true;
-  await signOut(auth);
-  sessionStorage.clear();
-  alert("You have been logged out.");
-  window.location.href = "../html/loginPage.html";
+  if (!auth.currentUser) return;
+  try {
+    window.loggingOut = true;
+    await signOut(auth);
+    sessionStorage.clear();
+
+    alert("You have been logged out.");
+    window.location.href = "../html/loginPage.html";
+  } catch (error) {
+    console.error("Logout Error:", error);
+    alert("Error logging out. Please try again.");
+  }
 }
 
 // Delete Profile Picture Function
@@ -368,6 +345,19 @@ function handleProfilePicChange(event) {
   } else {
     alert("Please log in to change your profile picture");
     window.location.href = "../html/loginPage.html"; // Redirect if not logged in
+  }
+}
+async function handleStatusChange(event) {
+  const newStatus = event.target.value;
+  const user = auth.currentUser;
+
+  if (user) {
+    const userStatusRef = ref(database, "status/" + user.uid);
+
+    await update(userStatusRef, { state: newStatus, lastChanged: Date.now() });
+  } else {
+    alert("Please log in to change your status");
+    window.location.href = "../html/loginPage.html";
   }
 }
 
