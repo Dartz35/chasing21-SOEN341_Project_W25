@@ -3,6 +3,7 @@ import {
   ref,
   set,
   get,
+  update
 } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-database.js";
 import {
   signInWithEmailAndPassword,
@@ -100,6 +101,9 @@ document
         password_login
       );
       const user = userCredential.user;
+
+      const userStatusRef = ref(database, "status/" + user.uid);
+      await update(userStatusRef, { state: "online", lastChanged: Date.now() });
 
       sessionStorage.setItem("email", user.email);
 

@@ -1,3 +1,4 @@
+// message.js
 import { database } from "./firebaseConfig.js";
 import {
   ref,
@@ -6,6 +7,7 @@ import {
   update,
   push,
   off,
+  onChildChanged, // Import onChildChanged
 } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-database.js";
 
 import { onChildAdded } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-database.js";
@@ -21,11 +23,6 @@ let isListenerAttached = false; // Flag to prevent multiple listeners
 function detachMessageListener() {
   if (currentChatID && isListenerAttached) {
     const messagesRef = ref(database, `messages/${currentChatID}`);
-    // Remove all listeners from the messagesRef
-    // This approach might be too broad if other listeners are attached.
-    // A more specific approach might be needed if other listeners are added later.
-    // For now, simply setting the flag will prevent new listeners,
-    // and the old listener will eventually stop if the component unmounts in a real application.
     isListenerAttached = false;
     console.log(`Detached listener for chat ID: ${currentChatID}`);
   }
@@ -34,9 +31,11 @@ function detachMessageListener() {
 // Firebase References
 const usersRef = ref(database, "users");
 const userChatsRef = ref(database, "userChats");
+const statusRef = ref(database, "status");
 
 // Entry Point: Fetch Users & Populate UI
 fetchUsers();
+listenForStatusChanges(); // Call the function to start listening
 
 /**
  * Fetches all users from the database and displays them
@@ -44,13 +43,16 @@ fetchUsers();
 async function fetchUsers() {
   try {
     const snapshot = await get(usersRef);
+    const statusSnapshot = await get(statusRef);
+    const statuses = statusSnapshot.val() || {};
+
     if (!snapshot.exists()) {
       alert("No users found in the database.");
       return;
     }
 
     const allUsers = snapshot.val();
-    populateUserList(allUsers);
+    populateUserList(allUsers, statuses);
   } catch (error) {
     console.error("Error fetching users:", error);
   }
@@ -59,47 +61,102 @@ async function fetchUsers() {
 /**
  * Populates the user list UI with retrieved users
  */
-function populateUserList(allUsers) {
+function populateUserList(allUsers, statuses) {
   const userListContainer = document.querySelector(".listProfiles");
-  userListContainer.innerHTML = ""; // Clear existing list
+  userListContainer.innerHTML = "";
 
   let firstUser = null;
 
   for (const email in allUsers) {
     const user = allUsers[email];
-    if (user.id === sessionStorage.getItem("currentID")) continue; // Skip current user
+    if (user.id === sessionStorage.getItem("currentID")) continue;
 
-    const userDiv = createUserElement(user, email);
+    const status = statuses[user.id]?.state || "offline";
+    const userDiv = createUserElement(user, email, status);
     userListContainer.appendChild(userDiv);
 
     if (!firstUser) {
-      firstUser = user; // Store the first user
+      firstUser = user;
     }
   }
 
   if (firstUser) {
-    handleUserClick(firstUser); // Automatically open chat with the first user
+    handleUserClick(firstUser);
   }
 }
 
-/**
- * Creates a user element for the UI
- */
-function createUserElement(user, email) {
+function createUserElement(user, email, status) {
   let userDiv = document.createElement("div");
   userDiv.classList.add("user-item");
+  userDiv.dataset.id = user.id;
+
+  const statusClass =
+    status === "online"
+      ? "online-status"
+      : status === "away"
+      ? "away-status"
+      : "offline-status";
 
   let src = user.profilePicture || "../images/defaultUserLogo.png";
   userDiv.innerHTML = `
+  <a href="Homepage.html?user=${encodeURIComponent(email)}">
     <img src=${src} alt="">
     <div id="item-profile" class="item-profile">
-      <span>${user.name}</span>
+      <span>${
+        user.name
+      } <span class="status-indicator ${statusClass}"></span></span>
       <p>${email.replace(",", ".")}</p>
+      <p> <button id = "add-friend-btn">Add Friend </button> </p>
     </div>
-  `;
+  </a>
+`;
 
-  userDiv.addEventListener("click", () => handleUserClick(user));
+  const statusIndicator = userDiv.querySelector(".status-indicator");
+  statusIndicator.addEventListener("click", () => showLastOnlineTime(user.id));
+  statusIndicator.style.cursor = "pointer"; // Indicate it's clickable
+  userDiv.addEventListener("click", (event) => {
+    event.preventDefault(); // Prevent default click behavior
+    handleUserClick(user);
+  });
   return userDiv;
+}
+
+async function showLastOnlineTime(userId) {
+  const statusRef = ref(database, `status/${userId}`);
+  const snapshot = await get(statusRef);
+
+  if (snapshot.exists()) {
+    const userStatus = snapshot.val().state;
+
+    if (userStatus === "offline") {
+      const lastChanged = snapshot.val().lastChanged;
+      const dateTime = new Date(lastChanged);
+      const options = {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+        hour: "numeric",
+        minute: "numeric",
+        second: "numeric",
+      };
+      alert(`Last Online: ${dateTime.toLocaleDateString("en-US", options)}`);
+    } else {
+      // Do nothing if the user is online or away
+      console.log(`User is ${userStatus}, no need to show last online time.`);
+    }
+  } else {
+    // If there's no status information (e.g., user never logged in)
+    const defaultDate = new Date("2025-03-19T10:00:00"); // Default date for when there's no data
+    alert(
+      `Last Online: ${defaultDate.toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+        hour: "numeric",
+        minute: "numeric",
+      })} `
+    );
+  }
 }
 
 /**
@@ -108,10 +165,10 @@ function createUserElement(user, email) {
 function handleUserClick(user) {
   const userID = user.id;
   const currentUserID = sessionStorage.getItem("currentID");
-  const chatID = push(userChatsRef).key; // Generate a unique chat ID
+  const chatID = push(userChatsRef).key;
 
   detachMessageListener();
-  messagesContainer.innerHTML = ""; // Clear previous messages
+  messagesContainer.innerHTML = "";
 
   checkExistingChat(userID, currentUserID)
     .then((existingChatID) => {
@@ -199,10 +256,14 @@ function createNewChat(userID, currentUserID, chatID) {
 function sendMessage() {
   const logedinUserID = sessionStorage.getItem("currentID");
   const messageText = chatInput.value.trim();
-
+  const chatOutputContainer = document.getElementById("reply-message-cont");
   if (messageText !== "" && currentChatID) {
+    if(chatOutputContainer && chatOutputContainer.textContent.trim() !== ""){
+      appendMessageToUI("Reply: "+chatOutputContainer.textContent);
+    }
     appendMessageToUI(messageText);
     storeMessageInDatabase(logedinUserID, messageText);
+    chatOutputContainer.innerHTML = '';
   } else if (!currentChatID) {
     alert("Please select a user to start chatting.");
   }
@@ -218,6 +279,7 @@ function appendMessageToUI(messageText) {
   messagesContainer.appendChild(messageDiv);
   chatInput.value = "";
   messagesContainer.scrollTop = messagesContainer.scrollHeight;
+  
 }
 
 /**
@@ -239,12 +301,12 @@ function storeMessageInDatabase(senderID, messageText) {
 // ✅ Prevent multiple listeners from being attached - now managed with detach
 function listenForNewMessages(currChatID) {
   if (isListenerAttached && currChatID === currentChatID) {
-    return; // Avoid attaching multiple listeners for the same chat
+    return;
   }
-  detachMessageListener(); // Detach any existing listener
+  detachMessageListener();
   isListenerAttached = true;
-  currentChatID = currChatID; // Update the current chat ID for the listener
-  messagesContainer.dataset.chatId = currentChatID; // Store the chat ID in the container
+  currentChatID = currChatID;
+  messagesContainer.dataset.chatId = currentChatID;
 
   const messagesRef = ref(database, `messages/${currChatID}`);
 
@@ -255,20 +317,18 @@ function listenForNewMessages(currChatID) {
     const messageText = messageData.message;
     const senderID = messageData.senderID;
 
-    // Only add messages if they belong to the current open chat
     if (messagesContainer.dataset.chatId !== snapshot.ref.parent.key) {
       console.warn("Message ignored: Not from current chat");
-      return; // Skip messages from other chats
+      return;
     }
 
-    // Prevent duplicate messages AND messages sent by the current user
     if (
       senderID !== sessionStorage.getItem("currentID") &&
       !document.querySelector(`.message[data-id="${snapshot.key}"]`)
     ) {
       const messageDiv = document.createElement("div");
       messageDiv.classList.add("message", "received");
-      messageDiv.setAttribute("data-id", snapshot.key); // Using the message ID
+      messageDiv.setAttribute("data-id", snapshot.key);
       messageDiv.textContent = messageText;
 
       if (senderID === sessionStorage.getItem("currentID")) {
@@ -291,7 +351,7 @@ function loadMessages(currChatID) {
     return;
   }
 
-  messagesContainer.innerHTML = ""; // Clear previous messages
+  messagesContainer.innerHTML = "";
   const messagesRef = ref(database, `messages/${currChatID}`);
   get(messagesRef)
     .then((snapshot) => {
@@ -314,6 +374,56 @@ function loadMessages(currChatID) {
             }
 
             messagesContainer.appendChild(messageDiv);
+            messageDiv.onclick = function() {
+              
+              const addButton = this.querySelector("#reply-btn");
+
+              if (addButton) {
+                // Button is displayed, so remove it
+                addButton.remove();
+              } else {
+                // Button is not displayed, so add it
+                // Create the button element
+                const addButton = document.createElement("button");
+                addButton.textContent = "reply"; // Button text
+                addButton.id = "reply-btn"; // Button ID for styling if needed
+
+                // Add button click handler (stopPropagation is important!)
+                addButton.onclick = function(event) {
+                  event.stopPropagation();
+                  console.log("Add Friend clicked for message:", messageText);
+                  
+                  const replyMessageText = messageText;
+
+                  // Create a new div element for the reply message container
+                  const replyContainer = document.createElement("div");
+                  
+                  // Add a CSS class to style the reply message (optional)
+                  replyContainer.classList.add("reply-message");
+                  
+                  // Set the text content of the container to the reply message
+                  replyContainer.textContent = replyMessageText;
+                  
+                  // Or, if the reply message might contain HTML, use innerHTML (be cautious)
+                  // replyContainer.innerHTML = replyMessageText;
+                  
+                  // Find a container element in your HTML where you want to display the reply
+                  const chatOutputContainer = document.getElementById("reply-message-cont"); // Replace "chat-output" with the actual ID of your output area
+                  
+                  // Append the reply container to the output container
+                  if (chatOutputContainer) {
+                    chatOutputContainer.innerHTML = ''; // Clear existing content 
+                    chatOutputContainer.appendChild(replyContainer);
+                  } else {
+                      console.error("Container element with ID 'chat-output' not found.");
+                  }
+                  // Handle "Add Friend" logic here
+                };
+
+                // Append the button to the message div
+                this.appendChild(addButton);
+              }
+            };
           }
         });
       } else {
@@ -337,4 +447,31 @@ chatInput.addEventListener("keypress", function (e) {
   }
 });
 
-// Remove the initial call to loadMessages on DOMContentLoaded as it should happen when a user is selected.
+function listenForStatusChanges() {
+  const statusRef = ref(database, "status");
+
+  onChildChanged(statusRef, (snapshot) => {
+    const statusData = snapshot.val();
+    const userID = snapshot.key;
+    const status = statusData?.state || "offline";
+
+    updateUserStatusInUI(userID, status);
+  });
+}
+
+function updateUserStatusInUI(userID, status) {
+  const userDiv = document.querySelector(`.user-item[data-id="${userID}"]`);
+  if (!userDiv) return;
+
+  const statusClass =
+    status === "online"
+      ? "online-status"
+      : status === "away"
+      ? "away-status"
+      : "offline-status";
+
+  const statusSpan = userDiv.querySelector(".item-profile .status-indicator");
+  if (statusSpan) {
+    statusSpan.className = `status-indicator ${statusClass}`;
+  }
+}

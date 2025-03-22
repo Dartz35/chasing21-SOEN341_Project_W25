@@ -19,6 +19,15 @@ import { openChannelChat } from "./chatUI.js";
 
 let currentUserData = {};
 
+const modal = document.getElementById("memberModal");
+const closeModalBtn = document.getElementById("closeModal");
+const modalTitle = document.getElementById("modalTitle");
+const searchInput = document.getElementById("searchInput");
+const searchResults = document.getElementById("searchResults");
+
+let currentMode = null;
+let activeChannelId = null;
+
 listenChannelsRemoved();
 listenChannelsAdded();
 
@@ -73,11 +82,13 @@ if (createchannelBtn) {
  */
 async function createchannel() {
   const channelNameInput = document.getElementById("channelName");
+  const channelType = document.getElementById("channelType");
   const channelName = channelNameInput ? channelNameInput.value.trim() : "";
   if (!channelName) {
     alert("Please enter a channel name.");
     return;
   }
+
   const channelOwnerId = currentUserData.id;
   if (!channelOwnerId) {
     alert("Error: Could not find your user ID to create the channel.");
@@ -87,15 +98,46 @@ async function createchannel() {
   try {
     const channelsRef = ref(database, "channels");
     const newChannelRef = push(channelsRef);
+
+    // Fetch all users only if the user is admin
+    let memberIDs = [channelOwnerId];
+
+    if (currentUserData.role === "admin" && channelType.value === "public") {
+      const usersSnap = await get(ref(database, "users"));
+      if (usersSnap.exists()) {
+        const usersData = usersSnap.val();
+        memberIDs = Object.values(usersData).map((user) => user.id);
+      }
+    }
+
     const channelData = {
       id: newChannelRef.key,
-      members: [channelOwnerId],
+      members: memberIDs,
       name: channelName,
       ownerId: channelOwnerId,
+      joinRequests: [],
     };
+
     if (channelNameInput) channelNameInput.value = "";
+
     await set(newChannelRef, channelData);
-    addChannelToUser(channelData.id, currentUserData.email);
+
+    // Add channel to each member’s user data
+    const usersSnap = await get(ref(database, "users"));
+    const usersData = usersSnap.exists() ? usersSnap.val() : {};
+
+    for (const [emailKey, userData] of Object.entries(usersData)) {
+      if (memberIDs.includes(userData.id)) {
+        const cleanedEmail = emailKey.replace(/\./g, ",");
+        const userRef = ref(database, `users/${cleanedEmail}`);
+        const userChannels = userData.channels || [];
+        if (!userChannels.includes(channelData.id)) {
+          userChannels.push(channelData.id);
+          await update(userRef, { channels: userChannels });
+        }
+      }
+    }
+
     alert("Channel created successfully!");
   } catch (e) {
     alert(e);
@@ -307,7 +349,7 @@ function showchannelOptions(event, channelInfo) {
   dropdown.classList.add("channel-options");
   const userRole = currentUserData.role || "";
   const userId = currentUserData.id || "";
-  if (userRole === "admin" && channelInfo.ownerId === userId) {
+  if (channelInfo.ownerId === userId) {
     generateAdminchannelOptions(dropdown, channelInfo);
   } else {
     generateMemberchannelOptions(dropdown, channelInfo);
@@ -333,18 +375,9 @@ function showchannelOptions(event, channelInfo) {
 function generateAdminchannelOptions(dropdown, channelInfo) {
   const viewMembersBtn = document.createElement("button");
   viewMembersBtn.textContent = "View Members";
-  viewMembersBtn.addEventListener("click", async () => {
-    if (!channelInfo.members || channelInfo.members.length === 0) {
-      alert("No members in this channel.");
-      return;
-    }
-    try {
-      const nameList = await fetchNamesForIDs(channelInfo.members);
-      alert("Channel Members:\n" + nameList.join("\n"));
-    } catch {
-      alert("Could not fetch member names.");
-    }
-  });
+  viewMembersBtn.addEventListener("click", () =>
+    openMemberModal("view", channelInfo.id)
+  );
   dropdown.appendChild(viewMembersBtn);
   const deletechannelBtn = document.createElement("button");
   deletechannelBtn.classList.add("delete-channel-btn");
@@ -356,13 +389,25 @@ function generateAdminchannelOptions(dropdown, channelInfo) {
   const addMemberBtn = document.createElement("button");
   addMemberBtn.classList.add("add-member-btn");
   addMemberBtn.textContent = "Add Member";
-  addMemberBtn.addEventListener("click", () => addMember(channelInfo.id));
+  addMemberBtn.addEventListener("click", () =>
+    openMemberModal("add", channelInfo.id)
+  );
   dropdown.appendChild(addMemberBtn);
   const removeMemberBtn = document.createElement("button");
   removeMemberBtn.classList.add("remove-member-btn");
   removeMemberBtn.textContent = "Remove Member";
-  removeMemberBtn.addEventListener("click", () => removeMember(channelInfo.id));
+  removeMemberBtn.addEventListener("click", () =>
+    openMemberModal("remove", channelInfo.id)
+  );
   dropdown.appendChild(removeMemberBtn);
+
+  const channelRequestBtn = document.createElement("button");
+  channelRequestBtn.classList.add("view-requests-btn");
+  channelRequestBtn.textContent = "View Join Requests";
+  channelRequestBtn.addEventListener("click", async () => {
+    openMemberModal("requests", channelInfo.id);
+  });
+  dropdown.appendChild(channelRequestBtn);
 }
 
 /**
@@ -386,10 +431,43 @@ function generateMemberchannelOptions(dropdown, channelInfo) {
     }
   });
   dropdown.appendChild(viewMembersBtn);
-  const messageAdminBtn = document.createElement("button");
-  messageAdminBtn.classList.add("message-admin-btn");
-  messageAdminBtn.textContent = "Message admin";
-  dropdown.appendChild(messageAdminBtn);
+  const channelRequestBtn = document.createElement("button");
+  channelRequestBtn.classList.add("channel-request-btn");
+
+  if (channelInfo.members && channelInfo.members.includes(currentUserData.id)) {
+    channelRequestBtn.textContent = "Leave Channel";
+    channelRequestBtn.addEventListener("click", () => {
+      removeMember(currentUserData.email, channelInfo.id);
+      dropdown.remove();
+    });
+  } else {
+    channelRequestBtn.textContent = "Join Channel";
+    channelRequestBtn.addEventListener("click", async () => {
+      try {
+        const joinRequestsRef = ref(
+          database,
+          `channels/${channelInfo.id}/joinRequests`
+        );
+        const joinRequestsSnap = await get(joinRequestsRef);
+        const joinRequests = joinRequestsSnap.exists()
+          ? joinRequestsSnap.val()
+          : [];
+
+        if (joinRequests.includes(currentUserData.id)) {
+          alert("You have already requested to join this channel.");
+          return;
+        }
+
+        joinRequests.push(currentUserData.id);
+        await set(joinRequestsRef, joinRequests);
+        alert("Join request sent successfully!");
+      } catch (e) {
+        alert("Failed to send join request.");
+      }
+    });
+  }
+
+  dropdown.appendChild(channelRequestBtn);
 }
 
 /**
@@ -425,14 +503,33 @@ async function deletechannel(channelId) {
   }
 }
 
+async function searchUsers(query) {
+  const usersSnapshot = await get(ref(database, "users"));
+  if (!usersSnapshot.exists()) return [];
+
+  const allUsers = usersSnapshot.val();
+  return Object.entries(allUsers)
+    .filter(([key, user]) => {
+      const email = key.replace(/,/g, ".");
+      if (!query) return true; // Return all users if query is empty
+      return (
+        email.toLowerCase().includes(query.toLowerCase()) ||
+        (user.name && user.name.toLowerCase().includes(query.toLowerCase()))
+      );
+    })
+    .map(([key, user]) => ({
+      id: user.id,
+      email: key.replace(/,/g, "."),
+      name: user.name,
+    }));
+}
+
 /**
  * Adds a member to a channel.
  * @param {string} channelId - The ID of the channel.
  */
-async function addMember(channelId) {
-  const newMemberEmail = prompt("Enter the email of the member to add:");
-  if (!newMemberEmail) return;
-  const emailKey = newMemberEmail.replace(/\./g, ",");
+async function addMember(memberEmail, channelId) {
+  const emailKey = memberEmail.replace(/\./g, ",");
   const userRef = ref(database, "users/" + emailKey);
   try {
     const userSnap = await get(userRef);
@@ -457,23 +554,50 @@ async function addMember(channelId) {
     }
     channelMembers.push(newMemberId);
     await set(channelMembersRef, channelMembers);
-    addChannelToUser(channelId, newMemberEmail);
+    addChannelToUser(channelId, memberEmail);
     alert("Member added successfully!");
-
-    const dropdown = document.querySelector(".channel-options");
-    dropdown.remove();
   } catch {
     alert("Failed to add member.");
   }
+}
+
+async function searchChannelMembers(channelId, query, mode) {
+  let membersRef;
+  if (mode === "requests")
+    membersRef = ref(database, `channels/${channelId}/joinRequests`);
+  else membersRef = ref(database, `channels/${channelId}/members`);
+  const membersSnap = await get(membersRef);
+  if (!membersSnap.exists()) return [];
+
+  const memberIds = membersSnap.val();
+  const usersSnap = await get(ref(database, "users"));
+  if (!usersSnap.exists()) return [];
+
+  const usersData = usersSnap.val();
+
+  return Object.entries(usersData)
+    .filter(([key, user]) => {
+      const email = key.replace(/,/g, ".");
+      const isMember = memberIds.includes(user.id);
+      if (!query) return isMember; // Return all members if query is empty
+      return (
+        isMember &&
+        (email.toLowerCase().includes(query.toLowerCase()) ||
+          (user.name && user.name.toLowerCase().includes(query.toLowerCase())))
+      );
+    })
+    .map(([key, user]) => ({
+      id: user.id,
+      email: key.replace(/,/g, "."),
+      name: user.name,
+    }));
 }
 
 /**
  * Removes a member from a channel.
  * @param {string} channelId - The ID of the channel.
  */
-async function removeMember(channelId) {
-  const memberEmail = prompt("Enter the email of the member to remove:");
-  if (!memberEmail) return;
+async function removeMember(memberEmail, channelId) {
   const emailKey = memberEmail.replace(/\./g, ",");
   const userRef = ref(database, "users/" + emailKey);
   try {
@@ -503,11 +627,105 @@ async function removeMember(channelId) {
     await set(channelMembersRef, updatedMembers);
     removeChannelFromUser(channelId, memberEmail);
     alert("Member removed successfully!");
-    const dropdown = document.querySelector(".channel-options");
-    dropdown.remove();
   } catch {
     alert("Failed to remove member.");
   }
+}
+
+// Opens the search modal
+function openMemberModal(mode, channelId) {
+  currentMode = mode; // 'add', 'remove', or 'view'
+  activeChannelId = channelId;
+
+  modalTitle.textContent =
+    mode === "add"
+      ? "Add Member"
+      : mode === "remove"
+      ? "Remove Member"
+      : mode === "view"
+      ? "Channel Members"
+      : "Join Requests";
+
+  modal.style.display = "flex";
+  searchInput.value = "";
+  searchResults.innerHTML = "";
+
+  // Disable search input for view mode
+  searchInput.style.display = mode === "view" ? "none" : "block";
+
+  if (mode === "add") {
+    searchInput.focus();
+    searchUsers("").then(renderResults);
+  } else {
+    // Show all members immediately
+    searchInput.focus();
+    searchChannelMembers(channelId, "", mode).then(renderResults);
+  }
+}
+
+// Close modal
+closeModalBtn.onclick = () => {
+  modal.style.display = "none";
+  const dropdown = document.querySelector(".channel-options");
+  dropdown.remove();
+};
+
+// Realtime search listener
+searchInput.addEventListener("input", async () => {
+  const query = searchInput.value.trim();
+
+  const results =
+    currentMode === "add"
+      ? await searchUsers(query)
+      : await searchChannelMembers(activeChannelId, query, mode);
+
+  renderResults(results);
+});
+
+// Render result items
+function renderResults(results) {
+  searchResults.innerHTML = "";
+  if (results.length === 0) {
+    searchResults.innerHTML = "<p>No matching users found.</p>";
+    return;
+  }
+
+  results.forEach((user) => {
+    const div = document.createElement("div");
+    div.textContent = `${user.name} (${user.email})`;
+
+    if (currentMode === "add") {
+      div.addEventListener("click", () => {
+        addMember(user.email, activeChannelId);
+        modal.style.display = "none";
+      });
+    } else if (currentMode === "remove") {
+      div.addEventListener("click", () => {
+        removeMember(user.email, activeChannelId);
+        modal.style.display = "none";
+      });
+    } else if (currentMode === "requests") {
+      div.addEventListener("click", async () => {
+        addMember(user.email, activeChannelId);
+        modal.style.display = "none";
+        const joinRequestsRef = ref(
+          database,
+          `channels/${activeChannelId}/joinRequests`
+        );
+        const joinRequestsSnap = await get(joinRequestsRef);
+        const joinRequests = joinRequestsSnap.exists()
+          ? joinRequestsSnap.val()
+          : [];
+        const updatedRequests = joinRequests.filter((id) => id !== user.id);
+        await set(joinRequestsRef, updatedRequests);
+      });
+    } else {
+      div.style.opacity = 0.7;
+      div.style.cursor = "default";
+    }
+
+    searchResults.appendChild(div);
+  });
 }
 
 /**
