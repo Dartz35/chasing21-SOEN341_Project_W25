@@ -24,6 +24,7 @@ jobs:
       - name: Install Dependencies
         run: |
           npm install
+          npm install --save-dev vitest
 
       - name: Run Unit Tests with Vitest
         run: |
