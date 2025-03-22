@@ -8,9 +8,7 @@ import {
   push,
   off,
   onChildChanged, // Import onChildChanged
-} from "https://www.gstatic.com/firebasejs/11.2.0/firebase-database.js";
-
-import { onChildAdded } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-database.js";
+} from "firebase/database";
 
 const sendBtn = document.getElementById("send-btn");
 const chatInput = document.getElementById("chat-input");
@@ -258,12 +256,12 @@ function sendMessage() {
   const messageText = chatInput.value.trim();
   const chatOutputContainer = document.getElementById("reply-message-cont");
   if (messageText !== "" && currentChatID) {
-    if(chatOutputContainer && chatOutputContainer.textContent.trim() !== ""){
-      appendMessageToUI("Reply: "+chatOutputContainer.textContent);
+    if (chatOutputContainer && chatOutputContainer.textContent.trim() !== "") {
+      appendMessageToUI("Reply: " + chatOutputContainer.textContent);
     }
     appendMessageToUI(messageText);
     storeMessageInDatabase(logedinUserID, messageText);
-    chatOutputContainer.innerHTML = '';
+    chatOutputContainer.innerHTML = "";
   } else if (!currentChatID) {
     alert("Please select a user to start chatting.");
   }
@@ -279,7 +277,6 @@ function appendMessageToUI(messageText) {
   messagesContainer.appendChild(messageDiv);
   chatInput.value = "";
   messagesContainer.scrollTop = messagesContainer.scrollHeight;
-  
 }
 
 /**
@@ -374,8 +371,7 @@ function loadMessages(currChatID) {
             }
 
             messagesContainer.appendChild(messageDiv);
-            messageDiv.onclick = function() {
-              
+            messageDiv.onclick = function () {
               const addButton = this.querySelector("#reply-btn");
 
               if (addButton) {
@@ -389,33 +385,36 @@ function loadMessages(currChatID) {
                 addButton.id = "reply-btn"; // Button ID for styling if needed
 
                 // Add button click handler (stopPropagation is important!)
-                addButton.onclick = function(event) {
+                addButton.onclick = function (event) {
                   event.stopPropagation();
                   console.log("Add Friend clicked for message:", messageText);
-                  
+
                   const replyMessageText = messageText;
 
                   // Create a new div element for the reply message container
                   const replyContainer = document.createElement("div");
-                  
+
                   // Add a CSS class to style the reply message (optional)
                   replyContainer.classList.add("reply-message");
-                  
+
                   // Set the text content of the container to the reply message
                   replyContainer.textContent = replyMessageText;
-                  
+
                   // Or, if the reply message might contain HTML, use innerHTML (be cautious)
                   // replyContainer.innerHTML = replyMessageText;
-                  
+
                   // Find a container element in your HTML where you want to display the reply
-                  const chatOutputContainer = document.getElementById("reply-message-cont"); // Replace "chat-output" with the actual ID of your output area
-                  
+                  const chatOutputContainer =
+                    document.getElementById("reply-message-cont"); // Replace "chat-output" with the actual ID of your output area
+
                   // Append the reply container to the output container
                   if (chatOutputContainer) {
-                    chatOutputContainer.innerHTML = ''; // Clear existing content 
+                    chatOutputContainer.innerHTML = ""; // Clear existing content
                     chatOutputContainer.appendChild(replyContainer);
                   } else {
-                      console.error("Container element with ID 'chat-output' not found.");
+                    console.error(
+                      "Container element with ID 'chat-output' not found."
+                    );
                   }
                   // Handle "Add Friend" logic here
                 };

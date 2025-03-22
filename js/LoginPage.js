@@ -1,19 +1,10 @@
-import { app, auth, database } from "../js/firebaseConfig.js";
-import {
-  ref,
-  set,
-  get,
-  update
-} from "https://www.gstatic.com/firebasejs/11.2.0/firebase-database.js";
+import { app, auth, database } from "./firebaseConfig.js";
+import { ref, set, get, update } from "firebase/database";
 import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
-} from "https://www.gstatic.com/firebasejs/11.2.0/firebase-auth.js";
-import {
-  getFirestore,
-  doc,
-  getDoc,
-} from "https://www.gstatic.com/firebasejs/11.2.0/firebase-firestore.js";
+} from "firebase/auth";
+import { getFirestore, doc, getDoc } from "firebase/firestore";
 
 export const db = getFirestore(app);
 document.getElementById("email_login").addEventListener("input", function () {
@@ -123,6 +114,7 @@ document
             "New Text Changed with JavaScript!";
         } else {
           alert("Error: No user found with this email.");
+          throw new Error("No user found with this email.");
         }
       });
 
