@@ -1,7 +1,7 @@
 import { vi, beforeEach, describe, it, expect } from "vitest";
-import "../setup/globalMocks.js";
-import "../setup/firebaseMocksChannels.js";
-import "../setup/loadChannelDom.js";
+import "../../tests/setup/globalMocks.js";
+import "../../tests/setup/firebaseMocksChannels.js";
+import "../../tests/setup/loadChannelDom.js";
 
 beforeEach(() => {
   vi.clearAllMocks();

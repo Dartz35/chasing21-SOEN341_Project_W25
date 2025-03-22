@@ -1,3 +1,3 @@
-import { loadDOM } from "@setup/loadDom.js";
+import { loadDOM } from "../../tests/setup/loadDom.js";
 
 loadDOM("chatUI");
