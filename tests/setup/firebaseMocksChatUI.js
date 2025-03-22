@@ -1,5 +1,5 @@
-import mockFns from "./firebaseMocks.js";
-import "./firebaseMocks.js";
+import mockFns from "@setup/firebaseMocks.js";
+import "@setup/firebaseMocks.js";
 
 mockFns.onChildAdded.getMockImplementation((query, callback) => {
   callback({
