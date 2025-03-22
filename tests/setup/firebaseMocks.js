@@ -36,12 +36,12 @@ vi.mock("firebase/auth", () => ({
   }),
 }));
 
-vi.mock("../js/firebaseConfig.js", () => ({
+vi.mock("../../js/firebaseConfig.js", () => ({
   auth: {},
   database: {},
 }));
 
-vi.mock("../js/pageLoading.js", () => ({
+vi.mock("../../js/pageLoading.js", () => ({
   fetchProfileData: vi.fn(() =>
     Promise.resolve({
       id: "uid1",

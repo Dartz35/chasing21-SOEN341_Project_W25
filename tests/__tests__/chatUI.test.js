@@ -1,8 +1,8 @@
 // tests/__tests__/chatUI.test.js
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import "../setup/loadChatUIDom.js";
-import "../setup/globalMocks.js";
-import "../setup/firebaseMocksChatUI.js";
+import "../../tests/setup/loadChatUIDom.js";
+import "../../tests/setup/globalMocks.js";
+import "../../tests/setup/firebaseMocksChatUI.js";
 
 import {
   openChannelChat,

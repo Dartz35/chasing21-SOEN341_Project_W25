@@ -1,5 +1,5 @@
-import mockFns from "@setup/firebaseMocks.js";
-import "@setup/firebaseMocks.js";
+import mockFns from "../../tests/setup/firebaseMocks.js";
+import "../../tests/setup/firebaseMocks.js";
 
 mockFns.ref.mockImplementation((...args) => `ref:${args.join("/")}`);
 mockFns.get.mockImplementation(() =>
@@ -7,6 +7,6 @@ mockFns.get.mockImplementation(() =>
 );
 mockFns.push.mockImplementation(() => ({ key: "mockChannelId" }));
 
-vi.mock("../js/chatUI.js", () => ({
+vi.mock("../../js/chatUI.js", () => ({
   openChannelChat: vi.fn(),
 }));
