@@ -1,5 +1,5 @@
 import { auth, database } from "./firebaseConfig.js";
-import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-auth.js";
+import { onAuthStateChanged } from "firebase/auth";
 import {
   ref,
   get,
@@ -12,7 +12,7 @@ import {
   onValue,
   off,
   update,
-} from "https://www.gstatic.com/firebasejs/11.2.0/firebase-database.js";
+} from "firebase/database";
 
 import { fetchProfileData } from "./pageLoading.js";
 import { openChannelChat } from "./chatUI.js";
@@ -802,3 +802,12 @@ function listenForMemberChanges(channelID) {
     fetchchannels();
   });
 }
+
+export {
+  createchannel,
+  deletechannel,
+  addMember,
+  removeMember,
+  searchUsers,
+  searchChannelMembers,
+};
