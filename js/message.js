@@ -1,4 +1,3 @@
-// message.js
 import { database } from "./firebaseConfig.js";
 import {
   ref,
@@ -7,10 +6,8 @@ import {
   update,
   push,
   off,
-  onChildChanged, // Import onChildChanged
+  onChildAdded,
 } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-database.js";
-
-import { onChildAdded } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-database.js";
 
 const sendBtn = document.getElementById("send-btn");
 const chatInput = document.getElementById("chat-input");
@@ -23,6 +20,7 @@ let isListenerAttached = false; // Flag to prevent multiple listeners
 function detachMessageListener() {
   if (currentChatID && isListenerAttached) {
     const messagesRef = ref(database, `messages/${currentChatID}`);
+    // Remove all listeners from the messagesRef (if needed, more specific detachment can be implemented)
     isListenerAttached = false;
     console.log(`Detached listener for chat ID: ${currentChatID}`);
   }
@@ -31,11 +29,9 @@ function detachMessageListener() {
 // Firebase References
 const usersRef = ref(database, "users");
 const userChatsRef = ref(database, "userChats");
-const statusRef = ref(database, "status");
 
 // Entry Point: Fetch Users & Populate UI
 fetchUsers();
-listenForStatusChanges(); // Call the function to start listening
 
 /**
  * Fetches all users from the database and displays them
@@ -43,16 +39,12 @@ listenForStatusChanges(); // Call the function to start listening
 async function fetchUsers() {
   try {
     const snapshot = await get(usersRef);
-    const statusSnapshot = await get(statusRef);
-    const statuses = statusSnapshot.val() || {};
-
     if (!snapshot.exists()) {
       alert("No users found in the database.");
       return;
     }
-
     const allUsers = snapshot.val();
-    populateUserList(allUsers, statuses);
+    populateUserList(allUsers);
   } catch (error) {
     console.error("Error fetching users:", error);
   }
@@ -61,102 +53,59 @@ async function fetchUsers() {
 /**
  * Populates the user list UI with retrieved users
  */
-function populateUserList(allUsers, statuses) {
+function populateUserList(allUsers) {
   const userListContainer = document.querySelector(".listProfiles");
-  userListContainer.innerHTML = "";
+  userListContainer.innerHTML = ""; // Clear existing list
 
   let firstUser = null;
 
   for (const email in allUsers) {
     const user = allUsers[email];
-    if (user.id === sessionStorage.getItem("currentID")) continue;
+    if (user.id === sessionStorage.getItem("currentID")) continue; // Skip current user
 
-    const status = statuses[user.id]?.state || "offline";
-    const userDiv = createUserElement(user, email, status);
+    const userDiv = createUserElement(user, email);
     userListContainer.appendChild(userDiv);
 
     if (!firstUser) {
-      firstUser = user;
+      firstUser = user; // Store the first user
     }
   }
 
   if (firstUser) {
-    handleUserClick(firstUser);
+    handleUserClick(firstUser); // Automatically open chat with the first user
   }
 }
 
-function createUserElement(user, email, status) {
+/**
+ * Creates a user element for the UI
+ */
+function createUserElement(user, email) {
   let userDiv = document.createElement("div");
   userDiv.classList.add("user-item");
-  userDiv.dataset.id = user.id;
-
-  const statusClass =
-    status === "online"
-      ? "online-status"
-      : status === "away"
-      ? "away-status"
-      : "offline-status";
 
   let src = user.profilePicture || "../images/defaultUserLogo.png";
   userDiv.innerHTML = `
-  <a href="Homepage.html?user=${encodeURIComponent(email)}">
-    <img src=${src} alt="">
+    <img src="${src}" alt="User Profile Picture">
     <div id="item-profile" class="item-profile">
-      <span>${
-        user.name
-      } <span class="status-indicator ${statusClass}"></span></span>
-      <p>${email.replace(",", ".")}</p>
-      <p> <button id = "add-friend-btn">Add Friend </button> </p>
+      <span>${user.name}</span>
+      <p>${email.replace(",", ".")} 
+         <button class="add-friend-btn">Add Friend</button>
+      </p>
     </div>
-  </a>
-`;
+  `;
 
-  const statusIndicator = userDiv.querySelector(".status-indicator");
-  statusIndicator.addEventListener("click", () => showLastOnlineTime(user.id));
-  statusIndicator.style.cursor = "pointer"; // Indicate it's clickable
-  userDiv.addEventListener("click", (event) => {
-    event.preventDefault(); // Prevent default click behavior
-    handleUserClick(user);
-  });
-  return userDiv;
-}
-
-async function showLastOnlineTime(userId) {
-  const statusRef = ref(database, `status/${userId}`);
-  const snapshot = await get(statusRef);
-
-  if (snapshot.exists()) {
-    const userStatus = snapshot.val().state;
-
-    if (userStatus === "offline") {
-      const lastChanged = snapshot.val().lastChanged;
-      const dateTime = new Date(lastChanged);
-      const options = {
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-        hour: "numeric",
-        minute: "numeric",
-        second: "numeric",
-      };
-      alert(`Last Online: ${dateTime.toLocaleDateString("en-US", options)}`);
-    } else {
-      // Do nothing if the user is online or away
-      console.log(`User is ${userStatus}, no need to show last online time.`);
-    }
-  } else {
-    // If there's no status information (e.g., user never logged in)
-    const defaultDate = new Date("2025-03-19T10:00:00"); // Default date for when there's no data
-    alert(
-      `Last Online: ${defaultDate.toLocaleDateString("en-US", {
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-        hour: "numeric",
-        minute: "numeric",
-      })} `
-    );
+  // Attach event listener to the "Add Friend" button
+  const addFriendBtn = userDiv.querySelector(".add-friend-btn");
+  if (addFriendBtn) {
+    addFriendBtn.addEventListener("click", (event) => {
+      event.stopPropagation(); // Prevent triggering the userDiv's click event (which opens the chat)
+      addFriend(user);
+    });
   }
+
+  // When the overall userDiv is clicked (outside of the button), open the chat
+  userDiv.addEventListener("click", () => handleUserClick(user));
+  return userDiv;
 }
 
 /**
@@ -165,10 +114,10 @@ async function showLastOnlineTime(userId) {
 function handleUserClick(user) {
   const userID = user.id;
   const currentUserID = sessionStorage.getItem("currentID");
-  const chatID = push(userChatsRef).key;
+  const chatID = push(userChatsRef).key; // Generate a unique chat ID
 
   detachMessageListener();
-  messagesContainer.innerHTML = "";
+  messagesContainer.innerHTML = ""; // Clear previous messages
 
   checkExistingChat(userID, currentUserID)
     .then((existingChatID) => {
@@ -256,14 +205,10 @@ function createNewChat(userID, currentUserID, chatID) {
 function sendMessage() {
   const logedinUserID = sessionStorage.getItem("currentID");
   const messageText = chatInput.value.trim();
-  const chatOutputContainer = document.getElementById("reply-message-cont");
+
   if (messageText !== "" && currentChatID) {
-    if(chatOutputContainer && chatOutputContainer.textContent.trim() !== ""){
-      appendMessageToUI("Reply: "+chatOutputContainer.textContent);
-    }
     appendMessageToUI(messageText);
     storeMessageInDatabase(logedinUserID, messageText);
-    chatOutputContainer.innerHTML = '';
   } else if (!currentChatID) {
     alert("Please select a user to start chatting.");
   }
@@ -279,7 +224,6 @@ function appendMessageToUI(messageText) {
   messagesContainer.appendChild(messageDiv);
   chatInput.value = "";
   messagesContainer.scrollTop = messagesContainer.scrollHeight;
-  
 }
 
 /**
@@ -301,12 +245,12 @@ function storeMessageInDatabase(senderID, messageText) {
 // ✅ Prevent multiple listeners from being attached - now managed with detach
 function listenForNewMessages(currChatID) {
   if (isListenerAttached && currChatID === currentChatID) {
-    return;
+    return; // Avoid attaching multiple listeners for the same chat
   }
-  detachMessageListener();
+  detachMessageListener(); // Detach any existing listener
   isListenerAttached = true;
-  currentChatID = currChatID;
-  messagesContainer.dataset.chatId = currentChatID;
+  currentChatID = currChatID; // Update the current chat ID for the listener
+  messagesContainer.dataset.chatId = currentChatID; // Store the chat ID in the container
 
   const messagesRef = ref(database, `messages/${currChatID}`);
 
@@ -317,18 +261,20 @@ function listenForNewMessages(currChatID) {
     const messageText = messageData.message;
     const senderID = messageData.senderID;
 
+    // Only add messages if they belong to the current open chat
     if (messagesContainer.dataset.chatId !== snapshot.ref.parent.key) {
       console.warn("Message ignored: Not from current chat");
-      return;
+      return; // Skip messages from other chats
     }
 
+    // Prevent duplicate messages AND messages sent by the current user
     if (
       senderID !== sessionStorage.getItem("currentID") &&
       !document.querySelector(`.message[data-id="${snapshot.key}"]`)
     ) {
       const messageDiv = document.createElement("div");
       messageDiv.classList.add("message", "received");
-      messageDiv.setAttribute("data-id", snapshot.key);
+      messageDiv.setAttribute("data-id", snapshot.key); // Using the message ID
       messageDiv.textContent = messageText;
 
       if (senderID === sessionStorage.getItem("currentID")) {
@@ -344,14 +290,14 @@ function listenForNewMessages(currChatID) {
   console.log(`Attached listener for chat ID: ${currChatID}`);
 }
 
-// ✅ Load Messages on Page Load
+//  Load Messages on Page Load
 function loadMessages(currChatID) {
   if (!currChatID) {
     console.error("No chat ID provided.");
     return;
   }
 
-  messagesContainer.innerHTML = "";
+  messagesContainer.innerHTML = ""; // Clear previous messages
   const messagesRef = ref(database, `messages/${currChatID}`);
   get(messagesRef)
     .then((snapshot) => {
@@ -374,56 +320,6 @@ function loadMessages(currChatID) {
             }
 
             messagesContainer.appendChild(messageDiv);
-            messageDiv.onclick = function() {
-              
-              const addButton = this.querySelector("#reply-btn");
-
-              if (addButton) {
-                // Button is displayed, so remove it
-                addButton.remove();
-              } else {
-                // Button is not displayed, so add it
-                // Create the button element
-                const addButton = document.createElement("button");
-                addButton.textContent = "reply"; // Button text
-                addButton.id = "reply-btn"; // Button ID for styling if needed
-
-                // Add button click handler (stopPropagation is important!)
-                addButton.onclick = function(event) {
-                  event.stopPropagation();
-                  console.log("Add Friend clicked for message:", messageText);
-                  
-                  const replyMessageText = messageText;
-
-                  // Create a new div element for the reply message container
-                  const replyContainer = document.createElement("div");
-                  
-                  // Add a CSS class to style the reply message (optional)
-                  replyContainer.classList.add("reply-message");
-                  
-                  // Set the text content of the container to the reply message
-                  replyContainer.textContent = replyMessageText;
-                  
-                  // Or, if the reply message might contain HTML, use innerHTML (be cautious)
-                  // replyContainer.innerHTML = replyMessageText;
-                  
-                  // Find a container element in your HTML where you want to display the reply
-                  const chatOutputContainer = document.getElementById("reply-message-cont"); // Replace "chat-output" with the actual ID of your output area
-                  
-                  // Append the reply container to the output container
-                  if (chatOutputContainer) {
-                    chatOutputContainer.innerHTML = ''; // Clear existing content 
-                    chatOutputContainer.appendChild(replyContainer);
-                  } else {
-                      console.error("Container element with ID 'chat-output' not found.");
-                  }
-                  // Handle "Add Friend" logic here
-                };
-
-                // Append the button to the message div
-                this.appendChild(addButton);
-              }
-            };
           }
         });
       } else {
@@ -447,31 +343,60 @@ chatInput.addEventListener("keypress", function (e) {
   }
 });
 
-function listenForStatusChanges() {
-  const statusRef = ref(database, "status");
-
-  onChildChanged(statusRef, (snapshot) => {
-    const statusData = snapshot.val();
-    const userID = snapshot.key;
-    const status = statusData?.state || "offline";
-
-    updateUserStatusInUI(userID, status);
-  });
-}
-
-function updateUserStatusInUI(userID, status) {
-  const userDiv = document.querySelector(`.user-item[data-id="${userID}"]`);
-  if (!userDiv) return;
-
-  const statusClass =
-    status === "online"
-      ? "online-status"
-      : status === "away"
-      ? "away-status"
-      : "offline-status";
-
-  const statusSpan = userDiv.querySelector(".item-profile .status-indicator");
-  if (statusSpan) {
-    statusSpan.className = `status-indicator ${statusClass}`;
+/**
+ * Adds a friend by updating both the current user's and the target friend's records.
+ */
+function addFriend(friend) {
+  // Retrieve the current user's email from sessionStorage
+  const currentUserEmail = sessionStorage.getItem("email");
+  if (!currentUserEmail) {
+    alert("Current user email not found.");
+    return;
   }
+  // Format emails for Firebase keys (replace '.' with ',')
+  const currentUserKey = currentUserEmail.replace(/\./g, ",");
+  if (!friend.email) {
+    alert("Friend email not available.");
+    return;
+  }
+  const friendUserKey = friend.email.replace(/\./g, ",");
+
+  const currentUserRef = ref(database, "users/" + currentUserKey);
+  const friendUserRef = ref(database, "users/" + friendUserKey);
+
+  // Update current user's friend list
+  get(currentUserRef)
+    .then((snapshot) => {
+      if (!snapshot.exists()) {
+        alert("Current user record not found.");
+        return;
+      }
+      const currentUserData = snapshot.val();
+      let currentFriends = currentUserData.friends || [];
+      if (currentFriends.includes(friend.id)) {
+        alert("User is already your friend.");
+        return;
+      }
+      currentFriends.push(friend.id);
+      return update(currentUserRef, { friends: currentFriends })
+        .then(() => get(friendUserRef))
+        .then((snapshot) => {
+          if (!snapshot.exists()) {
+            alert("Friend record not found.");
+            return;
+          }
+          const friendData = snapshot.val();
+          let friendFriends = friendData.friends || [];
+          if (!friendFriends.includes(currentUserData.id)) {
+            friendFriends.push(currentUserData.id);
+            return update(friendUserRef, { friends: friendFriends });
+          }
+        });
+    })
+    .then(() => {
+    })
+    .catch((error) => {
+      console.error("Error adding friend:", error);
+      alert("Failed to add friend.");
+    });
 }

@@ -101,7 +101,7 @@ function Dashboard() {
           null,
           React.createElement(
             "a",
-            { href: "#Contacts", className: "profBtns" },
+            { href: "contact.html", className: "profBtns" },
             React.createElement("i", { className: "fas fa-address-book" }),
             " Contacts"
           )
