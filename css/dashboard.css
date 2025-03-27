@@ -117,7 +117,7 @@ Sidebar Styles
 /* ==========================
   Edit Profile & Settings Panels
   ========================== */
-.editProfile/*,
+.editProfile ,  .notification/*, 
   .settings */ {
   position: fixed;
   top: 0;
@@ -134,7 +134,7 @@ Sidebar Styles
   border-radius: 10px;
 }
 
-.editProfile[hidden]/*, .settings[hidden]*/ {
+.editProfile[hidden] , .notification[hidden]/*, .settings[hidden]*/ {
   display: none;
 }
 
@@ -264,4 +264,35 @@ button.settingsBtn {
 }
 button.settingsBtn.deleteBtn {
   background: #af3d3d !important;
+}
+/*  For Notification */
+
+
+.notification ul {
+  list-style: none;
+  padding: 0;
+  margin: 10px 0;
+}
+
+.notification ul li {
+  padding: 5px;
+  border-bottom: 1px solid #c4b2b2;
+  color:white;
+  border-radius: 4px;
+  padding: 10px;
+  margin-bottom: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 14px;
+  transition: background-color 0.3s ease;
+}
+
+
+.notification ul li span {
+  display: inline-block;
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
