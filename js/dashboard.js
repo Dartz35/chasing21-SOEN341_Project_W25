@@ -80,8 +80,10 @@ function Dashboard() {
           "li",
           null,
           React.createElement(
-            "a",
-            { href: "#Notifications", className: "profBtns" },
+            "button",
+            {  className: "profBtns toggleNotification " ,
+              onClick:toggleNotification
+            },
             React.createElement("i", { className: "fas fa-bell" }),
             " Notifications"
           )
@@ -228,7 +230,13 @@ function Dashboard() {
     )
   );
 }
+function toggleNotification() {
+  const editSettings = document.getElementById("toggleNotification");
+  const sidebar = document.getElementById("sidebar").classList;
 
+  sidebar.toggle("active");
+  editSettings.hidden = !editSettings.hidden;
+}
 function toggleSettings() {
   const editSettings = document.getElementById("toggleSettings");
   const sidebar = document.getElementById("sidebar").classList;
