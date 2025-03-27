@@ -76,6 +76,7 @@ function Dashboard() {
             " Home"
           )
         ),
+  
         React.createElement(
           "li",
           null,
@@ -166,6 +167,32 @@ function Dashboard() {
         "Delete Account"
       )
     ),
+    // for notification
+    React.createElement(
+      "div",
+      { id: "toggleNotification", className: "notification", hidden: true },
+      React.createElement(
+        "button",
+        { className: "backBtn  toggleSettings", onClick: toggleNotification },
+        "←"
+      ),
+      React.createElement("h3", null, "Notifications"),
+      React.createElement(
+        "ul",
+        null,
+        React.createElement(
+          "li",
+          null,
+          React.createElement("span", null, "You have a new message.")
+        ),
+        React.createElement(
+          "li",
+          null,
+          React.createElement("span", null, "Your profile was updated.")
+        )
+      )
+    )
+    ,
     // Edit Profile Display
 
     React.createElement(
