@@ -53,16 +53,37 @@
           </div>
         </div>
         <div class="conversation">
+         
           <div id="messages"></div>
         </div>
+        <div class="emoji" style="height: 0px; padding: 0px; overflow: hidden;">
+          <span id="emoji1" onClick="emoji_func(this.id)">&#128512</span>
+          <span id="emoji2" onClick="emoji_func(this.id)">&#128513</span>
+          <span id="emoji3" onClick="emoji_func(this.id)">&#128514</span>
+          <span id="emoji4" onClick="emoji_func(this.id)">&#128515</span>
+          <span id="emoji5" onClick="emoji_func(this.id)">&#128516</span>
+          <span id="emoji6" onClick="emoji_func(this.id)">&#128517</span>
+          <span id="emoji7" onClick="emoji_func(this.id)">&#128518</span>
+          <span id="emoji8" onClick="emoji_func(this.id)">&#128519</span>
+          <span id="emoji9" onClick="emoji_func(this.id)">&#128520</span>
+          <span id="emoji10" onClick="emoji_func(this.id)">&#128521</span>
+          <span id="emoji11" onClick="emoji_func(this.id)">&#128522</span>
+          <span id="emoji12" onClick="emoji_func(this.id)">&#128523</span>
+          <span id="emoji13" onClick="emoji_func(this.id)">&#128524</span>
+          <span id="emoji14" onClick="emoji_func(this.id)">&#128525</span>
+          <span id="emoji15" onClick="emoji_func(this.id)">&#128526</span>
+          <span id="emoji16" onClick="emoji_func(this.id)">&#128527</span>
+          <span id="emoji17" onClick="emoji_func(this.id)">&#128528</span>
+          <span id="emoji18" onClick="emoji_func(this.id)">&#128529</span>
 
-        
+          </div>
           
           <div class="chatbar">
             
             
             <div class="chat-input-wrapper">
-              <span id="reply-message-cont">oihuiyggugifitfutfu</span>
+              <span id="reply-message-cont"></span>
+             
               <input
                 type="text"
                 id="chat-input"
@@ -103,11 +124,11 @@
       click = false;
       function show_emoji(){
         if(click == false){
-          document.getElementsByClassName("emoji")[0].style.height = "542 px";
+          document.getElementsByClassName("emoji")[0].style.height = "542px";
           document.getElementsByClassName("emoji")[0].style.padding = "8px 0px";
           click = true;
         }else{
-          document.getElementsByClassName("emoji")[0].style.height = "0 px";
+          document.getElementsByClassName("emoji")[0].style.height = "0px";
           document.getElementsByClassName("emoji")[0].style.padding = " 0px";
           click = false;
         }

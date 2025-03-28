@@ -260,10 +260,13 @@ function sendMessage() {
   if (messageText !== "" && currentChatID) {
     if(chatOutputContainer && chatOutputContainer.textContent.trim() !== ""){
       appendMessageToUI("Reply: "+chatOutputContainer.textContent);
-    }
+      appendMessageToUI(messageText);
+      storeMessageInDatabase(logedinUserID, messageText);
+      chatOutputContainer.innerHTML = '';
+    }else{
     appendMessageToUI(messageText);
     storeMessageInDatabase(logedinUserID, messageText);
-    chatOutputContainer.innerHTML = '';
+    chatOutputContainer.innerHTML = '';}
   } else if (!currentChatID) {
     alert("Please select a user to start chatting.");
   }
@@ -278,6 +281,7 @@ function appendMessageToUI(messageText) {
   messageDiv.textContent = messageText;
   messagesContainer.appendChild(messageDiv);
   chatInput.value = "";
+ 
   messagesContainer.scrollTop = messagesContainer.scrollHeight;
   
 }
