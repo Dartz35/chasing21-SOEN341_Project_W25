@@ -3,17 +3,14 @@ import {
   ref,
   set,
   get,
-  update
+  update,
 } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-database.js";
 import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
 } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-auth.js";
-import {
-  getFirestore,
-  doc,
-  getDoc,
-} from "https://www.gstatic.com/firebasejs/11.2.0/firebase-firestore.js";
+import { getFirestore } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-firestore.js";
+import { addMember } from "./channels.js";
 
 export const db = getFirestore(app);
 document.getElementById("email_login").addEventListener("input", function () {
@@ -67,6 +64,16 @@ document
         role: role,
         profilePicture: "", // Default empty
       });
+
+      const channelsSnapshot = await get(ref(database, "channels/"));
+      if (channelsSnapshot.exists()) {
+        const channelsValue = channelsSnapshot.val();
+        Object.keys(channelsValue).forEach((channel) => {
+          if (channelsValue[channel].channelType === "public") {
+            addMember(email, channel);
+          }
+        });
+      }
 
       alert("Registration successful!");
       setTimeout(function () {
