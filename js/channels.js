@@ -76,13 +76,13 @@ async function fetchNameById(uid) {
 
 const createchannelBtn = document.getElementById("createchannelBtn");
 if (createchannelBtn) {
-  createchannelBtn.addEventListener("click", createchannel);
+  createchannelBtn.addEventListener("click", createChannel);
 }
 
 /**
  * Creates a new channel with the specified name.
  */
-async function createchannel() {
+async function createChannel() {
   const channelNameInput = document.getElementById("channelName");
   const channelTypeInput = document.getElementById("channelType");
   const channelName = channelNameInput ? channelNameInput.value.trim() : "";
@@ -369,7 +369,9 @@ function showchannelOptions(event, channelInfo) {
   document.body.appendChild(dropdown);
   document.addEventListener("click", function closeDropdown(e) {
     if (!dropdown.contains(e.target) && e.target !== event.target) {
-      dropdown.remove();
+      if (dropdown) {
+        dropdown.remove();
+      }
       document.removeEventListener("click", closeDropdown);
     }
   });
