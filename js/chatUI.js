@@ -222,10 +222,4 @@ function goBackToChannels() {
   }
 }
 
-export {
-  openChannelChat,
-  displayChatUI,
-  goBackToChannels,
-  sendMessage,
-  loadMessages,
-};
+export { displayChatUI, goBackToChannels, sendMessage, loadMessages };

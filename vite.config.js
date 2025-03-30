@@ -19,8 +19,12 @@ export default defineConfig({
         login: resolve(__dirname, "html/loginPage.html"),
         home: resolve(__dirname, "html/HomePage.html"),
         forget: resolve(__dirname, "html/forget.html"),
+        contact: resolve(__dirname, "html/contact.html"),
       },
     },
+  },
+  server: {
+    open: "/html/loginPage.html",
   },
   test: {
     globals: true,
