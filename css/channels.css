@@ -343,3 +343,11 @@ p {
     opacity: 1;
   }
 }
+
+#allChannelsContainer {
+  padding-bottom: 40px;
+}
+
+#myChannelsContainer {
+  padding-bottom: 15px;
+}
