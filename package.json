@@ -8,8 +8,8 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "test": "NODE_ENV=test vitest",
-    "test:ui": "NODE_ENV=test vitest --ui"
+    "test": "cross-env NODE_ENV=test vitest",
+    "test:ui": "cross-env NODE_ENV=test vitest --ui"
   },
   "imports": {
     "#js/*": "./js/*"
@@ -22,6 +22,7 @@
     "@babel/preset-env": "^7.26.9",
     "@babel/preset-react": "^7.26.3",
     "@vitest/ui": "^3.0.9",
+    "cross-env": "^7.0.3",
     "vitest": "^3.0.9"
   },
   "repository": {
