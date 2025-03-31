@@ -1,10 +1,11 @@
-import { app, auth, database } from "./firebaseConfig.js";
+import { app, auth, database } from "../js/firebaseConfig.js";
 import { ref, set, get, update } from "firebase/database";
 import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
 } from "firebase/auth";
-import { getFirestore, doc, getDoc } from "firebase/firestore";
+import { getFirestore } from "firebase/firestore";
+import { addMember } from "../js/channels.js";
 
 export const db = getFirestore(app);
 document.getElementById("email_login").addEventListener("input", function () {
@@ -58,6 +59,16 @@ document
         role: role,
         profilePicture: "", // Default empty
       });
+
+      const channelsSnapshot = await get(ref(database, "channels/"));
+      if (channelsSnapshot.exists()) {
+        const channelsValue = channelsSnapshot.val();
+        Object.keys(channelsValue).forEach((channel) => {
+          if (channelsValue[channel].channelType === "public") {
+            addMember(email, channel);
+          }
+        });
+      }
 
       alert("Registration successful!");
       setTimeout(function () {

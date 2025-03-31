@@ -97,7 +97,7 @@ function Dashboard() {
           null,
           React.createElement(
             "a",
-            { href: "#Contacts", className: "profBtns" },
+            { href: "contact.html", className: "profBtns" },
             React.createElement("i", { className: "fas fa-address-book" }),
             " Contacts"
           )
@@ -276,6 +276,18 @@ async function handleLogout() {
   if (!auth.currentUser) return;
   try {
     window.loggingOut = true;
+
+    // Get the current user's ID
+    const userId = auth.currentUser.uid;
+
+    // Create a reference to the user's status
+    const userStatusRef = ref(database, "status/" + userId);
+
+    // Update the user's status to offline
+    await update(userStatusRef, { state: "offline", lastChanged: Date.now() });
+    console.log(`Set user ${userId} to offline before logging out.`);
+
+    // Proceed with the standard logout process
     await signOut(auth);
     sessionStorage.clear();
 

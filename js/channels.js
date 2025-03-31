@@ -28,26 +28,28 @@ const searchResults = document.getElementById("searchResults");
 let currentMode = null;
 let activeChannelId = null;
 
-listenChannelsRemoved();
-listenChannelsAdded();
+if (window.location.pathname.endsWith("channels.html")) {
+  listenChannelsRemoved();
+  listenChannelsAdded();
 
-/**
- * Listens for the authentication state to change and fetches the user's data.
- */
-onAuthStateChanged(auth, async (user) => {
-  if (user) {
-    currentUserData = await fetchProfileData(user);
-    currentUserData.id = user.uid;
-    const fetchedName = await fetchNameById(currentUserData.id);
-    currentUserData.name = fetchedName || "Unknown";
-    await fetchchannels();
-  } else {
-    if (!window.loggingOut) {
-      alert("You must be logged in to view this page.");
-      window.location.href = "../html/loginPage.html";
+  /**
+   * Listens for the authentication state to change and fetches the user's data.
+   */
+  onAuthStateChanged(auth, async (user) => {
+    if (user) {
+      currentUserData = await fetchProfileData(user);
+      currentUserData.id = user.uid;
+      const fetchedName = await fetchNameById(currentUserData.id);
+      currentUserData.name = fetchedName || "Unknown";
+      await fetchchannels();
+    } else {
+      if (!window.loggingOut) {
+        alert("You must be logged in to view this page.");
+        window.location.href = "../html/loginPage.html";
+      }
     }
-  }
-});
+  });
+}
 
 /**
  * Fetches the name of a user by their UID.
@@ -74,15 +76,15 @@ async function fetchNameById(uid) {
 
 const createchannelBtn = document.getElementById("createchannelBtn");
 if (createchannelBtn) {
-  createchannelBtn.addEventListener("click", createchannel);
+  createchannelBtn.addEventListener("click", createChannel);
 }
 
 /**
  * Creates a new channel with the specified name.
  */
-async function createchannel() {
+async function createChannel() {
   const channelNameInput = document.getElementById("channelName");
-  const channelType = document.getElementById("channelType");
+  const channelTypeInput = document.getElementById("channelType");
   const channelName = channelNameInput ? channelNameInput.value.trim() : "";
   if (!channelName) {
     alert("Please enter a channel name.");
@@ -101,8 +103,13 @@ async function createchannel() {
 
     // Fetch all users only if the user is admin
     let memberIDs = [channelOwnerId];
+    let channelType = "private";
 
-    if (currentUserData.role === "admin" && channelType.value === "public") {
+    if (
+      currentUserData.role === "admin" &&
+      channelTypeInput.value === "public"
+    ) {
+      channelType = "public";
       const usersSnap = await get(ref(database, "users"));
       if (usersSnap.exists()) {
         const usersData = usersSnap.val();
@@ -115,6 +122,7 @@ async function createchannel() {
       members: memberIDs,
       name: channelName,
       ownerId: channelOwnerId,
+      channelType: channelType,
       joinRequests: [],
     };
 
@@ -361,7 +369,9 @@ function showchannelOptions(event, channelInfo) {
   document.body.appendChild(dropdown);
   document.addEventListener("click", function closeDropdown(e) {
     if (!dropdown.contains(e.target) && e.target !== event.target) {
-      dropdown.remove();
+      if (dropdown) {
+        dropdown.remove();
+      }
       document.removeEventListener("click", closeDropdown);
     }
   });
@@ -528,7 +538,7 @@ async function searchUsers(query) {
  * Adds a member to a channel.
  * @param {string} channelId - The ID of the channel.
  */
-async function addMember(memberEmail, channelId) {
+export async function addMember(memberEmail, channelId) {
   const emailKey = memberEmail.replace(/\./g, ",");
   const userRef = ref(database, "users/" + emailKey);
   try {
@@ -555,7 +565,9 @@ async function addMember(memberEmail, channelId) {
     channelMembers.push(newMemberId);
     await set(channelMembersRef, channelMembers);
     addChannelToUser(channelId, memberEmail);
-    alert("Member added successfully!");
+    if (window.location.pathname.endsWith("channels.html")) {
+      alert("Member added successfully!");
+    }
   } catch {
     alert("Failed to add member.");
   }
@@ -664,23 +676,27 @@ function openMemberModal(mode, channelId) {
 }
 
 // Close modal
-closeModalBtn.onclick = () => {
-  modal.style.display = "none";
-  const dropdown = document.querySelector(".channel-options");
-  dropdown.remove();
-};
+if (closeModalBtn) {
+  closeModalBtn.addEventListener("click", () => {
+    modal.style.display = "none";
+    const dropdown = document.querySelector(".channel-options");
+    dropdown.remove();
+  });
+}
 
 // Realtime search listener
-searchInput.addEventListener("input", async () => {
-  const query = searchInput.value.trim();
+if (searchInput) {
+  searchInput.addEventListener("input", async () => {
+    const query = searchInput.value.trim();
 
-  const results =
-    currentMode === "add"
-      ? await searchUsers(query)
-      : await searchChannelMembers(activeChannelId, query, mode);
+    const results =
+      currentMode === "add"
+        ? await searchUsers(query)
+        : await searchChannelMembers(activeChannelId, query, mode);
 
-  renderResults(results);
-});
+    renderResults(results);
+  });
+}
 
 // Render result items
 function renderResults(results) {
