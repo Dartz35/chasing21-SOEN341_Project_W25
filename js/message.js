@@ -547,5 +547,6 @@ function updateUserStatusInUI(userID, status) {
   const statusSpan = userDiv.querySelector(".item-profile .status-indicator");
   if (statusSpan) {
     statusSpan.className = `status-indicator ${statusClass}`;
+    console.log(`User ${userID} is now ${status}`);
   }
 }
