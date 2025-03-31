@@ -2,24 +2,29 @@ import { auth, database } from "./firebaseConfig.js";
 import { ref, get, update, onDisconnect } from "firebase/database";
 import { onAuthStateChanged } from "firebase/auth";
 
-// Check if user is logged in
-onAuthStateChanged(auth, async (user) => {
-  if (user) {
-    await fetchProfileData(user);
-    const userStatusRef = ref(database, "status/" + user.uid);
-    await update(userStatusRef, { state: "online", lastChanged: Date.now() });
-    onDisconnect(userStatusRef).set({
-      state: "offline",
-      lastChanged: Date.now(),
-    });
-    trackUserInactivity(user);
-  } else {
-    if (!window.loggingOut) {
-      alert("You must be logged in to view this page.");
-      window.location.href = "../html/loginPage.html"; // Redirect if not logged in
+if (
+  !window.location.pathname.endsWith("loginPage.html") ||
+  process.env.NODE_ENV === "test"
+) {
+  // Check if user is logged in
+  onAuthStateChanged(auth, async (user) => {
+    if (user) {
+      await fetchProfileData(user);
+      const userStatusRef = ref(database, "status/" + user.uid);
+      await update(userStatusRef, { state: "online", lastChanged: Date.now() });
+      onDisconnect(userStatusRef).set({
+        state: "offline",
+        lastChanged: Date.now(),
+      });
+      trackUserInactivity(user);
+    } else {
+      if (!window.loggingOut) {
+        alert("You must be logged in to view this page.");
+        window.location.href = "../html/loginPage.html"; // Redirect if not logged in
+      }
     }
-  }
-});
+  });
+}
 let inactivityTimer;
 
 function trackUserInactivity(user) {
