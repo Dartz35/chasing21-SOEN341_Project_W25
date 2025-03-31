@@ -26,12 +26,14 @@ const mockDatabase = {
       email: "user1@example.com",
       name: "User One",
       channels: [],
+      role: "user",
     },
     "user2@example,com": {
       id: "uid2",
       email: "user2@example.com",
       name: "User Two",
       channels: [],
+      role: "admin",
     },
   },
 };
@@ -41,6 +43,7 @@ const mockChannelData = {
   name: "Test Channel",
   ownerId: "uid1",
   members: ["uid1"],
+  channelType: "private",
   joinRequests: [],
 };
 

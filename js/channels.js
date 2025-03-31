@@ -28,7 +28,10 @@ const searchResults = document.getElementById("searchResults");
 let currentMode = null;
 let activeChannelId = null;
 
-if (window.location.pathname.endsWith("channels.html")) {
+if (
+  window.location.pathname.endsWith("channels.html") ||
+  process.env.NODE_ENV === "test"
+) {
   listenChannelsRemoved();
   listenChannelsAdded();
 
@@ -538,7 +541,7 @@ async function searchUsers(query) {
  * Adds a member to a channel.
  * @param {string} channelId - The ID of the channel.
  */
-export async function addMember(memberEmail, channelId) {
+async function addMember(memberEmail, channelId) {
   const emailKey = memberEmail.replace(/\./g, ",");
   const userRef = ref(database, "users/" + emailKey);
   try {
@@ -565,7 +568,10 @@ export async function addMember(memberEmail, channelId) {
     channelMembers.push(newMemberId);
     await set(channelMembersRef, channelMembers);
     addChannelToUser(channelId, memberEmail);
-    if (window.location.pathname.endsWith("channels.html")) {
+    if (
+      window.location.pathname.endsWith("channels.html") ||
+      process.env.NODE_ENV === "test"
+    ) {
       alert("Member added successfully!");
     }
   } catch {
@@ -820,7 +826,7 @@ function listenForMemberChanges(channelID) {
 }
 
 export {
-  createchannel,
+  createChannel,
   deletechannel,
   addMember,
   removeMember,
