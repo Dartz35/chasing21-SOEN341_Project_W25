@@ -31,4 +31,5 @@ jobs:
         run: chmod +x ./node_modules/.bin/vitest
 
       - name: Run Unit Tests with Vitest
-        run: npm test
+        run: |
+          NODE_ENV=test npm test
