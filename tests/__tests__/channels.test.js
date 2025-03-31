@@ -9,7 +9,7 @@ beforeEach(() => {
 
 // ✅ After mocks, import the module under test
 import {
-  createchannel,
+  createChannel,
   deletechannel,
   addMember,
   removeMember,
@@ -57,7 +57,7 @@ describe("Channel management", () => {
       val: () => mockDatabase.users,
     });
 
-    await createchannel();
+    await createChannel();
 
     expect(push).toHaveBeenCalled();
     expect(set).toHaveBeenCalled();
