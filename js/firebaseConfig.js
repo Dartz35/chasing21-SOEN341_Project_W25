@@ -1,9 +1,9 @@
 // This file is used to initialize the Firebase app and export the app, database,
 // and auth objects to be used in other files.
 
-import { initializeApp } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-app.js";
-import { getDatabase } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-database.js";
-import { getAuth } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-auth.js";
+import { initializeApp } from "firebase/app";
+import { getDatabase } from "firebase/database";
+import { getAuth } from "firebase/auth";
 
 // Web app's Firebase configuration
 const firebaseConfig = {

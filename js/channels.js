@@ -1,5 +1,5 @@
 import { auth, database } from "./firebaseConfig.js";
-import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-auth.js";
+import { onAuthStateChanged } from "firebase/auth";
 import {
   ref,
   get,
@@ -12,7 +12,7 @@ import {
   onValue,
   off,
   update,
-} from "https://www.gstatic.com/firebasejs/11.2.0/firebase-database.js";
+} from "firebase/database";
 
 import { fetchProfileData } from "./pageLoading.js";
 import { openChannelChat } from "./chatUI.js";
@@ -28,7 +28,10 @@ const searchResults = document.getElementById("searchResults");
 let currentMode = null;
 let activeChannelId = null;
 
-if (window.location.pathname.endsWith("channels.html")) {
+if (
+  window.location.pathname.endsWith("channels.html") ||
+  process.env.NODE_ENV === "test"
+) {
   listenChannelsRemoved();
   listenChannelsAdded();
 
@@ -201,33 +204,48 @@ async function fetchchannels() {
   try {
     const snapshot = await get(channelsRef);
     if (!snapshot.exists()) {
-      const myChannelsContainer = document.getElementById(
-        "myChannelsContainer"
+      const publicChannelsContainer = document.getElementById(
+        "publicChannelsContainer"
+      );
+      const privateChannelsContainer = document.getElementById(
+        "privateChannelsContainer"
       );
       const allChannelsContainer = document.getElementById(
         "allChannelsContainer"
       );
-      if (myChannelsContainer)
-        myChannelsContainer.innerHTML = "No channels exist.";
-      if (allChannelsContainer) allChannelsContainer.innerHTML = "";
+      if (publicChannelsContainer) publicChannelsContainer.innerHTML = "";
+      if (privateChannelsContainer) privateChannelsContainer.innerHTML = "";
+      if (allChannelsContainer)
+        allChannelsContainer.innerHTML = "No channels exist.";
       return;
     }
     const channelsData = snapshot.val();
-    const myChannelsContainer = document.getElementById("myChannelsContainer");
+    const publicChannelsContainer = document.getElementById(
+      "publicChannelsContainer"
+    );
+    const privateChannelsContainer = document.getElementById(
+      "privateChannelsContainer"
+    );
     const allChannelsContainer = document.getElementById(
       "allChannelsContainer"
     );
-    if (!myChannelsContainer || !allChannelsContainer) {
+    if (
+      !publicChannelsContainer ||
+      !privateChannelsContainer ||
+      !allChannelsContainer
+    ) {
       return;
     }
-    myChannelsContainer.innerHTML = "";
+    publicChannelsContainer.innerHTML = "";
+    privateChannelsContainer.innerHTML = "";
     allChannelsContainer.innerHTML = "";
     const userId = currentUserData.id;
     Object.keys(channelsData).forEach((channelId) => {
       const channelInfo = channelsData[channelId];
       addChannelItem(
         channelInfo,
-        myChannelsContainer,
+        publicChannelsContainer,
+        privateChannelsContainer,
         allChannelsContainer,
         userId
       );
@@ -240,20 +258,24 @@ async function fetchchannels() {
 /**
  * Adds a channel item to the appropriate container in the UI.
  * @param {Object} channelInfo - The information of the channel.
- * @param {HTMLElement} myChannelsContainer - The container for the user's channels.
+ * @param {HTMLElement} publicChannelsContainer - The container for the user's channels.
+ * @param {HTMLElement} privateChannelsContainer - The container for the user's channels.
  * @param {HTMLElement} allChannelsContainer - The container for all channels.
  * @param {string} userId - The ID of the current user.
  */
 function addChannelItem(
   channelInfo,
-  myChannelsContainer,
+  publicChannelsContainer,
+  privateChannelsContainer,
   allChannelsContainer,
   userId
 ) {
   const isMember = channelInfo.members && channelInfo.members.includes(userId);
   const channelItemEl = buildChannelItem(channelInfo, isMember);
   if (isMember) {
-    myChannelsContainer.appendChild(channelItemEl);
+    channelInfo.channelType === "public"
+      ? publicChannelsContainer.appendChild(channelItemEl)
+      : privateChannelsContainer.appendChild(channelItemEl);
   } else {
     allChannelsContainer.appendChild(channelItemEl);
   }
@@ -428,18 +450,9 @@ function generateAdminchannelOptions(dropdown, channelInfo) {
 function generateMemberchannelOptions(dropdown, channelInfo) {
   const viewMembersBtn = document.createElement("button");
   viewMembersBtn.textContent = "View Members";
-  viewMembersBtn.addEventListener("click", async () => {
-    if (!channelInfo.members || channelInfo.members.length === 0) {
-      alert("No members in this channel.");
-      return;
-    }
-    try {
-      const nameList = await fetchNamesForIDs(channelInfo.members);
-      alert("Channel Members:\n" + nameList.join("\n"));
-    } catch {
-      alert("Could not fetch member names.");
-    }
-  });
+  viewMembersBtn.addEventListener("click", () =>
+    openMemberModal("view", channelInfo.id)
+  );
   dropdown.appendChild(viewMembersBtn);
   const channelRequestBtn = document.createElement("button");
   channelRequestBtn.classList.add("channel-request-btn");
@@ -538,7 +551,7 @@ async function searchUsers(query) {
  * Adds a member to a channel.
  * @param {string} channelId - The ID of the channel.
  */
-export async function addMember(memberEmail, channelId) {
+async function addMember(memberEmail, channelId) {
   const emailKey = memberEmail.replace(/\./g, ",");
   const userRef = ref(database, "users/" + emailKey);
   try {
@@ -565,7 +578,10 @@ export async function addMember(memberEmail, channelId) {
     channelMembers.push(newMemberId);
     await set(channelMembersRef, channelMembers);
     addChannelToUser(channelId, memberEmail);
-    if (window.location.pathname.endsWith("channels.html")) {
+    if (
+      window.location.pathname.endsWith("channels.html") ||
+      process.env.NODE_ENV === "test"
+    ) {
       alert("Member added successfully!");
     }
   } catch {
@@ -776,14 +792,20 @@ function listenChannelsAdded() {
     console.log("New channel detected:", snapshot.val());
 
     const channelInfo = snapshot.val();
-    const myChannelsContainer = document.getElementById("myChannelsContainer");
+    const publicChannelsContainer = document.getElementById(
+      "publicChannelsContainer"
+    );
+    const privateChannelsContainer = document.getElementById(
+      "privateChannelsContainer"
+    );
     const allChannelsContainer = document.getElementById(
       "allChannelsContainer"
     );
 
     addChannelItem(
       channelInfo,
-      myChannelsContainer,
+      publicChannelsContainer,
+      privateChannelsContainer,
       allChannelsContainer,
       currentUserData.id
     );
@@ -818,3 +840,12 @@ function listenForMemberChanges(channelID) {
     fetchchannels();
   });
 }
+
+export {
+  createChannel,
+  deletechannel,
+  addMember,
+  removeMember,
+  searchUsers,
+  searchChannelMembers,
+};

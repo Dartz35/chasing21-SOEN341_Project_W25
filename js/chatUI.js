@@ -10,7 +10,7 @@ import {
   onChildAdded,
   onChildRemoved,
   remove,
-} from "https://www.gstatic.com/firebasejs/11.2.0/firebase-database.js";
+} from "firebase/database";
 
 function displayError(message) {
   let errorDiv = document.getElementById("errorMessage");
@@ -221,3 +221,5 @@ function goBackToChannels() {
     displayError("Error going back to channels: " + error.message);
   }
 }
+
+export { displayChatUI, goBackToChannels, sendMessage, loadMessages };

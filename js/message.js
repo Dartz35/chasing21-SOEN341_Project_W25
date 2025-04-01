@@ -6,9 +6,9 @@ import {
   update,
   push,
   off,
-  onChildAdded,
-  onChildChanged,
-} from "https://www.gstatic.com/firebasejs/11.2.0/firebase-database.js";
+  onChildAdded, // Import onChildAdded
+  onChildChanged, // Import onChildChanged
+} from "firebase/database";
 
 const sendBtn = document.getElementById("send-btn");
 const chatInput = document.getElementById("chat-input");
@@ -90,13 +90,20 @@ function createUserElement(user, email, status) {
   userDiv.classList.add("user-item");
   userDiv.dataset.id = user.id;
 
-  const statusClass = status === "online" ? "online-status" : (status === "away" ? "away-status" : "offline-status");
+  const statusClass =
+    status === "online"
+      ? "online-status"
+      : status === "away"
+      ? "away-status"
+      : "offline-status";
 
   let src = user.profilePicture || "../images/defaultUserLogo.png";
   userDiv.innerHTML = `
     <img src="${src}" alt="User Profile Picture">
     <div id="item-profile" class="item-profile">
-      <span>${user.name} <span class="status-indicator ${statusClass}"></span></span>
+      <span>${
+        user.name
+      } <span class="status-indicator ${statusClass}"></span></span>
       <p>${email.replace(",", ".")}
          <button class="add-friend-btn">Add Friend</button>
       </p>
@@ -114,7 +121,9 @@ function createUserElement(user, email, status) {
 
   const statusIndicator = userDiv.querySelector(".status-indicator");
   if (statusIndicator) {
-    statusIndicator.addEventListener("click", () => showLastOnlineTime(user.id));
+    statusIndicator.addEventListener("click", () =>
+      showLastOnlineTime(user.id)
+    );
     statusIndicator.style.cursor = "pointer";
   }
 
@@ -133,16 +142,31 @@ async function showLastOnlineTime(userId) {
     if (userStatus === "offline") {
       const lastChanged = snapshot.val().lastChanged;
       const dateTime = new Date(lastChanged);
-      const options = { year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric' };
-      alert(`Last Online: ${dateTime.toLocaleDateString('en-US', options)}`);
+      const options = {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+        hour: "numeric",
+        minute: "numeric",
+        second: "numeric",
+      };
+      alert(`Last Online: ${dateTime.toLocaleDateString("en-US", options)}`);
     } else {
       // Do nothing if the user is online or away
       console.log(`User is ${userStatus}, no need to show last online time.`);
     }
   } else {
     // If there's no status information (e.g., user never logged in)
-    const defaultDate = new Date('2025-03-19T10:00:00'); // Default date for when there's no data
-    alert(`Last Online: ${defaultDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric' })} `);
+    const defaultDate = new Date("2025-03-19T10:00:00"); // Default date for when there's no data
+    alert(
+      `Last Online: ${defaultDate.toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+        hour: "numeric",
+        minute: "numeric",
+      })} `
+    );
   }
 }
 
@@ -158,21 +182,21 @@ function handleUserClick(user) {
   messagesContainer.innerHTML = ""; // Clear previous messages
 
   checkExistingChat(userID, currentUserID)
-      .then((existingChatID) => {
-        if (existingChatID) {
-          console.log("Found existing chat with ID: " + existingChatID);
-          currentChatID = existingChatID;
-          loadMessages(currentChatID);
-        } else {
-          createNewChat(userID, currentUserID, chatID);
-        }
-        document.getElementById("currentUser").textContent = user.name;
-        document.getElementById("currentProfilePic").src =
-            user.profilePicture || "../images/defaultUserLogo.png";
-      })
-      .catch((error) =>
-          console.error("Error checking for existing chat:", error.message)
-      );
+    .then((existingChatID) => {
+      if (existingChatID) {
+        console.log("Found existing chat with ID: " + existingChatID);
+        currentChatID = existingChatID;
+        loadMessages(currentChatID);
+      } else {
+        createNewChat(userID, currentUserID, chatID);
+      }
+      document.getElementById("currentUser").textContent = user.name;
+      document.getElementById("currentProfilePic").src =
+        user.profilePicture || "../images/defaultUserLogo.png";
+    })
+    .catch((error) =>
+      console.error("Error checking for existing chat:", error.message)
+    );
 }
 
 /**
@@ -186,8 +210,8 @@ async function checkExistingChat(userID, currentID) {
     snapshot.forEach((childSnapshot) => {
       const chatData = childSnapshot.val();
       if (
-          (chatData.ReceiverID === userID && chatData.SenderID === currentID) ||
-          (chatData.ReceiverID === currentID && chatData.SenderID === userID)
+        (chatData.ReceiverID === userID && chatData.SenderID === currentID) ||
+        (chatData.ReceiverID === currentID && chatData.SenderID === userID)
       ) {
         existingChatID = chatData.ChatID;
       }
@@ -229,12 +253,12 @@ function createNewChat(userID, currentUserID, chatID) {
     set(chatRefCurrent, chatDataCurrent),
     set(chatRefUser, chatDataUser),
   ])
-      .then(() => {
-        console.log(`Chat created successfully with ID: ${chatID}`);
-        currentChatID = chatID;
-        loadMessages(currentChatID);
-      })
-      .catch((error) => console.error("Error creating chat:", error.message));
+    .then(() => {
+      console.log(`Chat created successfully with ID: ${chatID}`);
+      currentChatID = chatID;
+      loadMessages(currentChatID);
+    })
+    .catch((error) => console.error("Error creating chat:", error.message));
 }
 
 /**
@@ -245,17 +269,12 @@ function sendMessage() {
   const messageText = chatInput.value.trim();
 
   if (messageText !== "" && currentChatID) {
-
-    if(chatOutputContainer && chatOutputContainer.textContent.trim() !== ""){
-      appendMessageToUI("Reply: "+chatOutputContainer.textContent);
-      appendMessageToUI(messageText);
-      storeMessageInDatabase(logedinUserID, messageText);
-      chatOutputContainer.innerHTML = '';
-    }else{
+    if (chatOutputContainer && chatOutputContainer.textContent.trim() !== "") {
+      appendMessageToUI("Reply: " + chatOutputContainer.textContent);
+    }
     appendMessageToUI(messageText);
     storeMessageInDatabase(logedinUserID, messageText);
-    chatOutputContainer.innerHTML = '';}
-
+    chatOutputContainer.innerHTML = "";
   } else if (!currentChatID) {
     alert("Please select a user to start chatting.");
   }
@@ -270,7 +289,7 @@ function appendMessageToUI(messageText) {
   messageDiv.textContent = messageText;
   messagesContainer.appendChild(messageDiv);
   chatInput.value = "";
- 
+
   messagesContainer.scrollTop = messagesContainer.scrollHeight;
 }
 
@@ -286,8 +305,8 @@ function storeMessageInDatabase(senderID, messageText) {
     senderID: senderID,
     timestamp: Date.now(),
   })
-      .then(() => console.log("Message sent to Firebase!"))
-      .catch((error) => console.error("Error sending message:", error));
+    .then(() => console.log("Message sent to Firebase!"))
+    .catch((error) => console.error("Error sending message:", error));
 }
 
 // ✅ Prevent multiple listeners from being attached - now managed with detach
@@ -317,8 +336,8 @@ function listenForNewMessages(currChatID) {
 
     // Prevent duplicate messages AND messages sent by the current user
     if (
-        senderID !== sessionStorage.getItem("currentID") &&
-        !document.querySelector(`.message[data-id="${snapshot.key}"]`)
+      senderID !== sessionStorage.getItem("currentID") &&
+      !document.querySelector(`.message[data-id="${snapshot.key}"]`)
     ) {
       const messageDiv = document.createElement("div");
       messageDiv.classList.add("message", "received");
@@ -348,37 +367,89 @@ function loadMessages(currChatID) {
   messagesContainer.innerHTML = ""; // Clear previous messages
   const messagesRef = ref(database, `messages/${currChatID}`);
   get(messagesRef)
-      .then((snapshot) => {
-        if (snapshot.exists()) {
-          snapshot.forEach((childSnapshot) => {
-            const messageData = childSnapshot.val();
-            const messageText = messageData?.message;
-            const senderID = messageData?.senderID;
+    .then((snapshot) => {
+      if (snapshot.exists()) {
+        snapshot.forEach((childSnapshot) => {
+          const messageData = childSnapshot.val();
+          const messageText = messageData?.message;
+          const senderID = messageData?.senderID;
 
-            if (messageText) {
-              const messageDiv = document.createElement("div");
-              messageDiv.classList.add("message");
-              messageDiv.setAttribute("data-id", childSnapshot.key);
-              messageDiv.textContent = messageText;
+          if (messageText) {
+            const messageDiv = document.createElement("div");
+            messageDiv.classList.add("message");
+            messageDiv.setAttribute("data-id", childSnapshot.key);
+            messageDiv.textContent = messageText;
 
-              if (senderID === sessionStorage.getItem("currentID")) {
-                messageDiv.classList.add("sent");
-              } else {
-                messageDiv.classList.add("received");
-              }
-
-              messagesContainer.appendChild(messageDiv);
+            if (senderID === sessionStorage.getItem("currentID")) {
+              messageDiv.classList.add("sent");
+            } else {
+              messageDiv.classList.add("received");
             }
-          });
-        } else {
-          console.log("No messages found for this chat.");
-        }
-        messagesContainer.scrollTop = messagesContainer.scrollHeight;
-        listenForNewMessages(currentChatID);
-      })
-      .catch((error) => {
-        console.error("Error loading messages:", error);
-      });
+
+            messagesContainer.appendChild(messageDiv);
+            messageDiv.onclick = function () {
+              const addButton = this.querySelector("#reply-btn");
+
+              if (addButton) {
+                // Button is displayed, so remove it
+                addButton.remove();
+              } else {
+                // Button is not displayed, so add it
+                // Create the button element
+                const addButton = document.createElement("button");
+                addButton.textContent = "reply"; // Button text
+                addButton.id = "reply-btn"; // Button ID for styling if needed
+
+                // Add button click handler (stopPropagation is important!)
+                addButton.onclick = function (event) {
+                  event.stopPropagation();
+                  console.log("Add Friend clicked for message:", messageText);
+
+                  const replyMessageText = messageText;
+
+                  // Create a new div element for the reply message container
+                  const replyContainer = document.createElement("div");
+
+                  // Add a CSS class to style the reply message (optional)
+                  replyContainer.classList.add("reply-message");
+
+                  // Set the text content of the container to the reply message
+                  replyContainer.textContent = replyMessageText;
+
+                  // Or, if the reply message might contain HTML, use innerHTML (be cautious)
+                  // replyContainer.innerHTML = replyMessageText;
+
+                  // Find a container element in your HTML where you want to display the reply
+                  const chatOutputContainer =
+                    document.getElementById("reply-message-cont"); // Replace "chat-output" with the actual ID of your output area
+
+                  // Append the reply container to the output container
+                  if (chatOutputContainer) {
+                    chatOutputContainer.innerHTML = ""; // Clear existing content
+                    chatOutputContainer.appendChild(replyContainer);
+                  } else {
+                    console.error(
+                      "Container element with ID 'chat-output' not found."
+                    );
+                  }
+                  // Handle "Add Friend" logic here
+                };
+
+                // Append the button to the message div
+                this.appendChild(addButton);
+              }
+            };
+          }
+        });
+      } else {
+        console.log("No messages found for this chat.");
+      }
+      messagesContainer.scrollTop = messagesContainer.scrollHeight;
+      listenForNewMessages(currentChatID);
+    })
+    .catch((error) => {
+      console.error("Error loading messages:", error);
+    });
 }
 
 // Event listener for send button
@@ -414,40 +485,40 @@ function addFriend(friend) {
 
   // Update current user's friend list
   get(currentUserRef)
-      .then((snapshot) => {
-        if (!snapshot.exists()) {
-          alert("Current user record not found.");
-          return;
-        }
-        const currentUserData = snapshot.val();
-        let currentFriends = currentUserData.friends || [];
-        if (currentFriends.includes(friend.id)) {
-          alert("User is already your friend.");
-          return;
-        }
-        currentFriends.push(friend.id);
-        return update(currentUserRef, { friends: currentFriends })
-            .then(() => get(friendUserRef))
-            .then((snapshot) => {
-              if (!snapshot.exists()) {
-                alert("Friend record not found.");
-                return;
-              }
-              const friendData = snapshot.val();
-              let friendFriends = friendData.friends || [];
-              if (!friendFriends.includes(currentUserData.id)) {
-                friendFriends.push(currentUserData.id);
-                return update(friendUserRef, { friends: friendFriends });
-              }
-            });
-      })
-      .then(() => {
-        alert("Friend added successfully!");
-      })
-      .catch((error) => {
-        console.error("Error adding friend:", error);
-        alert("Failed to add friend.");
-      });
+    .then((snapshot) => {
+      if (!snapshot.exists()) {
+        alert("Current user record not found.");
+        return;
+      }
+      const currentUserData = snapshot.val();
+      let currentFriends = currentUserData.friends || [];
+      if (currentFriends.includes(friend.id)) {
+        alert("User is already your friend.");
+        return;
+      }
+      currentFriends.push(friend.id);
+      return update(currentUserRef, { friends: currentFriends })
+        .then(() => get(friendUserRef))
+        .then((snapshot) => {
+          if (!snapshot.exists()) {
+            alert("Friend record not found.");
+            return;
+          }
+          const friendData = snapshot.val();
+          let friendFriends = friendData.friends || [];
+          if (!friendFriends.includes(currentUserData.id)) {
+            friendFriends.push(currentUserData.id);
+            return update(friendUserRef, { friends: friendFriends });
+          }
+        });
+    })
+    .then(() => {
+      alert("Friend added successfully!");
+    })
+    .catch((error) => {
+      console.error("Error adding friend:", error);
+      alert("Failed to add friend.");
+    });
 }
 
 function listenForStatusChanges() {
@@ -466,10 +537,16 @@ function updateUserStatusInUI(userID, status) {
   const userDiv = document.querySelector(`.user-item[data-id="${userID}"]`);
   if (!userDiv) return;
 
-  const statusClass = status === "online" ? "online-status" : (status === "away" ? "away-status" : "offline-status");
+  const statusClass =
+    status === "online"
+      ? "online-status"
+      : status === "away"
+      ? "away-status"
+      : "offline-status";
 
   const statusSpan = userDiv.querySelector(".item-profile .status-indicator");
   if (statusSpan) {
     statusSpan.className = `status-indicator ${statusClass}`;
+    console.log(`User ${userID} is now ${status}`);
   }
 }

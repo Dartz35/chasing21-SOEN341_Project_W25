@@ -10,7 +10,7 @@ on:
 
 jobs:
   test:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
 
     steps:
       - name: Checkout repository
@@ -23,11 +23,12 @@ jobs:
 
       - name: Install Dependencies
         run: |
-          npm install puppeteer
+          npm install
+          npm uninstall --save-dev vitest
+          npm install --save-dev vitest
 
-      - name: Run All CSS Tests
-        run: |
-          for test in test/testCases/*.js; do
-            echo "Running test: $test"
-            node "$test" || exit 1
-          done
+      - name: Fix Vitest Permissions
+        run: chmod +x ./node_modules/.bin/vitest
+
+      - name: Run Unit Tests with Vitest
+        run: npm test

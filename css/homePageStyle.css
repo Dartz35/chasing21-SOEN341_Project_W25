@@ -67,6 +67,7 @@ main {
   display: flex;
   flex-direction: column;
   height: 750px;
+  min-width: 300px;
   overflow: hidden;
 }
 .chatList {
@@ -75,6 +76,7 @@ main {
   flex-direction: column;
   max-height: 680px;
   overflow-y: scroll;
+  overflow-x: hidden;
   .search {
     display: flex;
     align-items: center;

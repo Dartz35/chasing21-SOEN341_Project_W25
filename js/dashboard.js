@@ -1,10 +1,6 @@
 import { auth, database } from "./firebaseConfig.js";
-import { signOut } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-auth.js";
-import {
-  ref,
-  get,
-  update,
-} from "https://www.gstatic.com/firebasejs/11.2.0/firebase-database.js";
+import { signOut } from "firebase/auth";
+import { ref, get, update } from "firebase/database";
 import { updateNameUI, updateProfilePictureUI } from "./pageLoading.js";
 import { toggleSidebar } from "./header.js";
 
