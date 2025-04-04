@@ -72,12 +72,15 @@ function Dashboard() {
             " Home"
           )
         ),
+  
         React.createElement(
           "li",
           null,
           React.createElement(
-            "a",
-            { href: "#Notifications", className: "profBtns" },
+            "button",
+            {  className: "profBtns toggleNotification " ,
+              onClick:toggleNotification
+            },
             React.createElement("i", { className: "fas fa-bell" }),
             " Notifications"
           )
@@ -160,6 +163,32 @@ function Dashboard() {
         "Delete Account"
       )
     ),
+    // for notification
+    React.createElement(
+      "div",
+      { id: "toggleNotification", className: "notification", hidden: true },
+      React.createElement(
+        "button",
+        { className: "backBtn  toggleSettings", onClick: toggleNotification },
+        "←"
+      ),
+      React.createElement("h3", null, "Notifications"),
+      React.createElement(
+        "ul",
+        null,
+        React.createElement(
+          "li",
+          null,
+          React.createElement("span", null, "You have a new message.")
+        ),
+        React.createElement(
+          "li",
+          null,
+          React.createElement("span", null, "Your profile was updated.")
+        )
+      )
+    )
+    ,
     // Edit Profile Display
 
     React.createElement(
@@ -224,7 +253,13 @@ function Dashboard() {
     )
   );
 }
+function toggleNotification() {
+  const editSettings = document.getElementById("toggleNotification");
+  const sidebar = document.getElementById("sidebar").classList;
 
+  sidebar.toggle("active");
+  editSettings.hidden = !editSettings.hidden;
+}
 function toggleSettings() {
   const editSettings = document.getElementById("toggleSettings");
   const sidebar = document.getElementById("sidebar").classList;
