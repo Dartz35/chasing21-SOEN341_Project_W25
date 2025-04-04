@@ -268,6 +268,9 @@ function sendMessage() {
   const logedinUserID = sessionStorage.getItem("currentID");
   const messageText = chatInput.value.trim();
 
+ const chatOutputContainer =
+   document.getElementById("reply-message-cont");
+
   if (messageText !== "" && currentChatID) {
     if (chatOutputContainer && chatOutputContainer.textContent.trim() !== "") {
       appendMessageToUI("Reply: " + chatOutputContainer.textContent);
