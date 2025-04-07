@@ -30,7 +30,8 @@ function detachMessageListener() {
 // Firebase References
 const usersRef = ref(database, "users");
 const userChatsRef = ref(database, "userChats");
-const statusRef = ref(database, "status"); // Firebase Reference for status (
+const statusRef = ref(database, "status");
+const friendRequestsRef = ref(database, "FriendRequests");
 
 // Entry Point: Fetch Users & Populate UI
 fetchUsers();
@@ -465,63 +466,68 @@ chatInput.addEventListener("keypress", function (e) {
   }
 });
 
-/**
- * Adds a friend by updating both the current user's and the target friend's records.
- */
-function addFriend(friend) {
-  // Retrieve the current user's email from sessionStorage
-  const currentUserEmail = sessionStorage.getItem("email");
-  if (!currentUserEmail) {
-    alert("Current user email not found.");
+async function addFriend(friend) {
+  // Get the current user's ID from sessionStorage
+  const currentUserID = sessionStorage.getItem("currentID");
+  if (!currentUserID) {
+    alert("Current user ID not found. Please log in again.");
     return;
   }
-  // Format emails for Firebase keys (replace '.' with ',')
-  const currentUserKey = currentUserEmail.replace(/\./g, ",");
-  if (!friend.email) {
-    alert("Friend email not available.");
+
+  // Get the ID of the user receiving the request
+  const receiverID = friend.id;
+  if (!receiverID) {
+    alert("Friend ID not available.");
     return;
   }
-  const friendUserKey = friend.email.replace(/\./g, ",");
 
-  const currentUserRef = ref(database, "users/" + currentUserKey);
-  const friendUserRef = ref(database, "users/" + friendUserKey);
+  // --- Prevent sending request to oneself ---
+  if (currentUserID === receiverID) {
+    alert("You cannot send a friend request to yourself.");
+    return;
+  }
 
-  // Update current user's friend list
-  get(currentUserRef)
-    .then((snapshot) => {
-      if (!snapshot.exists()) {
-        alert("Current user record not found.");
-        return;
-      }
-      const currentUserData = snapshot.val();
-      let currentFriends = currentUserData.friends || [];
-      if (currentFriends.includes(friend.id)) {
-        alert("User is already your friend.");
-        return;
-      }
-      currentFriends.push(friend.id);
-      return update(currentUserRef, { friends: currentFriends })
-        .then(() => get(friendUserRef))
-        .then((snapshot) => {
-          if (!snapshot.exists()) {
-            alert("Friend record not found.");
-            return;
-          }
-          const friendData = snapshot.val();
-          let friendFriends = friendData.friends || [];
-          if (!friendFriends.includes(currentUserData.id)) {
-            friendFriends.push(currentUserData.id);
-            return update(friendUserRef, { friends: friendFriends });
-          }
-        });
-    })
-    .then(() => {
-      alert("Friend added successfully!");
-    })
-    .catch((error) => {
-      console.error("Error adding friend:", error);
-      alert("Failed to add friend.");
-    });
+  // --- Check for existing *pending* friend requests ---
+  try {
+    const queryRef = ref(database, "FriendRequests");
+    const requestsSnapshot = await get(queryRef);
+    let existingPendingRequest = false;
+
+    if (requestsSnapshot.exists()) {
+      requestsSnapshot.forEach((childSnapshot) => {
+        const request = childSnapshot.val();
+        // Check if a pending request exists in either direction
+        if (request.status === "pending" &&
+            ((request.senderID === currentUserID && request.receiverID === receiverID) ||
+                (request.senderID === receiverID && request.receiverID === currentUserID)))
+        {
+          existingPendingRequest = true;
+        }
+      });
+    }
+
+    if (existingPendingRequest) {
+      alert("A friend request is already pending between you and this user.");
+      return;
+    }
+
+    // --- Create and Store the New Friend Request ---
+    const newRequestRef = push(friendRequestsRef); // Generate a unique key for the request
+    const requestData = {
+      senderID: currentUserID,
+      receiverID: receiverID,
+      timestamp: Date.now(),
+      status: "pending" // Add a status field to track the request
+    };
+
+    await set(newRequestRef, requestData);
+
+    alert("Friend request sent successfully!");
+
+  } catch (error) {
+    console.error("Error sending friend request:", error);
+    alert("Failed to send friend request. Please try again.");
+  }
 }
 
 function listenForStatusChanges() {
