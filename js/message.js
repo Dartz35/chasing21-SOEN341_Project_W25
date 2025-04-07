@@ -118,7 +118,7 @@ function populateUserList(allUsers, statuses) {
 
   for (const user in allUsers) {
     const userData = allUsers[user];
-    if (user.id === sessionStorage.getItem("currentID")) continue;
+    if (userData.id === sessionStorage.getItem("currentID")) continue;
 
     const status = statuses[userData.id]?.state || "offline";
     const userDiv = createUserElement(userData, userData.email, status);
