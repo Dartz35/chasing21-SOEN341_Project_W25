@@ -1,73 +1,82 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Contacts</title>
-  <link rel="stylesheet" href="../css/contact.css">
-  <!-- Add header/sidebar styles -->
-  <link rel="stylesheet" href="../css/header.css">
-  <link rel="stylesheet" href="../css/dashboard.css">
-  <link rel="stylesheet" href="../css/chatUI.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
-  <!-- Add React for header/sidebar components -->
-  <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
-  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
-</head>
-<body>
-<!-- React app container for header/sidebar -->
-<div id="app"></div>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Contacts</title>
+    <link rel="stylesheet" href="../css/contact.css" />
+    <!-- Add header/sidebar styles -->
+    <link rel="stylesheet" href="../css/header.css" />
+    <link rel="stylesheet" href="../css/dashboard.css" />
+    <link rel="stylesheet" href="../css/chatUI.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+    />
+    <!-- Add React for header/sidebar components -->
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+  </head>
+  <body>
+    <!-- React app container for header/sidebar -->
+    <div id="app"></div>
 
-<!-- Main content container - moved your existing content into this structure -->
-<div class="main-content">
-  <div class="container">
-    <div class="contacts-container">
-      <div class="tabs">
-        <button class="tab-btn active" data-tab="all-users">All Users</button>
-        <button class="tab-btn" data-tab="friends">Friends</button>
-        <button class="tab-btn" data-tab="sent-requests">Sent Requests</button>
-        <button class="tab-btn" data-tab="received-requests">Received Requests</button>
-      </div>
+    <!-- Main content container - moved your existing content into this structure -->
+    <div class="main-content">
+      <div class="container">
+        <div class="contacts-container">
+          <div class="tabs">
+            <button class="tab-btn active" data-tab="all-users">
+              All Users
+            </button>
+            <button class="tab-btn" data-tab="friends">Friends</button>
+            <button class="tab-btn" data-tab="sent-requests">
+              Sent Requests
+            </button>
+            <button class="tab-btn" data-tab="received-requests">
+              Received Requests
+            </button>
+          </div>
 
-      <div class="search-container">
-        <input type="text" id="userSearch" placeholder="Search users..." class="search-input">
-      </div>
+          <div class="search-container">
+            <input
+              type="text"
+              id="userSearch"
+              placeholder="Search users..."
+              class="search-input"
+            />
+          </div>
 
-      <div class="tab-content active" id="all-users">
-        <div id="allUsers" class="users-container">
-          <div class="loading">Loading users...</div>
-        </div>
-      </div>
+          <div class="tab-content active" id="all-users">
+            <div id="allUsers" class="users-container">
+              <div class="loading">Loading users...</div>
+            </div>
+          </div>
 
-      <div class="tab-content" id="friends">
-        <div id="friendsList" class="users-container">
-          <div class="loading">Loading friends...</div>
-        </div>
-      </div>
+          <div class="tab-content" id="friends">
+            <div id="friendsList" class="users-container">
+              <div class="loading">Loading friends...</div>
+            </div>
+          </div>
 
-      <div class="tab-content" id="sent-requests">
-        <div id="sentRequests" class="users-container">
-          <div class="loading">Loading sent requests...</div>
-        </div>
-      </div>
+          <div class="tab-content" id="sent-requests">
+            <div id="sentRequests" class="users-container">
+              <div class="loading">Loading sent requests...</div>
+            </div>
+          </div>
 
-      <div class="tab-content" id="received-requests">
-        <div id="receivedRequests" class="users-container">
-          <div class="loading">Loading received requests...</div>
+          <div class="tab-content" id="received-requests">
+            <div id="receivedRequests" class="users-container">
+              <div class="loading">Loading received requests...</div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
-  </div>
-</div>
 
-<!-- Firebase SDKs -->
-<script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-database-compat.js"></script>
-
-<!-- Your scripts -->
-<script type="module" src="../js/contact.js"></script>
-<!-- Add header/sidebar script -->
-<script type="module" src="../js/headerSidebar.js"></script>
-</body>
+    <!-- Your scripts -->
+    <script type="module" src="../js/contact.js"></script>
+    <!-- Add header/sidebar script -->
+    <script type="module" src="../js/headerSidebar.js"></script>
+  </body>
 </html>

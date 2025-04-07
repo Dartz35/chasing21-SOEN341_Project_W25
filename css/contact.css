@@ -1,200 +1,238 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap");
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+}
+
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #e9ecef; /* Light gray background */
-    margin: 0;
-    padding: 20px;
-    color: #495057; /* Dark gray text */
+  font-family: "Poppins", sans-serif;
+  background-image: url("https://images.pexels.com/photos/7135028/pexels-photo-7135028.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-attachment: fixed;
+  background-size: cover;
+  color: #fff;
+  padding: 20px;
+}
+
+h1 {
+  color: #fff;
+}
+
+h1 img {
+  width: 50px;
+  height: 50px;
+  vertical-align: middle;
 }
 
 .container {
-    max-width: 1200px;
-    margin: 0 auto;
+  max-width: 1200px;
+  margin: 30px auto;
 }
 
 .contacts-container {
-    background: #fff; /* White container background */
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.05); /* Lighter shadow */
-    padding: 30px;
+  background: rgba(44, 47, 51, 0.9);
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  padding: 30px;
+  border: 1px solid #444;
 }
 
 .tabs {
-    display: flex;
-    margin-bottom: 20px;
-    border-bottom: 1px solid #dee2e6; /* Light gray border */
+  display: flex;
+  margin-bottom: 20px;
+  border-bottom: 1px solid #444;
 }
 
 .tab-btn {
-    padding: 10px 20px;
-    background: none;
-    border: none;
-    cursor: pointer;
-    font-size: 1em;
-    color: #6c757d; /* Medium gray text */
-    border-bottom: 3px solid transparent;
-    transition: all 0.3s;
+  padding: 10px 20px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1em;
+  color: rgba(255, 255, 255, 0.6);
+  border-bottom: 3px solid transparent;
+  transition: all 0.3s;
+}
+
+.tab-btn:hover {
+  color: #7289da;
+  border-bottom-color: rgba(114, 137, 218, 0.3);
 }
 
 .tab-btn.active {
-    color: #007bff; /* Primary blue color for active tab */
-    border-bottom-color: #007bff;
-    font-weight: bold;
+  color: #7289da;
+  border-bottom-color: #7289da;
+  font-weight: 600;
 }
 
 .tab-content {
-    display: none;
+  display: none;
 }
 
 .tab-content.active {
-    display: block;
+  display: block;
 }
 
 .search-container {
-    margin-bottom: 20px;
+  margin-bottom: 20px;
 }
 
 .search-input {
-    width: 100%;
-    padding: 10px 15px;
-    border: 1px solid #ced4da; /* Light gray border */
-    border-radius: 5px;
-    font-size: 1em;
-    color: #495057;
+  width: 100%;
+  padding: 10px 15px;
+  border: 1px solid #888;
+  border-radius: 5px;
+  font-size: 1em;
+  background-color: #666;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.search-input:focus {
+  background-color: #fff;
+  color: #000;
 }
 
 .users-container {
-    max-height: 600px;
-    overflow-y: auto;
+  max-height: 600px;
+  overflow-y: auto;
 }
 
 .user-item {
-    padding: 15px;
-    border-bottom: 1px solid #e9ecef; /* Light gray border */
-    display: flex;
-    align-items: center;
-    gap: 15px;
+  padding: 15px;
+  border-bottom: 1px solid #444;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  background-color: rgba(255, 255, 255, 0.03);
+  border-radius: 6px;
+  margin-bottom: 10px;
 }
 
 .user-item:last-child {
-    border-bottom: none;
+  border-bottom: none;
 }
 
 .user-item img {
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    object-fit: cover;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  object-fit: cover;
+  background-color: #f4f4f4;
 }
 
 .user-main {
-    flex: 1;
+  flex: 1;
 }
 
 .user-name {
-    font-weight: 600;
-    margin-bottom: 5px;
-    color: #343a40; /* Darker gray for name */
+  font-weight: 500;
+  color: #fff;
 }
 
 .user-email {
-    color: #6c757d; /* Medium gray for email */
-    font-size: 0.9em;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.9em;
 }
 
 .request-status {
-    font-size: 0.8em;
-    color: #6c757d;
-    margin-top: 5px;
+  font-size: 0.8em;
+  color: rgba(255, 255, 255, 0.6);
+  margin-top: 5px;
 }
 
 .request-actions {
-    display: flex;
-    gap: 8px;
-    margin-top: 10px;
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
 }
 
 .request-btn {
-    padding: 6px 12px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 0.85em;
-    transition: all 0.2s;
+  padding: 6px 12px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.85em;
+  transition: all 0.2s;
 }
 
+/* Themed buttons */
 .add-friend-btn {
-    background-color: #007bff; /* Primary blue */
-    color: white;
+  background-color: #7289da;
+  color: white;
 }
 
 .add-friend-btn:hover {
-    background-color: #0056b3; /* Darker blue */
+  background-color: #5f73a1;
 }
 
 .accept-btn {
-    background-color: #28a745; /* Success green */
-    color: white;
+  background-color: #43b581;
+  color: white;
 }
 
 .accept-btn:hover {
-    background-color: #1e7e34; /* Darker green */
+  background-color: #2fba7d;
 }
 
 .decline-btn {
-    background-color: #dc3545; /* Danger red */
-    color: white;
+  background-color: #f04747;
+  color: white;
 }
 
 .decline-btn:hover {
-    background-color: #c82333; /* Darker red */
+  background-color: #d03434;
 }
 
 .cancel-btn {
-    background-color: #ffc107; /* Warning yellow */
-    color: #212529; /* Dark text for yellow */
+  background-color: #faa61a;
+  color: #000;
 }
 
 .cancel-btn:hover {
-    background-color: #e0a800; /* Darker yellow */
+  background-color: #d99400;
 }
 
 .remove-friend-btn {
-    background-color: #6c757d; /* Secondary gray */
-    color: white;
+  background-color: #99aab5;
+  color: white;
 }
 
 .remove-friend-btn:hover {
-    background-color: #5a6268; /* Darker gray */
+  background-color: #7f8c97;
 }
 
 .loading {
-    color: #6c757d;
-    font-style: italic;
-    padding: 20px 0;
-    text-align: center;
+  color: rgba(255, 255, 255, 0.5);
+  font-style: italic;
+  padding: 20px 0;
+  text-align: center;
 }
 
 .error {
-    color: #dc3545;
-    padding: 20px 0;
-    text-align: center;
+  color: #f04747;
+  padding: 20px 0;
+  text-align: center;
 }
 
 @media (max-width: 768px) {
-    .container {
-        padding: 10px;
-    }
+  .container {
+    padding: 10px;
+  }
 
-    .contacts-container {
-        padding: 15px;
-    }
+  .contacts-container {
+    padding: 15px;
+  }
 
-    .tabs {
-        flex-wrap: wrap;
-    }
+  .tabs {
+    flex-wrap: wrap;
+  }
 
-    .tab-btn {
-        padding: 8px 12px;
-        font-size: 0.9em;
-    }
+  .tab-btn {
+    padding: 8px 12px;
+    font-size: 0.9em;
+  }
 }
