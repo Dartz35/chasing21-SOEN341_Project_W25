@@ -6,6 +6,8 @@ import {
   update,
   push,
   off,
+  query,
+  orderByChild,
   onChildAdded, // Import onChildAdded
   onChildChanged, // Import onChildChanged
 } from "firebase/database";
@@ -31,27 +33,67 @@ function detachMessageListener() {
 const usersRef = ref(database, "users");
 const userChatsRef = ref(database, "userChats");
 const statusRef = ref(database, "status");
-const friendRequestsRef = ref(database, "FriendRequests");
 
 // Entry Point: Fetch Users & Populate UI
 fetchUsers();
 listenForStatusChanges(); // Call the function to start listening for status changes
+
+// Helper functions
+function findUserById(usersData, userId) {
+  for (const [email, user] of Object.entries(usersData)) {
+    if (user.id === userId) {
+      return {
+        ...user,
+        email: email.replace(/,/g, "."),
+      };
+    }
+  }
+  return null;
+}
 
 /**
  * Fetches all users from the database and displays them
  */
 async function fetchUsers() {
   try {
-    const snapshot = await get(usersRef);
-    const statusSnapshot = await get(statusRef);
-    const statuses = statusSnapshot.val() || {};
+    const currentUserID = sessionStorage.getItem("currentID");
 
-    if (!snapshot.exists()) {
-      alert("No users found in the database.");
+    const friendsQuery = query(
+      ref(database, "Friends"),
+      orderByChild("timestamp")
+    );
+    const snapshot = await get(friendsQuery);
+    let friendsData = [];
+
+    if (snapshot.exists()) {
+      const usersSnapshot = await get(ref(database, "users"));
+      const usersData = usersSnapshot.exists() ? usersSnapshot.val() : {};
+
+      snapshot.forEach((childSnapshot) => {
+        const friendship = childSnapshot.val();
+
+        if (
+          friendship.user1 === currentUserID ||
+          friendship.user2 === currentUserID
+        ) {
+          const friendId =
+            friendship.user1 === currentUserID
+              ? friendship.user2
+              : friendship.user1;
+          const friend = findUserById(usersData, friendId);
+
+          if (friend) {
+            friendsData.push(friend);
+          }
+        }
+      });
+      const statusSnapshot = await get(statusRef);
+      const statuses = statusSnapshot.val() || {};
+      populateUserList(friendsData, statuses);
+    } else {
+      console.log("No friends found in the database.");
       return;
     }
-    const allUsers = snapshot.val();
-    populateUserList(allUsers, statuses);
   } catch (error) {
     console.error("Error fetching users:", error);
   }
@@ -62,20 +104,28 @@ async function fetchUsers() {
  */
 function populateUserList(allUsers, statuses) {
   const userListContainer = document.querySelector(".listProfiles");
+  const messageArea = document.querySelector(".messages-area");
+
   userListContainer.innerHTML = ""; // Clear existing list
 
+  if (allUsers.length === 0) {
+    userListContainer.innerHTML = "<p>No friends found.</p>";
+    messageArea.innerHTML =
+      '<p style="color: white; font-size: 2em;">Add a friend to start chatting.</p>'; // Hide message area if no friends
+    return;
+  }
   let firstUser = null;
 
-  for (const email in allUsers) {
-    const user = allUsers[email];
-    if (user.id === sessionStorage.getItem("currentID")) continue;
+  for (const user in allUsers) {
+    const userData = allUsers[user];
+    if (userData.id === sessionStorage.getItem("currentID")) continue;
 
-    const status = statuses[user.id]?.state || "offline";
-    const userDiv = createUserElement(user, email, status);
+    const status = statuses[userData.id]?.state || "offline";
+    const userDiv = createUserElement(userData, userData.email, status);
     userListContainer.appendChild(userDiv);
 
     if (!firstUser) {
-      firstUser = user;
+      firstUser = userData;
     }
   }
 
@@ -102,23 +152,10 @@ function createUserElement(user, email, status) {
   userDiv.innerHTML = `
     <img src="${src}" alt="User Profile Picture">
     <div id="item-profile" class="item-profile">
-      <span>${
-        user.name
-      } <span class="status-indicator ${statusClass}"></span></span>
-      <p>${email.replace(",", ".")}
-         <button class="add-friend-btn">Add Friend</button>
-      </p>
+      <span>${user.name} <span class="status-indicator ${statusClass}"></span></span>
+      <p>${email}</p>
     </div>
   `;
-
-  // Attach event listener to the "Add Friend" button
-  const addFriendBtn = userDiv.querySelector(".add-friend-btn");
-  if (addFriendBtn) {
-    addFriendBtn.addEventListener("click", (event) => {
-      event.stopPropagation(); // Prevent triggering the userDiv's click event (which opens the chat)
-      addFriend(user);
-    });
-  }
 
   const statusIndicator = userDiv.querySelector(".status-indicator");
   if (statusIndicator) {
@@ -269,8 +306,7 @@ function sendMessage() {
   const logedinUserID = sessionStorage.getItem("currentID");
   const messageText = chatInput.value.trim();
 
- const chatOutputContainer =
-   document.getElementById("reply-message-cont");
+  const chatOutputContainer = document.getElementById("reply-message-cont");
 
   if (messageText !== "" && currentChatID) {
     if (chatOutputContainer && chatOutputContainer.textContent.trim() !== "") {
@@ -465,70 +501,6 @@ chatInput.addEventListener("keypress", function (e) {
     sendMessage();
   }
 });
-
-async function addFriend(friend) {
-  // Get the current user's ID from sessionStorage
-  const currentUserID = sessionStorage.getItem("currentID");
-  if (!currentUserID) {
-    alert("Current user ID not found. Please log in again.");
-    return;
-  }
-
-  // Get the ID of the user receiving the request
-  const receiverID = friend.id;
-  if (!receiverID) {
-    alert("Friend ID not available.");
-    return;
-  }
-
-  // --- Prevent sending request to oneself ---
-  if (currentUserID === receiverID) {
-    alert("You cannot send a friend request to yourself.");
-    return;
-  }
-
-  // --- Check for existing *pending* friend requests ---
-  try {
-    const queryRef = ref(database, "FriendRequests");
-    const requestsSnapshot = await get(queryRef);
-    let existingPendingRequest = false;
-
-    if (requestsSnapshot.exists()) {
-      requestsSnapshot.forEach((childSnapshot) => {
-        const request = childSnapshot.val();
-        // Check if a pending request exists in either direction
-        if (request.status === "pending" &&
-            ((request.senderID === currentUserID && request.receiverID === receiverID) ||
-                (request.senderID === receiverID && request.receiverID === currentUserID)))
-        {
-          existingPendingRequest = true;
-        }
-      });
-    }
-
-    if (existingPendingRequest) {
-      alert("A friend request is already pending between you and this user.");
-      return;
-    }
-
-    // --- Create and Store the New Friend Request ---
-    const newRequestRef = push(friendRequestsRef); // Generate a unique key for the request
-    const requestData = {
-      senderID: currentUserID,
-      receiverID: receiverID,
-      timestamp: Date.now(),
-      status: "pending" // Add a status field to track the request
-    };
-
-    await set(newRequestRef, requestData);
-
-    alert("Friend request sent successfully!");
-
-  } catch (error) {
-    console.error("Error sending friend request:", error);
-    alert("Failed to send friend request. Please try again.");
-  }
-}
 
 function listenForStatusChanges() {
   const statusRef = ref(database, "status");
