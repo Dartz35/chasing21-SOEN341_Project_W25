@@ -3,8 +3,32 @@ import { signOut } from "firebase/auth";
 import { ref, get, update } from "firebase/database";
 import { updateNameUI, updateProfilePictureUI } from "./pageLoading.js";
 import { toggleSidebar } from "./header.js";
+import { getNoticesForCurrentUser } from "./notice.js";
 
 function Dashboard() {
+  const [notices, setNotices] = React.useState([]);  // State to store notices
+  const email = sessionStorage.getItem("email");
+  React.useEffect(() => {
+   
+    // Fetch all notices when the component mounts
+    getNoticesForCurrentUser(email)
+      .then((noticesData) => {
+        setNotices(noticesData);  // Update state with fetched notices
+      })
+      .catch((error) => {
+        console.error("Error fetching notices:", error);
+      });
+  }, []);  
+  const renderNotices = () => {
+    return notices.map((notice, index) =>
+      React.createElement(
+        'li', 
+        { key: index },
+        React.createElement('span', null, notice.message) // Adjust this based on the structure of your notices
+      )
+    );
+  };
+  
   return React.createElement(
     "div",
     null,
@@ -173,20 +197,7 @@ function Dashboard() {
         "←"
       ),
       React.createElement("h3", null, "Notifications"),
-      React.createElement(
-        "ul",
-        null,
-        React.createElement(
-          "li",
-          null,
-          React.createElement("span", null, "You have a new message.")
-        ),
-        React.createElement(
-          "li",
-          null,
-          React.createElement("span", null, "Your profile was updated.")
-        )
-      )
+React.createElement("ul",null,renderNotices()),
     )
     ,
     // Edit Profile Display
