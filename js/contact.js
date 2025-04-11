@@ -314,7 +314,6 @@ async function sendFriendRequest(user) {
                       message: "You have a new friend Request from " + currentUser.name,
                       timestamp: Date.now(),
                     };
-                    const newNoticeRef = push(noticeRef,newNotice);
                     console.log("New notice sent:", newNotice);
 
         alert("Friend request sent successfully!");
