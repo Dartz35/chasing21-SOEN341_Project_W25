@@ -352,21 +352,6 @@ async function getOwnerName(ownerId) {
  * @param {string[]} memberIDs - The IDs of the members.
  * @returns {Promise<string[]>} The names of the members.
  */
-async function fetchNamesForIDs(memberIDs) {
-  if (!memberIDs || memberIDs.length === 0) return [];
-  const usersSnapshot = await get(ref(database, "users"));
-  if (!usersSnapshot.exists()) return [];
-  const usersData = usersSnapshot.val();
-  return memberIDs.map((uid) => {
-    const foundKey = Object.keys(usersData).find(
-      (key) => usersData[key].id === uid
-    );
-    if (!foundKey) {
-      return `Unknown user (ID: ${uid})`;
-    }
-    return usersData[foundKey].name || `No name (ID: ${uid})`;
-  });
-}
 
 /**
  * Shows the options for a channel when the options button is clicked.
