@@ -1,6 +1,6 @@
 import { auth, database } from "./firebaseConfig.js";
 import { onAuthStateChanged } from "firebase/auth";
-import { ref, get, set, push, update, onValue, query, orderByChild } from "firebase/database";
+import { ref, get, set, push, onValue, query, orderByChild } from "firebase/database";
 
 // DOM elements
 const allUsersDiv = document.getElementById('allUsers');
