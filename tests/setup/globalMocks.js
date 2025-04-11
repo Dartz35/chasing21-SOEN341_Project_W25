@@ -58,4 +58,13 @@ export let mockDatabase = {
       groupChatId: "mockGroupChatId",
     },
   },
+  userChats: {
+    chat123: {
+      ChatID: "chat123",
+      LastMessage: "Hello",
+      ReceiverID: "user2",
+      SenderID: "user1",
+      UpdatedDate: "2023-10-01",
+    },
+  },
 };

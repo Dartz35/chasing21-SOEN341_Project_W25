@@ -120,11 +120,3 @@ vi.mock("../../js/firebaseConfig.js", () => ({
   database: {},
   app: {},
 }));
-
-vi.mock(import("../../js/pageLoading.js"), async (importOriginal) => {
-  const actual = await importOriginal();
-  return {
-    ...actual,
-    fetchProfileData: vi.fn(() => Promise.resolve(currentUserMock)),
-  };
-});

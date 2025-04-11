@@ -1,8 +1,37 @@
 // tests/__tests__/chatUI.test.js
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import "../../tests/setup/loadChatUIDom.js";
 import "../../tests/setup/globalMocks.js";
 import "../../tests/setup/firebaseMocks.js";
+
+document.body.innerHTML = `
+<div id="chatView">
+  >
+  <div class="chat-container">
+    <div class="chat-header">
+      <h3></h3>
+      <p id="userRoleDisplay"></p>
+      <button id="backToChannelsBtn">Back</button>
+    </div>
+    <div id="messagesContainer" class="messages-container"></div>
+    <div class="chat-footer">
+      <input
+        type="text"
+        id="messageInput"
+        placeholder="Write your message..."
+      />
+      <button id="sendMessageBtn">Send</button>
+    </div>
+  </div>
+</div>
+
+<div id="chatSection" style="display: none">
+  <div id="messageList"></div>
+  <input id="messageInput" />
+  <button id="sendMessageBtn"></button>
+</div>
+<div id="channelsContainer"></div>
+<div id="createchannelSection"></div>
+<div id="userRoleDisplay">user</div>`;
 
 import {
   openChannelChat,

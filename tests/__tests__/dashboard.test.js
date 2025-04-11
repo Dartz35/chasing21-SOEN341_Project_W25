@@ -1,7 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import "../../tests/setup/globalMocks.js";
 import "../../tests/setup/firebaseMocks.js";
-import "../../tests/setup/loadDashboardDom.js";
 import { update } from "firebase/database";
 
 import {

@@ -3,9 +3,30 @@ import {
   currentUserMock,
   mockDatabase,
 } from "../../tests/setup/globalMocks.js";
-import "../../tests/setup/loadChannelDom.js";
 import "../../tests/setup/firebaseMocksChannels.js";
 import { set, push, update, get } from "firebase/database";
+
+document.body.innerHTML = `
+<div id="app"></div>
+<div id="createchannelSection" style="display: block">
+<input type="text" id="channelName" />
+<select id="channelType" class="admin">
+  <option value="public">Public</option>
+  <option value="private">Private</option>
+</select>
+<button id="createchannelBtn">Create Channel</button>
+</div>
+<div id="myChannelsContainer"></div>
+<div id="allChannelsContainer"></div>
+<div id="memberModal" class="modal" style="display: none">
+<div class="modal-content">
+  <span id="closeModal" class="close-btn">&times;</span>
+  <h3 id="modalTitle">Search Members</h3>
+  <input type="text" id="searchInput" />
+  <div id="searchResults"></div>
+</div>
+</div>`;
+document.getElementById("channelName").value = "Test Channel";
 
 beforeEach(() => {
   vi.clearAllMocks();
