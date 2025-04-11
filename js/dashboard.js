@@ -129,19 +129,6 @@ function Dashboard() {
             " Contacts"
           )
         ),
-        React.createElement(
-          "li",
-          null,
-          React.createElement(
-            "button",
-            {
-              className: "profBtns toggleSettings",
-              onClick: toggleSettings,
-            },
-            React.createElement("i", { className: "fas fa-cog" }),
-            " Settings"
-          )
-        ),
 
         React.createElement("hr"),
 
