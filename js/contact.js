@@ -351,7 +351,16 @@ async function sendFriendRequest(user) {
       timestamp: Date.now(),
       status: "pending",
     });
-
+    const emailKey = user.email.replace(/\./g, ",");
+    // Send A push Notification 
+    const noticeRef = ref(database, `notices/${emailKey}`);
+    const newNotice = {
+      from: user.email,
+      message: "You Have Friend Request From " + user.name,
+      timestamp: Date.now(),
+    };
+     push(noticeRef, newNotice);
+     console.log("notification sent")
     alert("Friend request sent successfully!");
   } catch (error) {
     console.error("Error sending friend request:", error);
