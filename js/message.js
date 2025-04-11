@@ -3,9 +3,7 @@ import {
   ref,
   get,
   set,
-  update,
   push,
-  off,
   query,
   orderByChild,
   onChildAdded, // Import onChildAdded
