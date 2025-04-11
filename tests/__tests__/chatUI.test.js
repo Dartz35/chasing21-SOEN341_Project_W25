@@ -2,7 +2,7 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import "../../tests/setup/loadChatUIDom.js";
 import "../../tests/setup/globalMocks.js";
-import "../../tests/setup/firebaseMocksChatUI.js";
+import "../../tests/setup/firebaseMocks.js";
 
 import {
   openChannelChat,
