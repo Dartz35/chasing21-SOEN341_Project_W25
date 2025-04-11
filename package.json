@@ -5,6 +5,7 @@
   "description": "<h1 align=\"center\" id=\"title\">ChatHaven: A Seamless Communication Application</h1> <p align=\"center\">   <strong>Developed by chasing21</strong> </p>",
   "main": "vite.config.js",
   "scripts": {
+    "lint": "eslint . --fix",
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
@@ -21,9 +22,26 @@
   "devDependencies": {
     "@babel/preset-env": "^7.26.9",
     "@babel/preset-react": "^7.26.3",
+    "@eslint/css": "^0.6.0",
+    "@eslint/js": "^9.24.0",
     "@vitest/ui": "^3.0.9",
     "cross-env": "^7.0.3",
+    "eslint": "^9.24.0",
+    "eslint-plugin-react": "^7.37.5",
+    "globals": "^16.0.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^15.5.0",
     "vitest": "^3.0.9"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"  
+    }
+  },
+  "lint-staged": {
+    "*.js": "eslint --fix",
+    "*.jsx": "eslint --fix",
+    "*.css": "eslint --fix"
   },
   "repository": {
     "type": "git",
@@ -35,5 +53,8 @@
   "bugs": {
     "url": "https://github.com/Dartz35/chasing21-SOEN341_Project_W25/issues"
   },
-  "homepage": "https://github.com/Dartz35/chasing21-SOEN341_Project_W25#readme"
+  "homepage": "https://github.com/Dartz35/chasing21-SOEN341_Project_W25#readme",
+  "directories": {
+    "test": "tests"
+  }
 }
