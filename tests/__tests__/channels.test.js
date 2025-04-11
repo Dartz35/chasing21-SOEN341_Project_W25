@@ -1,5 +1,8 @@
 import { vi, beforeEach, describe, it, expect } from "vitest";
-import { currentUserMock } from "../../tests/setup/globalMocks.js";
+import {
+  currentUserMock,
+  mockDatabase,
+} from "../../tests/setup/globalMocks.js";
 import "../../tests/setup/loadChannelDom.js";
 import "../../tests/setup/firebaseMocksChannels.js";
 import { set, push, update, get } from "firebase/database";
@@ -41,14 +44,20 @@ describe("Channel management", () => {
   });
 
   it("should not add a member if already in the channel", async () => {
+    // Mock the database structure for the test
+    mockDatabase.channels.mockChannelId.members = ["user1", "user2"];
+
+    // Attempt to add a member who is already in the channel
     await addMember("user2@example.com", "mockChannelId");
 
+    // Verify that the alert is called with the correct message
     expect(alert).toHaveBeenCalledWith("This user is already a member.");
   });
 
   it("should remove a member from a channel", async () => {
     const email = "user2@example.com";
     const channelId = "mockChannelId";
+    mockDatabase.channels.mockChannelId.members = ["user1", "user2"];
 
     await removeMember(email, channelId);
 
@@ -66,7 +75,7 @@ describe("Channel management", () => {
 
   it("should fetch all members matching a query", async () => {
     const channelMembers = ["user1", "user2"];
-
+    mockDatabase.channels.mockChannelId.members = channelMembers;
     const results = await searchChannelMembers(
       "mockChannelId",
       "User",

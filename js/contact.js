@@ -401,6 +401,10 @@ async function removeFriend(friendshipId) {
   if (!confirm("Are you sure you want to remove this friend?")) return;
 
   try {
+    if (!friendshipId) {
+      alert("Invalid friend ID!");
+      throw new Error("Invalid friend ID");
+    }
     await set(ref(database, `Friends/${friendshipId}`), null);
     alert("Friend removed successfully");
   } catch (error) {

@@ -3,7 +3,7 @@ import { vi } from "vitest";
 global.alert = vi.fn();
 global.confirm = vi.fn(() => true);
 
-export const currentUserMock = {
+export let currentUserMock = {
   uid: "user1",
   email: "user1@example.com",
   role: "user",
@@ -13,7 +13,7 @@ export const currentUserMock = {
   channels: [],
 };
 
-export const mockDatabase = {
+export let mockDatabase = {
   users: {
     "user1@example,com": {
       id: "user1",
@@ -48,7 +48,7 @@ export const mockDatabase = {
     },
   },
   channels: {
-    channel1: {
+    mockChannelId: {
       id: "mockChannelId",
       name: "Test Channel",
       ownerId: "user1",

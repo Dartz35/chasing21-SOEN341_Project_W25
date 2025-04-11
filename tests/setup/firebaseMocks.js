@@ -4,6 +4,7 @@ import {
   currentUserMock,
   mockDatabase,
 } from "../../tests/setup/globalMocks.js";
+import { signOut } from "firebase/auth";
 
 const mockFns = {
   ref: vi.fn((database, ...args) => {
@@ -76,6 +77,7 @@ const mockFns = {
   update: vi.fn(() => Promise.resolve()),
   onChildAdded: vi.fn(),
   onChildRemoved: vi.fn(),
+  onChildChanged: vi.fn(),
   onValue: vi.fn((refPath, callback) => {
     callback({
       exists: () => true,
@@ -110,13 +112,19 @@ vi.mock("firebase/auth", () => ({
     callback(currentUserMock);
   }),
   sendPasswordResetEmail: vi.fn(() => Promise.resolve("Email sent!")),
+  signOut: vi.fn(() => Promise.resolve("User signed out!")),
 }));
 
 vi.mock("../../js/firebaseConfig.js", () => ({
-  auth: {},
+  auth: { currentUser: currentUserMock },
   database: {},
+  app: {},
 }));
 
-vi.mock("../../js/pageLoading.js", () => ({
-  fetchProfileData: vi.fn(() => Promise.resolve(currentUserMock)),
-}));
+vi.mock(import("../../js/pageLoading.js"), async (importOriginal) => {
+  const actual = await importOriginal();
+  return {
+    ...actual,
+    fetchProfileData: vi.fn(() => Promise.resolve(currentUserMock)),
+  };
+});
