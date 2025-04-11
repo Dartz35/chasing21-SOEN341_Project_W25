@@ -17,7 +17,8 @@ export function getNoticesForCurrentUser(currentUserEmail) {
         const results = Object.entries(notices).map(([id, data]) => ({
           id,
           ...data,
-        }));
+        }))
+        .sort((a, b) => b.timestamp - a.timestamp);
         return results;
       } else {
         console.log("No notices found for this user.");
