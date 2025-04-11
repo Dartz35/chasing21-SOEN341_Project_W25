@@ -362,7 +362,6 @@ function showchannelOptions(event, channelInfo) {
   document.querySelectorAll(".channel-options").forEach((el) => el.remove());
   const dropdown = document.createElement("div");
   dropdown.classList.add("channel-options");
-  const userRole = currentUserData.role || "";
   const userId = currentUserData.id || "";
   if (channelInfo.ownerId === userId) {
     generateAdminchannelOptions(dropdown, channelInfo);
