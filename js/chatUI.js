@@ -102,8 +102,15 @@ function displayChatUI(groupChatId, channelName) {
         <div class="chat-footer">
           <input type="text" id="messageInput" placeholder="Write your message..." />
           <button id="sendMessageBtn">Send</button>
+         <img
+          src="../images/emoji.png"
+          onclick="show_emoji()"
+          alt=""
+          style="width: 20px; height: 20px; "
+        />
+          </div>
+     
         </div>
-      </div>
     `;
     document.body.appendChild(chatView);
     fetchRoleById(sessionStorage.getItem("currentID") || "unknown").then(
