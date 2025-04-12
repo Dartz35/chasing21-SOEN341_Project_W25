@@ -491,14 +491,16 @@ function loadMessages(currChatID) {
 }
 
 // Event listener for send button
-sendBtn.addEventListener("click", sendMessage);
+if (sendBtn) sendBtn.addEventListener("click", sendMessage);
 
 // Event listener for chat input "Enter" keypress
-chatInput.addEventListener("keypress", function (e) {
-  if (e.key === "Enter") {
-    sendMessage();
-  }
-});
+if (chatInput) {
+  chatInput.addEventListener("keypress", function (e) {
+    if (e.key === "Enter") {
+      sendMessage();
+    }
+  });
+}
 
 function listenForStatusChanges() {
   const statusRef = ref(database, "status");
@@ -529,3 +531,19 @@ function updateUserStatusInUI(userID, status) {
     console.log(`User ${userID} is now ${status}`);
   }
 }
+
+export {
+  sendMessage,
+  fetchUsers,
+  populateUserList,
+  handleUserClick,
+  showLastOnlineTime,
+  createUserElement,
+  loadMessages,
+  checkExistingChat,
+  createNewChat,
+  appendMessageToUI,
+  storeMessageInDatabase,
+  findUserById,
+  updateUserStatusInUI,
+};

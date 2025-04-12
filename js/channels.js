@@ -145,13 +145,24 @@ async function createChannel() {
         if (!userChannels.includes(channelData.id)) {
           userChannels.push(channelData.id);
           await update(userRef, { channels: userChannels });
+          // After Create Channnel Send NOtifications
+
+          // Send A push Notification
+          const noticeRef = ref(database, `notices/${emailKey}`);
+          const newNotice = {
+            from: userData.email,
+            message: "New Channel Created " + channelData.name,
+            timestamp: Date.now(),
+          };
+          const newNoticeRef = push(noticeRef, newNotice);
+          console.log("New notice sent:", newNotice);
         }
       }
     }
 
     alert("Channel created successfully!");
   } catch (e) {
-    alert(e);
+    //alert(e);
   }
 }
 

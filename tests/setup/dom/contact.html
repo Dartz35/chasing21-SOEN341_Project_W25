@@ -1,0 +1,47 @@
+<div class="main-content">
+  <div class="container">
+    <div class="contacts-container">
+      <div class="tabs">
+        <button class="tab-btn active" data-tab="all-users">All Users</button>
+        <button class="tab-btn" data-tab="friends">Friends</button>
+        <button class="tab-btn" data-tab="sent-requests">Sent Requests</button>
+        <button class="tab-btn" data-tab="received-requests">
+          Received Requests
+        </button>
+      </div>
+
+      <div class="search-container">
+        <input
+          type="text"
+          id="userSearch"
+          placeholder="Search users..."
+          class="search-input"
+        />
+      </div>
+
+      <div class="tab-content active" id="all-users">
+        <div id="allUsers" class="users-container">
+          <div class="loading">Loading users...</div>
+        </div>
+      </div>
+
+      <div class="tab-content" id="friends">
+        <div id="friendsList" class="users-container">
+          <div class="loading">Loading friends...</div>
+        </div>
+      </div>
+
+      <div class="tab-content" id="sent-requests">
+        <div id="sentRequests" class="users-container">
+          <div class="loading">Loading sent requests...</div>
+        </div>
+      </div>
+
+      <div class="tab-content" id="received-requests">
+        <div id="receivedRequests" class="users-container">
+          <div class="loading">Loading received requests...</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

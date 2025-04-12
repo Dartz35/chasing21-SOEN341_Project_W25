@@ -12,6 +12,7 @@ import {
   remove,
 } from "firebase/database";
 
+let currentChannelOwner = null;
 function displayError(message) {
   let errorDiv = document.getElementById("errorMessage");
   if (!errorDiv) {
@@ -52,6 +53,7 @@ export async function openChannelChat(channelId) {
       return;
     }
     const channelData = channelSnapshot.val();
+    currentChannelOwner = channelData.ownerId;
     document.getElementById("channelsContainer").style.display = "none";
     const createChannelEl = document.getElementById("createchannelSection");
     if (createChannelEl) {
@@ -102,8 +104,15 @@ function displayChatUI(groupChatId, channelName) {
         <div class="chat-footer">
           <input type="text" id="messageInput" placeholder="Write your message..." />
           <button id="sendMessageBtn">Send</button>
+         <img
+          src="../images/emoji.png"
+          onclick="show_emoji()"
+          alt=""
+          style="width: 20px; height: 20px; "
+        />
+          </div>
+     
         </div>
-      </div>
     `;
     document.body.appendChild(chatView);
     fetchRoleById(sessionStorage.getItem("currentID") || "unknown").then(
@@ -169,7 +178,11 @@ function loadMessages(groupChatId) {
       messageEl.textContent = `${message.senderName}: ${message.text}`;
       messageEl.dataset.id = snapshot.key;
       const currentUserRole = sessionStorage.getItem("role") || "user";
-      if (currentUserRole === "admin") {
+      const currentUserId = sessionStorage.getItem("currentID") || "unknown";
+      if (
+        currentUserRole === "admin" &&
+        currentChannelOwner === currentUserId
+      ) {
         const deleteBtn = document.createElement("button");
         deleteBtn.textContent = "X";
         deleteBtn.style.marginLeft = "10px";

@@ -22,14 +22,6 @@
         <!-- Hidden Social Buttons -->
         <div id="social-buttons" style="display: block">
           <div class="chatList">
-            <div class="search">
-              <div class="searchBar">
-                <img src="../images/search.png" alt="" />
-                <input type="text" placeholder="Search" />
-              </div>
-              <img src="../images/plus.png" alt="" class="add" />
-            </div>
-
             <div class="listProfiles"></div>
           </div>
         </div>
@@ -55,7 +47,7 @@
         <div class="conversation">
           <div id="messages"></div>
         </div>
-        <div class="emoji" style="height: 0px; padding: 0px; overflow: hidden">
+        <div class="emoji" style="height: 0px;  overflow: hidden">
           <span id="emoji1" onClick="emoji_func(this.id)">&#128512;</span>
           <span id="emoji2" onClick="emoji_func(this.id)">&#128513;</span>
           <span id="emoji3" onClick="emoji_func(this.id)">&#128514;</span>
@@ -85,32 +77,17 @@
               id="chat-input"
               placeholder="Type your message here..."
             />
-            <div
-              class="emoji"
-              style="height: 0px; padding: 0px; overflow: hidden"
-            >
-              <span id="emoji1" onClick="emoji_func(this.id)">&#128512;</span>
-              <span id="emoji2" onClick="emoji_func(this.id)">&#128512;</span>
-              <span id="emoji3" onClick="emoji_func(this.id)">&#128512;</span>
-              <span id="emoji4" onClick="emoji_func(this.id)">&#128512;</span>
-              <span id="emoji5" onClick="emoji_func(this.id)">&#128512;</span>
-              <span id="emoji6" onClick="emoji_func(this.id)">&#128512;</span>
-              <span id="emoji7" onClick="emoji_func(this.id)">&#128512;</span>
-              <span id="emoji8" onClick="emoji_func(this.id)">&#128512;</span>
-              <span id="emoji9" onClick="emoji_func(this.id)">&#128512;</span>
-              <span id="emoji10" onClick="emoji_func(this.id)">&#128512;</span>
-              <span id="emoji11" onClick="emoji_func(this.id)">&#128512;</span>
-              <span id="emoji12" onClick="emoji_func(this.id)">&#128512;</span>
-            </div>
+            
           </div>
-        </div>
-
-        <img
+          <img
           src="../images/emoji.png"
           onclick="show_emoji()"
           alt=""
-          style="width: 20px; height: 20px"
+          style="width: 20px; height: 20px; "
         />
+        </div>
+
+        
         <button id="send-btn">Send</button>
       </div>
     </main>

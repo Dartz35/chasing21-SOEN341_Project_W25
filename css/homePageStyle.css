@@ -231,7 +231,7 @@ main {
   gap: 10px;
   align-items: center;
 
-  background-color: #0056b3;
+ 
 }
 
 .chatbar img {
@@ -239,7 +239,7 @@ main {
   cursor: pointer;
 }
 .emoji {
-  margin-left: 3.5px;
+ 
 
   height: 0px;
   width: 800px;

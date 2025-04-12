@@ -1,9 +1,9 @@
 import { auth } from "./firebaseConfig.js";
 import { sendPasswordResetEmail } from "firebase/auth";
 
-document
-  .getElementById("submit_forgot")
-  .addEventListener("click", async function (e) {
+const element = document.getElementById("submit_forgot");
+if (element) {
+  element.addEventListener("click", async function (e) {
     e.preventDefault();
 
     const email = document.getElementById("email_forgot").value;
@@ -24,3 +24,4 @@ document
         alert("Error: " + error.message);
       });
   });
+}
