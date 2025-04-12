@@ -147,7 +147,7 @@ async function createChannel() {
           await update(userRef, { channels: userChannels });
           // After Create Channnel Send NOtifications
 
-          // Send A push Notification 
+          // Send A push Notification
           const noticeRef = ref(database, `notices/${emailKey}`);
           const newNotice = {
             from: userData.email,
@@ -162,7 +162,7 @@ async function createChannel() {
 
     alert("Channel created successfully!");
   } catch (e) {
-    alert(e);
+    //alert(e);
   }
 }
 

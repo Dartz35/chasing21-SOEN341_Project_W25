@@ -29,14 +29,12 @@ const mockFns = {
         }
       }
 
-      console.log("Query Data:", data); // Debugging line
       return Promise.resolve({
         exists: () => true,
         val: () => data,
         forEach: (callback) => {
           Object.entries(data).forEach(([key, value]) => {
             callback({ key, val: () => value });
-            console.log("Key:", key, "Value:", value); // Debugging line
           });
           return false;
         },
@@ -58,15 +56,12 @@ const mockFns = {
       }
     }
 
-    console.log("Path Data:", data); // Debugging line
-
     return Promise.resolve({
       exists: () => true,
       val: () => data,
       forEach: (callback) => {
         Object.entries(data).forEach(([key, value]) => {
           callback({ key, val: () => value });
-          console.log("Key:", key, "Value:", value); // Debugging line
         });
         return false;
       },
@@ -113,6 +108,12 @@ vi.mock("firebase/auth", () => ({
   }),
   sendPasswordResetEmail: vi.fn(() => Promise.resolve("Email sent!")),
   signOut: vi.fn(() => Promise.resolve("User signed out!")),
+  signInWithEmailAndPassword: vi.fn(() =>
+    Promise.resolve({ user: { uid: "mockUserId", email: "test@example.com" } })
+  ),
+  createUserWithEmailAndPassword: vi.fn(() =>
+    Promise.resolve({ user: { uid: "mockUserId", email: "test@example.com" } })
+  ),
 }));
 
 vi.mock("../../js/firebaseConfig.js", () => ({
